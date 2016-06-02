@@ -2,10 +2,16 @@ The common Java API for all Europeana metadata quality assurance related project
 
 # Usage
 
+		
 		Counters counters = new Counters();
 		CompletenessCalculator completenessCalculator = new CompletenessCalculator();
 		completenessCalculator.setDataProviderManager(new DataProviderManager());
 		completenessCalculator.setDatasetManager(new DatasetManager());
 		
-		JsonPathCache cache = new JsonPathCache(readFirstLine("general/test.json"));
-		completenessCalculator.calculate(cache, counters);
+		boolean withLabels = false;
+		for (String jsonRecord : jsonRecords) {
+			JsonPathCache cache = new JsonPathCache(json);
+			completenessCalculator.calculate(cache, counters);
+			String csv = counters.getFullResults(withLabels);
+			// store csv to somewhere
+		}
