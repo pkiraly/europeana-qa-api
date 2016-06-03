@@ -9,5 +9,5 @@ import com.nsdr.europeanaqa.api.model.JsonPathCache;
  */
 public interface Calculator {
 
-	public void calculate(JsonPathCache cache, Counters counters);
+	void calculate(JsonPathCache cache, Counters counters);
 }

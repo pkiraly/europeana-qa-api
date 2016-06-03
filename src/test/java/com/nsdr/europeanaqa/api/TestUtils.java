@@ -15,9 +15,13 @@ import java.util.List;
  */
 public class TestUtils {
 
-	public static String readFirstLine(String fileName) throws URISyntaxException, IOException {
+	public static List<String> readLines(String fileName) throws URISyntaxException, IOException {
 		Path path = Paths.get(TestUtils.class.getClassLoader().getResource(fileName).toURI());
-		List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
+		return Files.readAllLines(path, Charset.defaultCharset());
+	}
+
+	public static String readFirstLine(String fileName) throws URISyntaxException, IOException {
+		List<String> lines = readLines(fileName);
 		return lines.get(0);
 	}
 

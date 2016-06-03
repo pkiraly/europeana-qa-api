@@ -1,5 +1,6 @@
 package com.nsdr.europeanaqa.api.counter;
 
+import com.nsdr.europeanaqa.api.calculator.CalculatorFacade;
 import com.nsdr.europeanaqa.api.json.JsonBranch;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -312,5 +313,4 @@ public class Counters {
 	public void doReturnProblemList(boolean returnProblems) {
 		this.returnProblems = returnProblems;
 	}
-
 }
