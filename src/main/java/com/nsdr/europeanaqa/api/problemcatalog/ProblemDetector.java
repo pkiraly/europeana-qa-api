@@ -1,15 +1,12 @@
 package com.nsdr.europeanaqa.api.problemcatalog;
 
-import com.nsdr.europeanaqa.api.model.JsonPathCache;
-import java.util.Map;
+import com.nsdr.europeanaqa.api.interfaces.Observer;
 
 /**
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
-public abstract class ProblemDetector {
+public abstract class ProblemDetector implements Observer {
 
 	protected ProblemCatalog problemCatalog;
-
-	public abstract void update(JsonPathCache cache, Map<String, Double> results);
 }

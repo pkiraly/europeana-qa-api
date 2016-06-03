@@ -260,6 +260,20 @@ public class Counters {
 		return fields.get(key);
 	}
 
+	/**
+	 * Returns the scores as a CSV string (without any label)
+	 * @return Comma separated scores
+	*/
+	public String getFullResults() {
+		return getFullResults(false, false);
+	}
+
+	/**
+	 * Returns the scores are CSV
+	 * @param withLabel
+	 *    Return labels
+	 * @return Comma separated scores
+	*/
 	public String getFullResults(boolean withLabel) {
 		return getFullResults(withLabel, false);
 	}

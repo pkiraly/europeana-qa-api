@@ -19,9 +19,10 @@ public class TitleAndDescriptionAreSame extends ProblemDetector implements Seria
 	private final String title = "$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'false')]['dc:title']";
 	private final String description = "$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'false')]['dc:description']";
 
+	@SuppressWarnings("LeakingThisInConstructor")
 	public TitleAndDescriptionAreSame(ProblemCatalog problemCatalog) {
 		this.problemCatalog = problemCatalog;
-		this.problemCatalog.attach(this);
+		this.problemCatalog.addObserver(this);
 	}
 
 	@Override

@@ -26,7 +26,7 @@ public class EmptyStrings extends ProblemDetector implements Serializable {
 
 	public EmptyStrings(ProblemCatalog problemCatalog) {
 		this.problemCatalog = problemCatalog;
-		this.problemCatalog.attach(this);
+		this.problemCatalog.addObserver(this);
 	}
 
 	@Override

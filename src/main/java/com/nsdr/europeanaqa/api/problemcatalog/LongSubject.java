@@ -23,7 +23,7 @@ public class LongSubject extends ProblemDetector implements Serializable {
 
 	public LongSubject(ProblemCatalog problemCatalog) {
 		this.problemCatalog = problemCatalog;
-		this.problemCatalog.attach(this);
+		this.problemCatalog.addObserver(this);
 	}
 
 	@Override

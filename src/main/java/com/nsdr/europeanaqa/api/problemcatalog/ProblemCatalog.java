@@ -1,5 +1,7 @@
 package com.nsdr.europeanaqa.api.problemcatalog;
 
+import com.nsdr.europeanaqa.api.interfaces.Observer;
+import com.nsdr.europeanaqa.api.interfaces.Observable;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.spi.json.JsonProvider;
 import com.nsdr.europeanaqa.api.counter.Counters;
@@ -16,12 +18,11 @@ import java.util.logging.Logger;
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
-public class ProblemCatalog implements Calculator, Serializable {
+public class ProblemCatalog implements Calculator, Serializable, Observable {
 
-	private static final JsonProvider JSON_PROVIDER = Configuration.defaultConfiguration().jsonProvider();
 	private static final Logger logger = Logger.getLogger(ProblemCatalog.class.getCanonicalName());
 
-	private List<ProblemDetector> problems = new ArrayList<>();
+	private final List<Observer> problems = new ArrayList<>();
 	private String jsonString;
 	private Object jsonDocument;
 	private JsonPathCache cache;
@@ -35,12 +36,21 @@ public class ProblemCatalog implements Calculator, Serializable {
 		return jsonDocument;
 	}
 
-	public void attach(ProblemDetector observer) {
+	@Override
+	public void addObserver(Observer observer) {
 		problems.add(observer);
 	}
 
-	public void notifyAllObservers() {
-		for (ProblemDetector observer : problems) {
+	@Override
+	public void deleteObserver(Observer observer) {
+		if (problems.contains(observer)) {
+			problems.remove(observer);
+		}
+	}
+
+	@Override
+	public void notifyObservers() {
+		for (Observer observer : problems) {
 			observer.update(cache, results);
 		}
 	}
@@ -49,7 +59,8 @@ public class ProblemCatalog implements Calculator, Serializable {
 	public void calculate(JsonPathCache cache, Counters counters) {
 		this.cache = cache;
 		this.results = new LinkedHashMap<>();
-		notifyAllObservers();
+		notifyObservers();
 		counters.setProblemList(results);
 	}
+
 }
