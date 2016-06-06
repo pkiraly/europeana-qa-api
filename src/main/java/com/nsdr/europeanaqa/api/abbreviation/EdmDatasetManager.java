@@ -1,19 +1,15 @@
 package com.nsdr.europeanaqa.api.abbreviation;
 
-import java.util.Map;
+import com.nsdr.metadataqa.api.abbreviation.DatasetManager;
 
 /**
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
-public class DatasetManager extends AbstractManager {
+public class EdmDatasetManager extends DatasetManager {
 
-	public DatasetManager() {
+	public EdmDatasetManager() {
 		super();
 		initialize("abbreviations/datasets.txt");
-	}
-
-	public Map<String, Integer> getDatasets() {
-		return data;
 	}
 }

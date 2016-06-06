@@ -1,7 +1,9 @@
 package com.nsdr.europeanaqa.api.problemcatalog;
 
-import com.nsdr.europeanaqa.api.model.EdmFieldInstance;
-import com.nsdr.europeanaqa.api.model.JsonPathCache;
+import com.nsdr.metadataqa.api.model.EdmFieldInstance;
+import com.nsdr.metadataqa.api.model.JsonPathCache;
+import com.nsdr.metadataqa.api.problemcatalog.ProblemCatalog;
+import com.nsdr.metadataqa.api.problemcatalog.ProblemDetector;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +36,8 @@ public class TitleAndDescriptionAreSame extends ProblemDetector implements Seria
 			if (descriptions != null && !descriptions.isEmpty()) {
 				if (titles.size() > 0) {
 					if (descriptions.size() > 0) {
-						for (EdmFieldInstance title : titles) {
-							if (descriptions.contains(title)) {
+						for (EdmFieldInstance titleInstance : titles) {
+							if (descriptions.contains(titleInstance)) {
 								value = 1;
 								break;
 							}

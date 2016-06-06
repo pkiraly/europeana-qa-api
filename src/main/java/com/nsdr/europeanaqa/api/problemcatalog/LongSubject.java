@@ -1,7 +1,10 @@
 package com.nsdr.europeanaqa.api.problemcatalog;
 
-import com.nsdr.europeanaqa.api.model.EdmFieldInstance;
-import com.nsdr.europeanaqa.api.model.JsonPathCache;
+import com.nsdr.metadataqa.api.model.EdmFieldInstance;
+import com.nsdr.metadataqa.api.model.JsonPathCache;
+import com.nsdr.metadataqa.api.problemcatalog.ProblemCatalog;
+import com.nsdr.metadataqa.api.problemcatalog.ProblemDetector;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;

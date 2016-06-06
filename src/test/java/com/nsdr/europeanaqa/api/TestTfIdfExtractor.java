@@ -2,7 +2,8 @@ package com.nsdr.europeanaqa.api;
 
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.spi.json.JsonProvider;
-import com.nsdr.europeanaqa.api.uniqueness.TfIdfExtractor;
+import com.nsdr.metadataqa.api.json.EdmBranches;
+import com.nsdr.metadataqa.api.uniqueness.TfIdfExtractor;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -44,20 +45,14 @@ public class TestTfIdfExtractor {
 	public void tearDown() {
 	}
 
-	public String readContent(String fileName) throws URISyntaxException, IOException {
-		Path path = Paths.get(getClass().getClassLoader().getResource(fileName).toURI());
-		List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
-		return StringUtils.join(lines, "");
-	}
-
 	@Test
 	public void hello() throws URISyntaxException, IOException {
 		JsonProvider jsonProvider = Configuration.defaultConfiguration().jsonProvider();
 		String recordId = "2022320/3F61C612ED9C42CCB85E533B4736795E8BDC7E77";
-		String jsonString = readContent("general/td-idf-response.json");
+		String jsonString = TestUtils.readContent("general/td-idf-response.json");
 		assertEquals("{", jsonString.substring(0,1));
 
-		TfIdfExtractor extractor = new TfIdfExtractor();
+		TfIdfExtractor extractor = new TfIdfExtractor(new EdmBranches());
 		Map<String, Double> results = extractor.extract(jsonString, recordId);
 		assertEquals(6, results.size());
 		assertEquals(new Double(0.0017653998874690505), results.get("dc:title:avg"));

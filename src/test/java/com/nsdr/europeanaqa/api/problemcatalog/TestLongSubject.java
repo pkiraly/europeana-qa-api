@@ -1,6 +1,8 @@
 package com.nsdr.europeanaqa.api.problemcatalog;
 
-import com.nsdr.europeanaqa.api.model.JsonPathCache;
+import com.nsdr.metadataqa.api.model.JsonPathCache;
+import com.nsdr.metadataqa.api.problemcatalog.ProblemCatalog;
+import com.nsdr.metadataqa.api.problemcatalog.ProblemDetector;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;

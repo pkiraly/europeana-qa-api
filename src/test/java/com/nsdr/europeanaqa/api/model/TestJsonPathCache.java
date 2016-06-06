@@ -1,6 +1,8 @@
 package com.nsdr.europeanaqa.api.model;
 
 import com.nsdr.europeanaqa.api.TestUtils;
+import com.nsdr.metadataqa.api.model.EdmFieldInstance;
+import com.nsdr.metadataqa.api.model.JsonPathCache;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -25,11 +27,7 @@ public class TestJsonPathCache {
 	String jsonString;
 
 	public TestJsonPathCache() throws IOException, URISyntaxException {
-		String fileName = "problem-catalog/long-subject.json";
-		Path path = Paths.get(getClass().getClassLoader().getResource(fileName).toURI());
-		List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
-		jsonString = lines.get(0);
-		// jsonDoc = Configuration.defaultConfiguration().jsonProvider().parse(jsonString);
+		jsonString = TestUtils.readFirstLine("problem-catalog/long-subject.json");
 	}
 
 	@BeforeClass
@@ -52,7 +50,7 @@ public class TestJsonPathCache {
 	public void testSimpleValue() throws IOException, URISyntaxException {
 		String jsonPath = "$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'false')]['dc:title']";
 
-		JsonPathCache cache = new JsonPathCache(jsonString);
+		JsonPathCache<EdmFieldInstance> cache = new JsonPathCache<>(jsonString);
 		List<EdmFieldInstance> instances = cache.get(jsonPath);
 
 		assertNotNull(instances);

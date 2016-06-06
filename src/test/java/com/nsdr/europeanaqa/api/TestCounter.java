@@ -1,17 +1,17 @@
 package com.nsdr.europeanaqa.api;
 
-import com.nsdr.europeanaqa.api.abbreviation.DatasetManager;
-import com.nsdr.europeanaqa.api.abbreviation.DataProviderManager;
-import com.nsdr.europeanaqa.api.counter.Counters;
-import com.nsdr.europeanaqa.api.calculator.CompletenessCalculator;
+import com.nsdr.metadataqa.api.counter.Counters;
+import com.nsdr.metadataqa.api.model.JsonPathCache;
+
+import com.nsdr.europeanaqa.api.abbreviation.EdmDatasetManager;
+import com.nsdr.europeanaqa.api.abbreviation.EdmDataProviderManager;
 import com.jayway.jsonpath.InvalidJsonException;
-import com.nsdr.europeanaqa.api.model.JsonPathCache;
+import com.nsdr.europeanaqa.api.calculator.EdmFieldExtractor;
+import com.nsdr.metadataqa.api.calculator.CompletenessCalculator;
+import com.nsdr.metadataqa.api.json.EdmBranches;
+import com.nsdr.metadataqa.api.model.EdmFieldInstance;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -47,18 +47,15 @@ public class TestCounter {
 	@Before
 	public void setUp() throws URISyntaxException, IOException {
 		counters = new Counters();
-		completenessCalculator = new CompletenessCalculator();
-		completenessCalculator.setDataProviderManager(new DataProviderManager());
-		completenessCalculator.setDatasetManager(new DatasetManager());
+		EdmFieldExtractor edmFieldExtractor = new EdmFieldExtractor();
+		edmFieldExtractor.setDataProviderManager(new EdmDataProviderManager());
+		edmFieldExtractor.setDatasetManager(new EdmDatasetManager());
 
-		JsonPathCache cache = new JsonPathCache(readFirstLine("general/test.json"));
+		completenessCalculator = new CompletenessCalculator(new EdmBranches());
+
+		JsonPathCache<EdmFieldInstance> cache = new JsonPathCache<>(TestUtils.readFirstLine("general/test.json"));
+		edmFieldExtractor.calculate(cache, counters);
 		completenessCalculator.calculate(cache, counters);
-	}
-
-	public String readFirstLine(String fileName) throws URISyntaxException, IOException {
-		Path path = Paths.get(getClass().getClassLoader().getResource(fileName).toURI());
-		List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
-		return lines.get(0);
 	}
 
 	@After
@@ -91,7 +88,7 @@ public class TestCounter {
 		thrown.expect(InvalidJsonException.class);
 		thrown.expectMessage("Unexpected character (:) at position 28");
 
-		JsonPathCache cache = new JsonPathCache(readFirstLine("general/invalid.json"));
+		JsonPathCache cache = new JsonPathCache(TestUtils.readFirstLine("general/invalid.json"));
 		completenessCalculator.calculate(cache, counters);
 		fail("Should throw an exception if the JSON string is invalid.");
 	}
@@ -117,12 +114,15 @@ public class TestCounter {
 
 	@Test
 	public void testExistenceMap() throws URISyntaxException, IOException {
-		completenessCalculator = new CompletenessCalculator();
-		completenessCalculator.setDataProviderManager(new DataProviderManager());
-		completenessCalculator.setDatasetManager(new DatasetManager());
+		EdmFieldExtractor edmFieldExtractor = new EdmFieldExtractor();
+		edmFieldExtractor.setDataProviderManager(new EdmDataProviderManager());
+		edmFieldExtractor.setDatasetManager(new EdmDatasetManager());
+
+		completenessCalculator = new CompletenessCalculator(new EdmBranches());
 		completenessCalculator.setVerbose(true);
 
-		JsonPathCache cache = new JsonPathCache(readFirstLine("general/test.json"));
+		JsonPathCache cache = new JsonPathCache(TestUtils.readFirstLine("general/test.json"));
+		edmFieldExtractor.calculate(cache, counters);
 		completenessCalculator.calculate(cache, counters);
 		Map<String, Boolean> map = counters.getExistenceMap();
 		assertEquals(35, map.size());
@@ -174,11 +174,14 @@ public class TestCounter {
 
 	@Test
 	public void testExistenceList() throws URISyntaxException, IOException {
-		completenessCalculator = new CompletenessCalculator();
-		completenessCalculator.setDataProviderManager(new DataProviderManager());
-		completenessCalculator.setDatasetManager(new DatasetManager());
+		EdmFieldExtractor edmFieldExtractor = new EdmFieldExtractor();
+		edmFieldExtractor.setDataProviderManager(new EdmDataProviderManager());
+		edmFieldExtractor.setDatasetManager(new EdmDatasetManager());
+
+		completenessCalculator = new CompletenessCalculator(new EdmBranches());
 		completenessCalculator.setVerbose(true);
-		JsonPathCache cache = new JsonPathCache(readFirstLine("general/test.json"));
+		JsonPathCache cache = new JsonPathCache(TestUtils.readFirstLine("general/test.json"));
+		edmFieldExtractor.calculate(cache, counters);
 		completenessCalculator.calculate(cache, counters);
 		List<Integer> expected = Arrays.asList(new Integer[]{1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0});
 		assertEquals(35, counters.getExistenceList().size());
