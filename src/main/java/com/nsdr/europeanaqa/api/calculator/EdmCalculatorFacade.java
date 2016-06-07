@@ -71,8 +71,8 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 	}
 
 	@Override
-	public String calculate(String jsonRecord) throws InvalidJsonException {
-		return this.<EdmFieldInstance>genericCalculate(jsonRecord);
+	public String measure(String jsonRecord) throws InvalidJsonException {
+		return this.<EdmFieldInstance>measureWithGenerics(jsonRecord);
 	}
 
 	public void doAbbreviate(boolean abbreviate) {

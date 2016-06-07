@@ -23,8 +23,8 @@ public class EdmFieldExtractor extends FieldExtractor {
 	private EdmDatasetManager datasetsManager;
 
 	@Override
-	public void calculate(JsonPathCache cache, Counters counters) throws InvalidJsonException {
-		super.calculate(cache, counters);
+	public void measure(JsonPathCache cache, Counters counters) throws InvalidJsonException {
+		super.measure(cache, counters);
 
 		List<EdmFieldInstance> providers = cache.get(DATA_PROVIDER_PATH);
 		List<EdmFieldInstance> datasets = cache.get(DATASET_PATH);

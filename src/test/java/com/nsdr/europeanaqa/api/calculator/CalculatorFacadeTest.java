@@ -41,18 +41,18 @@ public class CalculatorFacadeTest {
 	public void tearDown() {
 	}
 
-	private void run(EdmCalculatorFacade calculatorFacade, String expected)
+	private void run(EdmCalculatorFacade calculator, String expected)
 			throws URISyntaxException, IOException {
 		String jsonRecord = TestUtils.readFirstLine("general/test.json");
 
 		try {
 			Counters counters = new Counters();
-			calculatorFacade.configureCounter(counters);
+			calculator.configureCounter(counters);
 
 			JsonPathCache<EdmFieldInstance> cache = new JsonPathCache<>(jsonRecord);
 
-			for (Calculator calculator : (List<Calculator>)calculatorFacade.getCalculators()) {
-				calculator.calculate(cache, counters);
+			for (Calculator oneCalculator : (List<Calculator>)calculator.getCalculators()) {
+				oneCalculator.measure(cache, counters);
 			}
 
 			// return the result of calculations
@@ -66,29 +66,29 @@ public class CalculatorFacadeTest {
 
 	@Test
 	public void testNoAbbreviate() throws URISyntaxException, IOException {
-		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade(true, true, true, false, true);
-		calculatorFacade.doAbbreviate(false);
-		calculatorFacade.configure();
+		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
+		calculator.doAbbreviate(false);
+		calculator.configure();
 		String expected = "92062_Ag_EU_TEL_a0480_Austria,Österreichische Nationalbibliothek - Austrian National Library,92062/BibliographicResource_1000126015451,0.4,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,0.0,0.0,0.0";
-		run(calculatorFacade, expected);
+		run(calculator, expected);
 	}
 
 	@Test
 	public void testWithAbbreviate() throws URISyntaxException, IOException {
-		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade(true, true, true, false, true);
-		calculatorFacade.doAbbreviate(true);
-		calculatorFacade.configure();
+		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
+		calculator.doAbbreviate(true);
+		calculator.configure();
 		String expected = "1,2,92062/BibliographicResource_1000126015451,0.4,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,0.0,0.0,0.0";
-		run(calculatorFacade, expected);
+		run(calculator, expected);
 	}
 
 	@Test
 	public void testCalculate() throws URISyntaxException, IOException {
-		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade(true, true, true, false, true);
-		calculatorFacade.doAbbreviate(true);
-		calculatorFacade.configure();
+		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
+		calculator.doAbbreviate(true);
+		calculator.configure();
 		String expected = "1,2,92062/BibliographicResource_1000126015451,0.4,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,0.0,0.0,0.0";
-		String csv = calculatorFacade.calculate(TestUtils.readFirstLine("general/test.json"));
+		String csv = calculator.measure(TestUtils.readFirstLine("general/test.json"));
 		assertEquals(expected, csv);
 	}
 }
