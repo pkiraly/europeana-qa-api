@@ -1,29 +1,23 @@
 package com.nsdr.europeanaqa.api.calculator;
 
-import com.jayway.jsonpath.InvalidJsonException;
-import com.nsdr.metadataqa.api.calculator.CalculatorFacade;
-import com.nsdr.metadataqa.api.calculator.CompletenessCalculator;
-import com.nsdr.metadataqa.api.calculator.TfIdfCalculator;
-import com.nsdr.metadataqa.api.json.EdmBranches;
-import com.nsdr.metadataqa.api.problemcatalog.ProblemCatalog;
-
 import com.nsdr.europeanaqa.api.abbreviation.EdmDataProviderManager;
 import com.nsdr.europeanaqa.api.abbreviation.EdmDatasetManager;
 import com.nsdr.europeanaqa.api.problemcatalog.EmptyStrings;
 import com.nsdr.europeanaqa.api.problemcatalog.LongSubject;
 import com.nsdr.europeanaqa.api.problemcatalog.TitleAndDescriptionAreSame;
-import com.nsdr.metadataqa.api.counter.Counters;
-import com.nsdr.metadataqa.api.interfaces.Calculator;
-import com.nsdr.metadataqa.api.model.EdmFieldInstance;
-import com.nsdr.metadataqa.api.model.JsonPathCache;
-
+import com.nsdr.metadataqa.api.calculator.CalculatorFacade;
+import com.nsdr.metadataqa.api.calculator.CompletenessCalculator;
+import com.nsdr.metadataqa.api.calculator.TfIdfCalculator;
+import com.nsdr.metadataqa.api.model.XmlFieldInstance;
+import com.nsdr.metadataqa.api.problemcatalog.ProblemCatalog;
+import com.nsdr.metadataqa.api.schema.EdmSchema;
 import java.util.ArrayList;
 
 /**
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
-public class EdmCalculatorFacade extends CalculatorFacade {
+public class EdmCalculatorFacade<T extends XmlFieldInstance> extends CalculatorFacade {
 
 	EdmFieldExtractor fieldExtractor;
 
@@ -43,12 +37,12 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		}
 
 		if (doCompleteness) {
-			completenessCalculator = new CompletenessCalculator(new EdmBranches());
+			completenessCalculator = new CompletenessCalculator(new EdmSchema());
 			calculators.add(completenessCalculator);
 		}
 
 		if (doTfIdf) {
-			tfidfCalculator = new TfIdfCalculator(new EdmBranches());
+			tfidfCalculator = new TfIdfCalculator(new EdmSchema());
 			calculators.add(tfidfCalculator);
 		}
 

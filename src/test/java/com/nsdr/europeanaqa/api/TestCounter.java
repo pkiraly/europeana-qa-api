@@ -8,7 +8,7 @@ import com.nsdr.europeanaqa.api.abbreviation.EdmDataProviderManager;
 import com.jayway.jsonpath.InvalidJsonException;
 import com.nsdr.europeanaqa.api.calculator.EdmFieldExtractor;
 import com.nsdr.metadataqa.api.calculator.CompletenessCalculator;
-import com.nsdr.metadataqa.api.json.EdmBranches;
+import com.nsdr.metadataqa.api.schema.EdmSchema;
 import com.nsdr.metadataqa.api.model.EdmFieldInstance;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -51,7 +51,7 @@ public class TestCounter {
 		edmFieldExtractor.setDataProviderManager(new EdmDataProviderManager());
 		edmFieldExtractor.setDatasetManager(new EdmDatasetManager());
 
-		completenessCalculator = new CompletenessCalculator(new EdmBranches());
+		completenessCalculator = new CompletenessCalculator(new EdmSchema());
 
 		JsonPathCache<EdmFieldInstance> cache = new JsonPathCache<>(TestUtils.readFirstLine("general/test.json"));
 		edmFieldExtractor.calculate(cache, counters);
@@ -118,7 +118,7 @@ public class TestCounter {
 		edmFieldExtractor.setDataProviderManager(new EdmDataProviderManager());
 		edmFieldExtractor.setDatasetManager(new EdmDatasetManager());
 
-		completenessCalculator = new CompletenessCalculator(new EdmBranches());
+		completenessCalculator = new CompletenessCalculator(new EdmSchema());
 		completenessCalculator.setVerbose(true);
 
 		JsonPathCache cache = new JsonPathCache(TestUtils.readFirstLine("general/test.json"));
@@ -178,7 +178,7 @@ public class TestCounter {
 		edmFieldExtractor.setDataProviderManager(new EdmDataProviderManager());
 		edmFieldExtractor.setDatasetManager(new EdmDatasetManager());
 
-		completenessCalculator = new CompletenessCalculator(new EdmBranches());
+		completenessCalculator = new CompletenessCalculator(new EdmSchema());
 		completenessCalculator.setVerbose(true);
 		JsonPathCache cache = new JsonPathCache(TestUtils.readFirstLine("general/test.json"));
 		edmFieldExtractor.calculate(cache, counters);
