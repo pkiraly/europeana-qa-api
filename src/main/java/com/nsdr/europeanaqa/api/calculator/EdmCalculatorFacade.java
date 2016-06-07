@@ -9,13 +9,11 @@ import com.nsdr.europeanaqa.api.problemcatalog.TitleAndDescriptionAreSame;
 import com.nsdr.metadataqa.api.calculator.CalculatorFacade;
 import com.nsdr.metadataqa.api.calculator.CompletenessCalculator;
 import com.nsdr.metadataqa.api.calculator.TfIdfCalculator;
-import com.nsdr.metadataqa.api.counter.Counters;
-import com.nsdr.metadataqa.api.interfaces.Calculator;
 import com.nsdr.metadataqa.api.model.EdmFieldInstance;
-import com.nsdr.metadataqa.api.model.JsonPathCache;
-import com.nsdr.metadataqa.api.model.XmlFieldInstance;
 import com.nsdr.metadataqa.api.problemcatalog.ProblemCatalog;
 import com.nsdr.metadataqa.api.schema.EdmSchema;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 /**
@@ -26,6 +24,10 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 	protected EdmFieldExtractor fieldExtractor;
 	protected boolean abbreviate = false;
+	private EdmDataProviderManager dataProviderManager;
+	private EdmDatasetManager datasetManager;
+
+	public EdmCalculatorFacade() {}
 
 	public EdmCalculatorFacade(boolean runFieldExistence, boolean runFieldCardinality,
 			boolean runCompleteness, boolean runTfIdf, boolean runProblemCatalog) {
@@ -47,8 +49,10 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		fieldExtractor = new EdmFieldExtractor();
 		calculators.add(fieldExtractor);
 		if (abbreviate) {
-			fieldExtractor.setDataProviderManager(new EdmDataProviderManager());
-			fieldExtractor.setDatasetManager(new EdmDatasetManager());
+			this.dataProviderManager = new EdmDataProviderManager();
+			this.datasetManager = new EdmDatasetManager();
+			fieldExtractor.setDataProviderManager(dataProviderManager);
+			fieldExtractor.setDatasetManager(datasetManager);
 		}
 
 		if (runCompleteness) {
@@ -83,4 +87,15 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		return abbreviate;
 	}
 
+	public void saveDataProviders(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
+		if (dataProviderManager != null) {
+			dataProviderManager.save(fileName);
+		}
+	}
+
+	public void saveDatasets(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
+		if (datasetManager != null) {
+			datasetManager.save(fileName);
+		}
+	}
 }
