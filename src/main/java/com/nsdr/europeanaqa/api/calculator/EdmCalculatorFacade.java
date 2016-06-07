@@ -1,5 +1,6 @@
 package com.nsdr.europeanaqa.api.calculator;
 
+import com.jayway.jsonpath.InvalidJsonException;
 import com.nsdr.europeanaqa.api.abbreviation.EdmDataProviderManager;
 import com.nsdr.europeanaqa.api.abbreviation.EdmDatasetManager;
 import com.nsdr.europeanaqa.api.problemcatalog.EmptyStrings;
@@ -8,6 +9,10 @@ import com.nsdr.europeanaqa.api.problemcatalog.TitleAndDescriptionAreSame;
 import com.nsdr.metadataqa.api.calculator.CalculatorFacade;
 import com.nsdr.metadataqa.api.calculator.CompletenessCalculator;
 import com.nsdr.metadataqa.api.calculator.TfIdfCalculator;
+import com.nsdr.metadataqa.api.counter.Counters;
+import com.nsdr.metadataqa.api.interfaces.Calculator;
+import com.nsdr.metadataqa.api.model.EdmFieldInstance;
+import com.nsdr.metadataqa.api.model.JsonPathCache;
 import com.nsdr.metadataqa.api.model.XmlFieldInstance;
 import com.nsdr.metadataqa.api.problemcatalog.ProblemCatalog;
 import com.nsdr.metadataqa.api.schema.EdmSchema;
@@ -17,36 +22,46 @@ import java.util.ArrayList;
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
-public class EdmCalculatorFacade<T extends XmlFieldInstance> extends CalculatorFacade {
+public class EdmCalculatorFacade extends CalculatorFacade {
 
-	EdmFieldExtractor fieldExtractor;
+	protected EdmFieldExtractor fieldExtractor;
+	protected boolean abbreviate = false;
 
-	public EdmCalculatorFacade(boolean doFieldExistence, boolean doFieldCardinality,
-			  boolean doCompleteness, boolean doTfIdf, boolean doProblemCatalog) {
-		super(doFieldExistence, doFieldCardinality, doCompleteness, doTfIdf, doProblemCatalog);
-		setupCalculators();
+	public EdmCalculatorFacade(boolean runFieldExistence, boolean runFieldCardinality,
+			boolean runCompleteness, boolean runTfIdf, boolean runProblemCatalog) {
+		super(runFieldExistence, runFieldCardinality, runCompleteness, runTfIdf,
+			runProblemCatalog);
 	}
 
-	private void setupCalculators() {
+	public EdmCalculatorFacade(boolean runFieldExistence, boolean runFieldCardinality,
+			boolean runCompleteness, boolean runTfIdf, boolean runProblemCatalog, 
+			boolean abbreviate) {
+		super(runFieldExistence, runFieldCardinality, runCompleteness, runTfIdf, runProblemCatalog);
+		this.abbreviate = abbreviate;
+		changed();
+	}
+
+	@Override
+	public void configure() {
 		calculators = new ArrayList<>();
 		fieldExtractor = new EdmFieldExtractor();
 		calculators.add(fieldExtractor);
-		if (doAbbreviate) {
+		if (abbreviate) {
 			fieldExtractor.setDataProviderManager(new EdmDataProviderManager());
 			fieldExtractor.setDatasetManager(new EdmDatasetManager());
 		}
 
-		if (doCompleteness) {
+		if (runCompleteness) {
 			completenessCalculator = new CompletenessCalculator(new EdmSchema());
 			calculators.add(completenessCalculator);
 		}
 
-		if (doTfIdf) {
+		if (runTfIdf) {
 			tfidfCalculator = new TfIdfCalculator(new EdmSchema());
 			calculators.add(tfidfCalculator);
 		}
 
-		if (doProblemCatalog) {
+		if (runProblemCatalog) {
 			ProblemCatalog problemCatalog = new ProblemCatalog();
 			LongSubject longSubject = new LongSubject(problemCatalog);
 			TitleAndDescriptionAreSame titleAndDescriptionAreSame = new TitleAndDescriptionAreSame(problemCatalog);
@@ -56,15 +71,16 @@ public class EdmCalculatorFacade<T extends XmlFieldInstance> extends CalculatorF
 	}
 
 	@Override
-	public void doAbbreviate(boolean doAbbreviate) {
-		EdmDataProviderManager dataProviderManager = null;
-		EdmDatasetManager datasetManager = null;
-		if (doAbbreviate) {
-			dataProviderManager = new EdmDataProviderManager();
-			datasetManager = new EdmDatasetManager();
-		}
-		fieldExtractor.setDataProviderManager(dataProviderManager);
-		fieldExtractor.setDatasetManager(datasetManager);
+	public String calculate(String jsonRecord) throws InvalidJsonException {
+		return this.<EdmFieldInstance>genericCalculate(jsonRecord);
+	}
+
+	public void doAbbreviate(boolean abbreviate) {
+		this.abbreviate = abbreviate;
+	}
+
+	public boolean doAbbreviate() {
+		return abbreviate;
 	}
 
 }
