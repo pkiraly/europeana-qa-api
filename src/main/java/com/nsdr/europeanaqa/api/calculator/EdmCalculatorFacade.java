@@ -8,6 +8,7 @@ import com.nsdr.europeanaqa.api.problemcatalog.LongSubject;
 import com.nsdr.europeanaqa.api.problemcatalog.TitleAndDescriptionAreSame;
 import com.nsdr.metadataqa.api.calculator.CalculatorFacade;
 import com.nsdr.metadataqa.api.calculator.CompletenessCalculator;
+import com.nsdr.metadataqa.api.calculator.LanguageCalculator;
 import com.nsdr.metadataqa.api.calculator.TfIdfCalculator;
 import com.nsdr.metadataqa.api.model.EdmFieldInstance;
 import com.nsdr.metadataqa.api.problemcatalog.ProblemCatalog;
@@ -23,9 +24,9 @@ import java.util.ArrayList;
 public class EdmCalculatorFacade extends CalculatorFacade {
 
 	protected EdmFieldExtractor fieldExtractor;
-	protected boolean abbreviate = false;
 	private EdmDataProviderManager dataProviderManager;
 	private EdmDatasetManager datasetManager;
+	protected boolean abbreviate = false;
 
 	public EdmCalculatorFacade() {}
 
@@ -48,6 +49,8 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		calculators = new ArrayList<>();
 		fieldExtractor = new EdmFieldExtractor();
 		calculators.add(fieldExtractor);
+		EdmSchema schema = new EdmSchema();
+
 		if (abbreviate) {
 			this.dataProviderManager = new EdmDataProviderManager();
 			this.datasetManager = new EdmDatasetManager();
@@ -56,12 +59,12 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		}
 
 		if (runCompleteness) {
-			completenessCalculator = new CompletenessCalculator(new EdmSchema());
+			completenessCalculator = new CompletenessCalculator(schema);
 			calculators.add(completenessCalculator);
 		}
 
 		if (runTfIdf) {
-			tfidfCalculator = new TfIdfCalculator(new EdmSchema());
+			tfidfCalculator = new TfIdfCalculator(schema);
 			calculators.add(tfidfCalculator);
 		}
 
@@ -72,6 +75,12 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			EmptyStrings emptyStrings = new EmptyStrings(problemCatalog);
 			calculators.add(problemCatalog);
 		}
+
+		if (runLanguage) {
+			languageCalculator = new LanguageCalculator(schema);
+			calculators.add(languageCalculator);
+		}
+
 	}
 
 	@Override
