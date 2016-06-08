@@ -10,6 +10,6 @@ public class EdmDataProviderManager extends DataProviderManager {
 
 	public EdmDataProviderManager() {
 		super();
-		initialize("abbreviations/data-providers.txt");
+		initialize("abbreviations/data-providers2.txt");
 	}
 }
