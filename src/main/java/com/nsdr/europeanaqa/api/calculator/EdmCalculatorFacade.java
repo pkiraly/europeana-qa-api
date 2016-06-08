@@ -60,11 +60,13 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 		if (runCompleteness) {
 			completenessCalculator = new CompletenessCalculator(schema);
+			completenessCalculator.setVerbose(verbose);
 			calculators.add(completenessCalculator);
 		}
 
 		if (runTfIdf) {
 			tfidfCalculator = new TfIdfCalculator(schema);
+			tfidfCalculator.setDoCollectTerms(collectTfIdfTerms);
 			calculators.add(tfidfCalculator);
 		}
 
