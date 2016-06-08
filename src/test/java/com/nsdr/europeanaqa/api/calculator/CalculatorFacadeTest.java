@@ -78,7 +78,7 @@ public class CalculatorFacadeTest {
 		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
 		calculator.doAbbreviate(true);
 		calculator.configure();
-		String expected = "1,2,92062/BibliographicResource_1000126015451,0.4,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,0.0,0.0,0.0";
+		String expected = "1725,2,92062/BibliographicResource_1000126015451,0.4,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,0.0,0.0,0.0";
 		run(calculator, expected);
 	}
 
@@ -87,7 +87,7 @@ public class CalculatorFacadeTest {
 		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
 		calculator.doAbbreviate(true);
 		calculator.configure();
-		String expected = "1,2,92062/BibliographicResource_1000126015451,0.4,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,0.0,0.0,0.0";
+		String expected = "1725,2,92062/BibliographicResource_1000126015451,0.4,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,0.0,0.0,0.0";
 		String csv = calculator.measure(TestUtils.readFirstLine("general/test.json"));
 		assertEquals(expected, csv);
 	}
