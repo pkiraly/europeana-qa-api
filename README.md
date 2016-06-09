@@ -27,6 +27,10 @@ The parameters you can set:
 5. `runProblemCatalog(boolean)` configure to run the problem catalog measurement (see #5 in the above list)
 6. `runLanguage(boolean)` configure to run the language measurement (see #6 in the above list)
 
+Other options:
+
+
+
 For the first step the class provides a number of configuration options.
 
 ```java
