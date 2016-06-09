@@ -196,9 +196,9 @@ As you can see the first three fields are the same as for the basic one (data pr
 
 where
 * `[language 1]`, `[language 2]` etc. means the language code as it appears in the record. There are special codes as well:
-** `_0`: no language code specified
-** `_1`: the field is missing
-** `_2`: the field is a resource (it contains a URL and tagged as resource)
+   * `_0`: no language code specified
+   * `_1`: the field is missing (the very same information that of field existence metric)
+   * `_2`: the field is a resource (it contains a URL and tagged as resource)
 * `[count]` means the number of times a language appears in field instances
 
 For example the following JSON fragment 
