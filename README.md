@@ -13,10 +13,8 @@ The result will contain a bunch of information depending on the configuration. T
 
 1. Extracted fields from the JSON record: identifier, dataset and data provider
 2. Completeness
-
-    a. Existence of fields (if a field exists it gets 1, otherwise 0)
-    b. Cardinality of fields (how many times a field exists in a record)
-
+    1. Existence of fields (if a field exists it gets 1, otherwise 0)
+    2. Cardinality of fields (how many times a field exists in a record)
 4. Uniqueness values of (at the time of writing) three fields: dc:title, dcterms:alterative, dc:description. Each values appear in two flavors: an aggregated one and an average
 5. Problem catalog. You can check existence of known metadata problems in a record. The score gives you the number of times they appear in the record. Right now there are 3 problems defined: „long subject”, „ientical title and description”, and „empty strings”.
 6. Encountering languages. It gives you a different return value - the codes used in the language attribute of a string value. Since it requires a different post-processing method it might worth to run in a separate batch process.
