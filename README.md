@@ -204,11 +204,11 @@ where
 For example the following JSON fragment 
 
 ```JSON
-'dc:title': [
-  'Hamlet',
+"dc:title": [
+  "Hamlet",
   {
-    '@lang': 'en',
-    '#value': 'Hamlet'
+    "@lang": "en",
+    "#value": "Hamlet"
   }
 ]
 ```
@@ -217,4 +217,4 @@ will produce
 ```CSV
 _0:1;en:1
 ```
-
+because the first Hamlet doesn't have any language code specified, and the second one has `"en"`.
