@@ -67,6 +67,8 @@ The `measure()` method already returns a CSV string, but you might want more.
 
 ## Examples
 
+Note: these examples are for illustrating the API usage, when you write real code, organize it according to the general design and code organization principles.
+
 ### Most general usage: measuring scores
 
 The first step the class provides a number of configuration options.
@@ -76,7 +78,7 @@ import de.gwdg.europeanaqa.api.calculator.EdmCalculatorFacade;
 import com.jayway.jsonpath.InvalidJsonException;
 
 ...
-
+// create an instance and configure the object
 EdmCalculatorFacade calculator = new EdmCalculatorFacade();
 calculator.doAbbreviate(true);
 calculator.runCompleteness(true);
@@ -89,12 +91,130 @@ calculator.configure();
 List<String> jsonRecords = ... // read JSON records from file/database
 List<String> metrics = new ArrayList<>();
 for (String jsonRecord : jsonRecords) {
-	try {
-		metrics.add(calculator.measure(jsonRecord));
-	} catch (InvalidJsonException e) {
-		logger.severe(String.format("Invalid JSON in %s: %s. Error message: %s.",
-			inputFileName, jsonRecord, e.getLocalizedMessage()));
-	}
+   try {
+      metrics.add(calculator.measure(jsonRecord));
+   } catch (InvalidJsonException e) {
+      // handle exception
+   }
 }
+```
+
+### Returning a JSON object (if you want to create a REST API)
+
+First, create a Result object which is a simple placeholder for all the data:
+
+```java
+public class Result {
+   private List<String> existingFields;
+   private List<String> missingFields;
+   private List<String> emptyFields;
+   private Map<String, Double> results;
+   private Map<String, List<TfIdf>> termsCollection;
+
+   public Result() {} // a parameterless constructor is need for JSON converter
+
+   ... // getters and setters come here
+}
+```
+
+The main class:
+
+```java
+EdmCalculatorFacade calculator = new EdmCalculatorFacade();
+calculator.abbreviate(true);
+calculator.runCompleteness(true);
+calculator.runFieldCardinality(true);
+calculator.runFieldExistence(true);
+calculator.runTfIdf(true);
+calculator.runProblemCatalog(true);
+calculator.collectTfIdfTerms(true);
+calculator.verbose(true);
+calculator.configure();
+
+Result result = null;
+try {
+    calculator.measure(jsonRecord);
+
+    result = new Result();
+    result.setResults(calculator.getResults());
+    result.setExistingFields(calculator.getExistingFields());
+    result.setMissingFields(calculator.getMissingFields());
+    result.setEmptyFields(calculator.getEmptyFields());
+    result.setTermsCollection(calculator.getTermsCollection());
+} catch (InvalidJsonException e) {
+   // handle exception
+}
+
+String resultAsJson = null;
+if (result != null) {
+   ObjectMapper mapper = new ObjectMapper();
+   try {
+      resultAsJson = mapper.writeValueAsString(result);
+   } catch (IOException ex) {
+      // handle exception
+   }
+}
+
+return resultAsJson;
+```
+
+### Measuring language usage
+
+```java
+EdmCalculatorFacade calculator = new EdmCalculatorFacade();
+calculator.abbreviate(true);
+calculator.runCompleteness(false);
+calculator.runFieldCardinality(false);
+calculator.runFieldExistence(false);
+calculator.runTfIdf(false);
+calculator.runProblemCatalog(false);
+calculator.runLanguage(true);
+calculator.configure();
+
+List<String> jsonRecords = ... // read JSON records from file/database
+List<String> metrics = new ArrayList<>();
+for (String jsonRecord : jsonRecords) {
+   try {
+      metrics.add(calculator.measure(jsonRecord));
+   } catch (InvalidJsonException e) {
+      // handle exception
+   }
+}
+```
+
+This CSV is a bit different in nature than the basic one. Here is an excerpt:
+
+```CSV
+31,558,02301/urn_imss_biography_300020,it:1;en:1,_1:1,it:1;en:1,_1:1,it:1,_1:1,it:1;en:1,_0:1,_0:2,_1:1,...
+```
+
+As you can see the first three fields are the same as for the basic one (data provider, dataset and record id). After that however there are special units, which takes the form:
+
+```
+[language 1]:[count];[language 2]:[count];[language 3]:[count]...
+```
+
+where
+* `[language 1]`, `[language 2]` etc. means the language code as it appears in the record. There are special codes as well:
+** `_0`: no language code specified
+** `_1`: the field is missing
+** `_2`: the field is a resource (it contains a URL and tagged as resource)
+* `[count]` means the number of times a language appears in field instances
+
+For example the following JSON fragment 
+
+```JSON
+'dc:title': [
+  'Hamlet',
+  {
+    '@lang': 'en',
+    '#value': 'Hamlet'
+  }
+]
+```
+will produce
+
+```CSV
+_0:1;en:1
 ```
 
