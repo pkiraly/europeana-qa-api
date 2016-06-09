@@ -19,8 +19,13 @@ The result will contain a bunch of information depending on the configuration. T
 6. Encountering languages. It gives you a different return value - the codes used in the language attribute of a string value. Since it requires a different post-processing method it might worth to run in a separate batch process.
  
 The parameters you can set:
+
 1. `runFieldExistence(boolean)` configure to run the existence measurement (see #2 in the above list)
 2. `runFieldCardinality(boolean)` configure to run the cardinality measurement (see #3 in the above list)
+3. `runCompleteness(boolean)`
+4. `runTfIdf(boolean)` configure to run the uniqueness measurement (see #4 in the above list)
+5. `runProblemCatalog(boolean)` configure to run the problem catalog measurement (see #5 in the above list)
+6. `runLanguage(boolean)` configure to run the language measurement (see #6 in the above list)
 
 For the first step the class provides a number of configuration options.
 
