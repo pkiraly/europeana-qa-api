@@ -1,6 +1,6 @@
 # Europeana Metadata Quality Assurance API
 
-The common Java API for all Europeana metadata quality assurance related projects. This API is based on the general (Metadata Quality Assurance API project)[https://github.com/pkiraly/metadata-qa-api/]
+The common Java API for all Europeana metadata quality assurance related projects. This API is based on the general [Metadata Quality Assurance API project](https://github.com/pkiraly/metadata-qa-api/)
 
 ## Usage
 
