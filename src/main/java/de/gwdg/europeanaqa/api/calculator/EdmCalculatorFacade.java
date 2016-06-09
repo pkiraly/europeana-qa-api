@@ -90,11 +90,11 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		return this.<EdmFieldInstance>measureWithGenerics(jsonRecord);
 	}
 
-	public void doAbbreviate(boolean abbreviate) {
+	public void abbreviate(boolean abbreviate) {
 		this.abbreviate = abbreviate;
 	}
 
-	public boolean doAbbreviate() {
+	public boolean abbreviate() {
 		return abbreviate;
 	}
 

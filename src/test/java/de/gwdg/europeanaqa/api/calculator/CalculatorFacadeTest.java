@@ -67,7 +67,7 @@ public class CalculatorFacadeTest {
 	@Test
 	public void testNoAbbreviate() throws URISyntaxException, IOException {
 		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
-		calculator.doAbbreviate(false);
+		calculator.abbreviate(false);
 		calculator.configure();
 		String expected = "92062_Ag_EU_TEL_a0480_Austria,Österreichische Nationalbibliothek - Austrian National Library,92062/BibliographicResource_1000126015451,0.4,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,0.0,0.0,0.0";
 		run(calculator, expected);
@@ -76,7 +76,7 @@ public class CalculatorFacadeTest {
 	@Test
 	public void testWithAbbreviate() throws URISyntaxException, IOException {
 		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
-		calculator.doAbbreviate(true);
+		calculator.abbreviate(true);
 		calculator.configure();
 		String expected = "1725,2,92062/BibliographicResource_1000126015451,0.4,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,0.0,0.0,0.0";
 		run(calculator, expected);
@@ -85,7 +85,7 @@ public class CalculatorFacadeTest {
 	@Test
 	public void testCalculate() throws URISyntaxException, IOException {
 		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
-		calculator.doAbbreviate(true);
+		calculator.abbreviate(true);
 		calculator.configure();
 		String expected = "1725,2,92062/BibliographicResource_1000126015451,0.4,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,0,0.0,0.0,0.0";
 		String csv = calculator.measure(TestUtils.readFirstLine("general/test.json"));
