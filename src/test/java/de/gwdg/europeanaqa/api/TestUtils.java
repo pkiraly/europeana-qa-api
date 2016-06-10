@@ -28,7 +28,7 @@ public class TestUtils {
 		return lines.get(0);
 	}
 
-	public static String readContent(String fileName) 
+	public static String readContent(String fileName)
 			throws URISyntaxException, IOException {
 		return StringUtils.join(readLines(fileName), "");
 	}

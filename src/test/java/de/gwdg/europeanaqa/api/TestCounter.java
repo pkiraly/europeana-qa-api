@@ -119,7 +119,7 @@ public class TestCounter {
 		edmFieldExtractor.setDatasetManager(new EdmDatasetManager());
 
 		completenessCalculator = new CompletenessCalculator(new EdmSchema());
-		completenessCalculator.setVerbose(true);
+		completenessCalculator.collectFields(true);
 
 		JsonPathCache cache = new JsonPathCache(TestUtils.readFirstLine("general/test.json"));
 		edmFieldExtractor.measure(cache, counters);
@@ -179,7 +179,7 @@ public class TestCounter {
 		edmFieldExtractor.setDatasetManager(new EdmDatasetManager());
 
 		completenessCalculator = new CompletenessCalculator(new EdmSchema());
-		completenessCalculator.setVerbose(true);
+		completenessCalculator.collectFields(true);
 		JsonPathCache cache = new JsonPathCache(TestUtils.readFirstLine("general/test.json"));
 		edmFieldExtractor.measure(cache, counters);
 		completenessCalculator.measure(cache, counters);

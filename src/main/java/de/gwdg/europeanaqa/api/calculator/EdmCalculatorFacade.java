@@ -60,7 +60,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 		if (runCompleteness) {
 			completenessCalculator = new CompletenessCalculator(schema);
-			completenessCalculator.setVerbose(verbose);
+			completenessCalculator.collectFields(completenessCollectFields);
 			calculators.add(completenessCalculator);
 		}
 
