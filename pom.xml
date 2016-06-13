@@ -102,6 +102,9 @@
 						<goals>
 							<goal>jar-no-fork</goal>
 						</goals>
+						<configuration>
+							<skipSource>${skipSource}</skipSource>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -115,6 +118,10 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
+						<configuration>
+							<failOnError>false</failOnError>
+							<skip>${skipJavadoc}</skip>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -129,6 +136,9 @@
 						<goals>
 							<goal>sign</goal>
 						</goals>
+						<configuration>
+							<skip>${skipGpg}</skip>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -141,9 +151,26 @@
 					<serverId>ossrh</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+					<skipStaging>${skipStaging}</skipStaging>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>travis</id>
+			<properties>
+				<skipSource>true</skipSource>
+				<skipGpg>true</skipGpg>
+				<skipCobertura>true</skipCobertura>
+				<skipStaging>true</skipStaging>
+				<skipJavadoc>true</skipJavadoc>
+			</properties>
+			<reporting>
+				<excludeDefaults>true</excludeDefaults>
+			</reporting>
+		</profile>
+	</profiles>
 
 </project>
