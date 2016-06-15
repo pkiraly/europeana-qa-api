@@ -48,7 +48,9 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 	public void configure() {
 		calculators = new ArrayList<>();
 		fieldExtractor = new EdmFieldExtractor();
+		fieldExtractor.abbreviate(abbreviate);
 		calculators.add(fieldExtractor);
+
 		EdmSchema schema = new EdmSchema();
 
 		if (abbreviate) {
@@ -82,7 +84,6 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			languageCalculator = new LanguageCalculator(schema);
 			calculators.add(languageCalculator);
 		}
-
 	}
 
 	@Override

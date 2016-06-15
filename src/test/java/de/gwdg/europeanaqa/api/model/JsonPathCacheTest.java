@@ -1,14 +1,10 @@
 package de.gwdg.europeanaqa.api.model;
 
-import de.gwdg.europeanaqa.api.TestUtils;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
+import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,13 +17,13 @@ import static org.junit.Assert.*;
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
-public class TestJsonPathCache {
+public class JsonPathCacheTest {
 
 	Object jsonDoc;
 	String jsonString;
 
-	public TestJsonPathCache() throws IOException, URISyntaxException {
-		jsonString = TestUtils.readFirstLine("problem-catalog/long-subject.json");
+	public JsonPathCacheTest() throws IOException, URISyntaxException {
+		jsonString = FileUtils.readFirstLine("problem-catalog/long-subject.json");
 	}
 
 	@BeforeClass
@@ -102,7 +98,7 @@ public class TestJsonPathCache {
 
 	@Test
 	public void testLanguage() throws URISyntaxException, IOException {
-		jsonString = TestUtils.readFirstLine("problem-catalog/same-title-and-description.json");
+		jsonString = FileUtils.readFirstLine("problem-catalog/same-title-and-description.json");
 		String jsonPath = "$.['edm:Place'][0]['skos:prefLabel']";
 
 		JsonPathCache cache = new JsonPathCache(jsonString);
@@ -120,7 +116,7 @@ public class TestJsonPathCache {
 	 */
 	@Test
 	public void testArrayInInnerArray() throws URISyntaxException, IOException {
-		jsonString = TestUtils.readFirstLine("issue-examples/issue5-array-in-innerarray.json");
+		jsonString = FileUtils.readFirstLine("issue-examples/issue5-array-in-innerarray.json");
 		String jsonPath = "$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'false')]['dcterms:created']";
 
 		JsonPathCache cache = new JsonPathCache(jsonString);
@@ -140,7 +136,7 @@ public class TestJsonPathCache {
 	 */
 	@Test
 	public void testDataProviderHash() throws URISyntaxException, IOException {
-		jsonString = TestUtils.readFirstLine("issue-examples/issue6-handling-missing-provider.json");
+		jsonString = FileUtils.readFirstLine("issue-examples/issue6-handling-missing-provider.json");
 		String jsonPath = "$.['ore:Aggregation'][0]['edm:dataProvider'][0]";
 
 		JsonPathCache cache = new JsonPathCache(jsonString);

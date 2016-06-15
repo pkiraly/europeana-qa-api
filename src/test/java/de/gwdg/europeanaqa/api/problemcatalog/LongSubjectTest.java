@@ -1,5 +1,6 @@
 package de.gwdg.europeanaqa.api.problemcatalog;
 
+import de.gwdg.metadataqa.api.counter.FieldCounter;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.problemcatalog.ProblemCatalog;
 import de.gwdg.metadataqa.api.problemcatalog.ProblemDetector;
@@ -9,9 +10,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -23,9 +22,9 @@ import static org.junit.Assert.*;
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
-public class TestLongSubject {
+public class LongSubjectTest {
 
-	public TestLongSubject() {
+	public LongSubjectTest() {
 	}
 
 	@BeforeClass
@@ -54,7 +53,7 @@ public class TestLongSubject {
 
 		ProblemCatalog problemCatalog = new ProblemCatalog();
 		ProblemDetector detector = new LongSubject(problemCatalog);
-		Map<String, Double> results = new HashMap<>();
+		FieldCounter<Double> results = new FieldCounter<>();
 
 		detector.update(cache, results);
 		assertEquals((Double)1.0, (Double)results.get("LongSubject"));

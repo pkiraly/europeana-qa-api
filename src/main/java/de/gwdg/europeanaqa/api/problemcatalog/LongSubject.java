@@ -1,5 +1,6 @@
 package de.gwdg.europeanaqa.api.problemcatalog;
 
+import de.gwdg.metadataqa.api.counter.FieldCounter;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.problemcatalog.ProblemCatalog;
@@ -7,13 +8,13 @@ import de.gwdg.metadataqa.api.problemcatalog.ProblemDetector;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * See for example:
  * http://www.europeana.eu/portal/record/07602/5CFC6E149961A1630BAD5C65CE3A683DEB6285A0.json
+ *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
 public class LongSubject extends ProblemDetector implements Serializable {
@@ -30,14 +31,14 @@ public class LongSubject extends ProblemDetector implements Serializable {
 	}
 
 	@Override
-	public void update(JsonPathCache cache, Map<String, Double> results) {
+	public void update(JsonPathCache cache, FieldCounter<Double> results) {
 		double value = 0;
 		List<EdmFieldInstance> subjects = cache.get(PATH);
 		if (subjects != null && !subjects.isEmpty()) {
 			if (subjects.size() > 0) {
 				for (EdmFieldInstance subject : subjects) {
 					if (StringUtils.isNotBlank(subject.getValue())
-							&& subject.getValue().length() > MAX_LENGTH) {
+							  && subject.getValue().length() > MAX_LENGTH) {
 						value += 1;
 					}
 				}
@@ -45,4 +46,10 @@ public class LongSubject extends ProblemDetector implements Serializable {
 		}
 		results.put(NAME, value);
 	}
+
+	@Override
+	public String getHeader() {
+		return NAME;
+	}
+
 }

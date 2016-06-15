@@ -1,13 +1,12 @@
 package de.gwdg.europeanaqa.api.problemcatalog;
 
-import de.gwdg.europeanaqa.api.TestUtils;
+import de.gwdg.metadataqa.api.counter.FieldCounter;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.problemcatalog.ProblemCatalog;
 import de.gwdg.metadataqa.api.problemcatalog.ProblemDetector;
+import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -19,9 +18,9 @@ import static org.junit.Assert.*;
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
-public class TestSameTitleAndDescription {
+public class SameTitleAndDescriptionTest {
 
-	public TestSameTitleAndDescription() {
+	public SameTitleAndDescriptionTest() {
 	}
 
 	@BeforeClass
@@ -42,12 +41,12 @@ public class TestSameTitleAndDescription {
 
 	@Test
 	public void hello() throws IOException, URISyntaxException {
-		String jsonString = TestUtils.readFirstLine("problem-catalog/same-title-and-description.json");
+		String jsonString = FileUtils.readFirstLine("problem-catalog/same-title-and-description.json");
 		JsonPathCache cache = new JsonPathCache(jsonString);
 
 		ProblemCatalog problemCatalog = new ProblemCatalog();
 		ProblemDetector detector = new TitleAndDescriptionAreSame(problemCatalog);
-		Map<String, Double> results = new HashMap<>();
+		FieldCounter<Double> results = new FieldCounter<>();
 
 		detector.update(cache, results);
 		assertEquals((Double)1.0, (Double)results.get("TitleAndDescriptionAreSame"));
