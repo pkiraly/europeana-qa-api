@@ -16,6 +16,8 @@ import java.util.List;
 public class EdmFieldExtractor extends FieldExtractor {
 
 	private static final String ID_PATH = "$.identifier";
+	// private static final String ID_PATH = "$.['edm:ProvidedCHO'][0]['@about']";
+
 	private static final String DATA_PROVIDER_PATH = "$.['ore:Aggregation'][0]['edm:dataProvider'][0]";
 	private static final String DATASET_PATH = "$.sets[0]";
 	private static final String DATA_PROVIDER = "dataProvider";
@@ -29,14 +31,22 @@ public class EdmFieldExtractor extends FieldExtractor {
 	public void measure(JsonPathCache cache) throws InvalidJsonException {
 		super.measure(cache);
 
-		List<EdmFieldInstance> providers = cache.get(DATA_PROVIDER_PATH);
 		List<EdmFieldInstance> datasets = cache.get(DATASET_PATH);
+		List<EdmFieldInstance> providers = cache.get(DATA_PROVIDER_PATH);
 		if (abbreviate) {
 			resultMap.put(DATASET, getDatasetCode(datasets.get(0).getValue()));
-			resultMap.put(DATA_PROVIDER, getDataProviderCode(providers.get(0).getValue()));
+			if (providers == null || providers.size() == 0) {
+				resultMap.put(DATA_PROVIDER, "null");
+			} else {
+				resultMap.put(DATA_PROVIDER, getDataProviderCode(providers.get(0).getValue()));
+			}
 		} else {
 			resultMap.put(DATASET, datasets.get(0).getValue());
-			resultMap.put(DATA_PROVIDER, providers.get(0).getValue());
+			if (providers == null || providers.size() == 0) {
+				resultMap.put(DATA_PROVIDER, "null");
+			} else {
+				resultMap.put(DATA_PROVIDER, providers.get(0).getValue());
+			}
 		}
 	}
 

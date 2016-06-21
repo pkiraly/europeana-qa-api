@@ -60,8 +60,11 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			fieldExtractor.setDatasetManager(datasetManager);
 		}
 
-		if (runCompleteness) {
+		if (runCompleteness || runFieldExistence || runFieldCardinality) {
 			completenessCalculator = new CompletenessCalculator(schema);
+			completenessCalculator.setCompleteness(runCompleteness);
+			completenessCalculator.setExistence(runFieldExistence);
+			completenessCalculator.setCardinality(runFieldCardinality);
 			completenessCalculator.collectFields(completenessCollectFields);
 			calculators.add(completenessCalculator);
 		}
