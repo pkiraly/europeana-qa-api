@@ -6,6 +6,7 @@ import de.gwdg.europeanaqa.api.abbreviation.EdmDataProviderManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
 import de.gwdg.metadataqa.api.calculator.FieldExtractor;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
+import de.gwdg.metadataqa.api.schema.Schema;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +16,13 @@ import java.util.List;
  */
 public class EdmFieldExtractor extends FieldExtractor {
 
-	private static final String ID_PATH = "$.identifier";
+	// private static final String ID_PATH = "$.identifier";
 	// private static final String ID_PATH = "$.['edm:ProvidedCHO'][0]['@about']";
+	
+	private final static String ILLEGAL_ARGUMENT_TPL = "An EDM-based schema should define path for '%' in the extractable fields.";
 
-	private static final String DATA_PROVIDER_PATH = "$.['ore:Aggregation'][0]['edm:dataProvider'][0]";
-	private static final String DATASET_PATH = "$.sets[0]";
+	// private static final String DATA_PROVIDER_PATH = "$.['ore:Aggregation'][0]['edm:dataProvider'][0]";
+	// private static final String DATASET_PATH = "$.sets[0]";
 	private static final String DATA_PROVIDER = "dataProvider";
 	private static final String DATASET = "dataset";
 
@@ -27,12 +30,25 @@ public class EdmFieldExtractor extends FieldExtractor {
 	private EdmDatasetManager datasetsManager;
 	private boolean abbreviate;
 
+	public EdmFieldExtractor(Schema schema) {
+		super(schema);
+	}
+
 	@Override
 	public void measure(JsonPathCache cache) throws InvalidJsonException {
 		super.measure(cache);
+		if (!schema.getExtractableFields().containsKey(super.FIELD_NAME)) {
+			throw new IllegalArgumentException(String.format(ILLEGAL_ARGUMENT_TPL, super.FIELD_NAME));
+		}
+		if (!schema.getExtractableFields().containsKey(DATASET)) {
+			throw new IllegalArgumentException(String.format(ILLEGAL_ARGUMENT_TPL, DATASET));
+		}
+		if (!schema.getExtractableFields().containsKey(DATA_PROVIDER)) {
+			throw new IllegalArgumentException(String.format(ILLEGAL_ARGUMENT_TPL, DATA_PROVIDER));
+		}
 
-		List<EdmFieldInstance> datasets = cache.get(DATASET_PATH);
-		List<EdmFieldInstance> providers = cache.get(DATA_PROVIDER_PATH);
+		List<EdmFieldInstance> datasets = cache.get(schema.getExtractableFields().get(DATASET));
+		List<EdmFieldInstance> providers = cache.get(schema.getExtractableFields().get(DATA_PROVIDER));
 		if (abbreviate) {
 			resultMap.put(DATASET, getDatasetCode(datasets.get(0).getValue()));
 			if (providers == null || providers.size() == 0) {
@@ -52,7 +68,7 @@ public class EdmFieldExtractor extends FieldExtractor {
 
 	@Override
 	public String getIdPath() {
-		return ID_PATH;
+		return schema.getExtractableFields().get(super.FIELD_NAME);
 	}
 
 	public String getDataProviderCode(String dataProvider) {
@@ -103,9 +119,14 @@ public class EdmFieldExtractor extends FieldExtractor {
 	@Override
 	public List<String> getHeader() {
 		List<String> headers = new ArrayList<>();
+		for (String field : schema.getExtractableFields().keySet()) {
+			headers.add(field);
+		}
+		/*
 		headers.add(super.FIELD_NAME);
 		headers.add(DATASET);
 		headers.add(DATA_PROVIDER);
+		*/
 		return headers;
 	}
 

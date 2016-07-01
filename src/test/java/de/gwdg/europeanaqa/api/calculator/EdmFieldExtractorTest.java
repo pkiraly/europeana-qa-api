@@ -5,6 +5,8 @@ import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
 import de.gwdg.metadataqa.api.counter.Counters;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
+import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
+import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -38,7 +40,8 @@ public class EdmFieldExtractorTest {
 
 	@Before
 	public void setUp() throws URISyntaxException, IOException {
-		calculator = new EdmFieldExtractor();
+		Schema schema = new EdmOaiPmhXmlSchema();
+		calculator = new EdmFieldExtractor(schema);
 		calculator.setDataProviderManager(new EdmDataProviderManager());
 		calculator.setDatasetManager(new EdmDatasetManager());
 		cache = new JsonPathCache<>(FileUtils.readFirstLine("general/test.json"));

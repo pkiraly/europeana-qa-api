@@ -3,19 +3,23 @@ package de.gwdg.europeanaqa.api.calculator;
 import com.jayway.jsonpath.InvalidJsonException;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDataProviderManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
-import de.gwdg.europeanaqa.api.problemcatalog.EmptyStrings;
-import de.gwdg.europeanaqa.api.problemcatalog.LongSubject;
-import de.gwdg.europeanaqa.api.problemcatalog.TitleAndDescriptionAreSame;
 import de.gwdg.metadataqa.api.calculator.CalculatorFacade;
 import de.gwdg.metadataqa.api.calculator.CompletenessCalculator;
 import de.gwdg.metadataqa.api.calculator.LanguageCalculator;
 import de.gwdg.metadataqa.api.calculator.TfIdfCalculator;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
+import de.gwdg.metadataqa.api.problemcatalog.EmptyStrings;
+import de.gwdg.metadataqa.api.problemcatalog.LongSubject;
 import de.gwdg.metadataqa.api.problemcatalog.ProblemCatalog;
+import de.gwdg.metadataqa.api.problemcatalog.TitleAndDescriptionAreSame;
+import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
+import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.schema.EdmSchema;
+import de.gwdg.metadataqa.api.schema.Schema;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,10 +27,25 @@ import java.util.ArrayList;
  */
 public class EdmCalculatorFacade extends CalculatorFacade {
 
+	private static final Logger logger = Logger.getLogger(EdmCalculatorFacade.class.getCanonicalName());
+
+	public enum Formats {
+
+		OAI_PMH_XML("xml"),
+		FULLBEAN("fullbean");
+
+		private final String name;
+
+		private Formats(String name) {
+			this.name = name;
+		}
+	};
+
 	protected EdmFieldExtractor fieldExtractor;
 	private EdmDataProviderManager dataProviderManager;
 	private EdmDatasetManager datasetManager;
 	protected boolean abbreviate = false;
+	protected Formats format = Formats.OAI_PMH_XML;
 
 	public EdmCalculatorFacade() {}
 
@@ -46,12 +65,12 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 	@Override
 	public void configure() {
+		EdmSchema schema = getSchema();
+
 		calculators = new ArrayList<>();
-		fieldExtractor = new EdmFieldExtractor();
+		fieldExtractor = new EdmFieldExtractor(schema);
 		fieldExtractor.abbreviate(abbreviate);
 		calculators.add(fieldExtractor);
-
-		EdmSchema schema = new EdmSchema();
 
 		if (abbreviate) {
 			this.dataProviderManager = new EdmDataProviderManager();
@@ -76,7 +95,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		}
 
 		if (runProblemCatalog) {
-			ProblemCatalog problemCatalog = new ProblemCatalog();
+			ProblemCatalog problemCatalog = new ProblemCatalog(schema);
 			LongSubject longSubject = new LongSubject(problemCatalog);
 			TitleAndDescriptionAreSame titleAndDescriptionAreSame = new TitleAndDescriptionAreSame(problemCatalog);
 			EmptyStrings emptyStrings = new EmptyStrings(problemCatalog);
@@ -113,4 +132,29 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			datasetManager.save(fileName);
 		}
 	}
+
+	public Formats getFormat() {
+		return format;
+	}
+
+	public void setFormat(Formats format) {
+		this.format = format;
+	}
+
+	private EdmSchema getSchema() {
+		EdmSchema schema;
+		if (format == null) {
+			schema = new EdmOaiPmhXmlSchema();
+		} else {
+			switch(format) {
+				case FULLBEAN:
+					schema = new EdmFullBeanSchema(); break;
+				case OAI_PMH_XML:
+				default:
+					schema = new EdmOaiPmhXmlSchema(); break;
+			}
+		}
+		return schema;
+	}
+
 }
