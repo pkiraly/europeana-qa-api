@@ -15,7 +15,6 @@ import de.gwdg.metadataqa.api.problemcatalog.TitleAndDescriptionAreSame;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.schema.EdmSchema;
-import de.gwdg.metadataqa.api.schema.Schema;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -49,16 +48,20 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 	public EdmCalculatorFacade() {}
 
-	public EdmCalculatorFacade(boolean runFieldExistence, boolean runFieldCardinality,
-			boolean runCompleteness, boolean runTfIdf, boolean runProblemCatalog) {
-		super(runFieldExistence, runFieldCardinality, runCompleteness, runTfIdf,
-			runProblemCatalog);
+	public EdmCalculatorFacade(boolean enableFieldExistenceMeasurement, 
+			boolean enableFieldCardinalityMeasurement,
+			boolean enableCompletenessMeasurement, boolean enableTfIdfMeasurement, 
+			boolean enableProblemCatalogMeasurement) {
+		super(enableFieldExistenceMeasurement, enableFieldCardinalityMeasurement, enableCompletenessMeasurement, enableTfIdfMeasurement,
+			enableProblemCatalogMeasurement);
 	}
 
-	public EdmCalculatorFacade(boolean runFieldExistence, boolean runFieldCardinality,
-			boolean runCompleteness, boolean runTfIdf, boolean runProblemCatalog, 
+	public EdmCalculatorFacade(boolean enableFieldExistenceMeasurement, 
+			boolean enableFieldCardinalityMeasurement,
+			boolean enableCompletenessMeasurement, boolean enableTfIdfMeasurement, 
+			boolean enableProblemCatalogMeasurement, 
 			boolean abbreviate) {
-		super(runFieldExistence, runFieldCardinality, runCompleteness, runTfIdf, runProblemCatalog);
+		super(enableFieldExistenceMeasurement, enableFieldCardinalityMeasurement, enableCompletenessMeasurement, enableTfIdfMeasurement, enableProblemCatalogMeasurement);
 		this.abbreviate = abbreviate;
 		changed();
 	}
@@ -79,22 +82,24 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			fieldExtractor.setDatasetManager(datasetManager);
 		}
 
-		if (runCompleteness || runFieldExistence || runFieldCardinality) {
+		if (completenessMeasurementEnabled 
+				|| fieldExistenceMeasurementEnabled 
+				|| fieldCardinalityMeasurementEnabled) {
 			completenessCalculator = new CompletenessCalculator(schema);
-			completenessCalculator.setCompleteness(runCompleteness);
-			completenessCalculator.setExistence(runFieldExistence);
-			completenessCalculator.setCardinality(runFieldCardinality);
+			completenessCalculator.setCompleteness(completenessMeasurementEnabled);
+			completenessCalculator.setExistence(fieldExistenceMeasurementEnabled);
+			completenessCalculator.setCardinality(fieldCardinalityMeasurementEnabled);
 			completenessCalculator.collectFields(completenessCollectFields);
 			calculators.add(completenessCalculator);
 		}
 
-		if (runTfIdf) {
+		if (tfIdfMeasurementEnabled) {
 			tfidfCalculator = new TfIdfCalculator(schema);
 			tfidfCalculator.setDoCollectTerms(collectTfIdfTerms);
 			calculators.add(tfidfCalculator);
 		}
 
-		if (runProblemCatalog) {
+		if (problemCatalogMeasurementEnabled) {
 			ProblemCatalog problemCatalog = new ProblemCatalog(schema);
 			LongSubject longSubject = new LongSubject(problemCatalog);
 			TitleAndDescriptionAreSame titleAndDescriptionAreSame = new TitleAndDescriptionAreSame(problemCatalog);
@@ -102,7 +107,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			calculators.add(problemCatalog);
 		}
 
-		if (runLanguage) {
+		if (languageMeasurementEnabled) {
 			languageCalculator = new LanguageCalculator(schema);
 			calculators.add(languageCalculator);
 		}
