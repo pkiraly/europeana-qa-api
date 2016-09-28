@@ -159,7 +159,6 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 					schema = new EdmOaiPmhXmlSchema(); break;
 			}
 		}
-		logger.info("used schema: " + schema);
 		return schema;
 	}
 
