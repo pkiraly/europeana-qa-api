@@ -6,6 +6,7 @@ import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
 import de.gwdg.metadataqa.api.calculator.CalculatorFacade;
 import de.gwdg.metadataqa.api.calculator.CompletenessCalculator;
 import de.gwdg.metadataqa.api.calculator.LanguageCalculator;
+import de.gwdg.metadataqa.api.calculator.LanguageSaturationCalculator;
 import de.gwdg.metadataqa.api.calculator.TfIdfCalculator;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.problemcatalog.EmptyStrings;
@@ -110,6 +111,11 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		if (languageMeasurementEnabled) {
 			languageCalculator = new LanguageCalculator(schema);
 			calculators.add(languageCalculator);
+		}
+
+		if (languageSaturationMeasurementEnabled) {
+			languageSaturationCalculator = new LanguageSaturationCalculator(schema);
+			calculators.add(languageSaturationCalculator);
 		}
 	}
 
