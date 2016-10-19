@@ -54,6 +54,7 @@ public class EdmFieldExtractorTest {
 	@Test
 	public void testId() throws URISyntaxException, IOException {
 		calculator.measure(cache);
+		assertEquals(3, calculator.getResultMap().size());
 		assertEquals("92062/BibliographicResource_1000126015451",
 			calculator.getResultMap().get(calculator.FIELD_NAME));
 	}
@@ -62,6 +63,7 @@ public class EdmFieldExtractorTest {
 	public void testDataProvider() throws URISyntaxException, IOException {
 
 		calculator.measure(cache);
+		assertEquals(3, calculator.getResultMap().size());
 		assertEquals(
 			"Österreichische Nationalbibliothek - Austrian National Library",
 			calculator.getResultMap().get("dataProvider"));
@@ -74,12 +76,33 @@ public class EdmFieldExtractorTest {
 	@Test
 	public void testDataset() throws URISyntaxException, IOException {
 		calculator.measure(cache);
+		assertEquals(3, calculator.getResultMap().size());
 		assertEquals("92062_Ag_EU_TEL_a0480_Austria", 
 			calculator.getResultMap().get("dataset"));
 
 		calculator.abbreviate(true);
 		calculator.measure(cache);
 		assertEquals("1725", calculator.getResultMap().get("dataset"));
+	}
+
+	@Test
+	public void testIdTruncationIssue() throws URISyntaxException, IOException {
+		cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/issue41-truncatedID.json"));
+		calculator.measure(cache);
+		assertEquals(3, calculator.getResultMap().size());
+
+		assertEquals("9200365/BibliographicResource_3000059507130",
+			calculator.getResultMap().get(calculator.FIELD_NAME));
+
+		assertEquals("National Library of France",
+			calculator.getResultMap().get("dataProvider"));
+
+		assertEquals("9200365_Ag_EU_TEL_a0142_Gallica", 
+			calculator.getResultMap().get("dataset"));
+
+		calculator.abbreviate(true);
+		calculator.measure(cache);
+		assertEquals("1632", calculator.getResultMap().get("dataset"));
 	}
 
 }

@@ -16,13 +16,8 @@ import java.util.List;
  */
 public class EdmFieldExtractor extends FieldExtractor {
 
-	// private static final String ID_PATH = "$.identifier";
-	// private static final String ID_PATH = "$.['edm:ProvidedCHO'][0]['@about']";
-	
 	private final static String ILLEGAL_ARGUMENT_TPL = "An EDM-based schema should define path for '%' in the extractable fields.";
 
-	// private static final String DATA_PROVIDER_PATH = "$.['ore:Aggregation'][0]['edm:dataProvider'][0]";
-	// private static final String DATASET_PATH = "$.sets[0]";
 	private static final String DATA_PROVIDER = "dataProvider";
 	private static final String DATASET = "dataset";
 
@@ -32,11 +27,6 @@ public class EdmFieldExtractor extends FieldExtractor {
 
 	public EdmFieldExtractor(Schema schema) {
 		super(schema);
-	}
-
-	@Override
-	public void measure(JsonPathCache cache) throws InvalidJsonException {
-		super.measure(cache);
 		if (!schema.getExtractableFields().containsKey(super.FIELD_NAME)) {
 			throw new IllegalArgumentException(String.format(ILLEGAL_ARGUMENT_TPL, super.FIELD_NAME));
 		}
@@ -46,6 +36,11 @@ public class EdmFieldExtractor extends FieldExtractor {
 		if (!schema.getExtractableFields().containsKey(DATA_PROVIDER)) {
 			throw new IllegalArgumentException(String.format(ILLEGAL_ARGUMENT_TPL, DATA_PROVIDER));
 		}
+	}
+
+	@Override
+	public void measure(JsonPathCache cache) throws InvalidJsonException {
+		super.measure(cache);
 
 		List<EdmFieldInstance> datasets = cache.get(schema.getExtractableFields().get(DATASET));
 		List<EdmFieldInstance> providers = cache.get(schema.getExtractableFields().get(DATA_PROVIDER));
@@ -113,7 +108,7 @@ public class EdmFieldExtractor extends FieldExtractor {
 
 	@Override
 	public String getCsv(boolean withLabel, boolean compressed) {
-		return resultMap.getList(withLabel, compressed);
+		return resultMap.getList(withLabel, false);  // the extracted fields should never be compressed!
 	}
 
 	@Override
@@ -122,11 +117,6 @@ public class EdmFieldExtractor extends FieldExtractor {
 		for (String field : schema.getExtractableFields().keySet()) {
 			headers.add(field);
 		}
-		/*
-		headers.add(super.FIELD_NAME);
-		headers.add(DATASET);
-		headers.add(DATA_PROVIDER);
-		*/
 		return headers;
 	}
 
