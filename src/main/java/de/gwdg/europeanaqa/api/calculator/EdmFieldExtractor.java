@@ -7,6 +7,7 @@ import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
 import de.gwdg.metadataqa.api.calculator.FieldExtractor;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.Schema;
+import de.gwdg.metadataqa.api.util.CompressionLevel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,8 @@ import java.util.List;
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
 public class EdmFieldExtractor extends FieldExtractor {
+
+	public static final String CALCULATOR_NAME = "edmFieldExtractor";
 
 	private final static String ILLEGAL_ARGUMENT_TPL = "An EDM-based schema should define path for '%' in the extractable fields.";
 
@@ -46,14 +49,14 @@ public class EdmFieldExtractor extends FieldExtractor {
 		List<EdmFieldInstance> providers = cache.get(schema.getExtractableFields().get(DATA_PROVIDER));
 		if (abbreviate) {
 			resultMap.put(DATASET, getDatasetCode(datasets.get(0).getValue()));
-			if (providers == null || providers.size() == 0) {
+			if (providers == null || providers.isEmpty()) {
 				resultMap.put(DATA_PROVIDER, "null");
 			} else {
 				resultMap.put(DATA_PROVIDER, getDataProviderCode(providers.get(0).getValue()));
 			}
 		} else {
 			resultMap.put(DATASET, datasets.get(0).getValue());
-			if (providers == null || providers.size() == 0) {
+			if (providers == null || providers.isEmpty()) {
 				resultMap.put(DATA_PROVIDER, "null");
 			} else {
 				resultMap.put(DATA_PROVIDER, providers.get(0).getValue());
@@ -107,8 +110,8 @@ public class EdmFieldExtractor extends FieldExtractor {
 	}
 
 	@Override
-	public String getCsv(boolean withLabel, boolean compressed) {
-		return resultMap.getList(withLabel, false);  // the extracted fields should never be compressed!
+	public String getCsv(boolean withLabel, CompressionLevel compressionLevel) {
+		return resultMap.getList(withLabel, CompressionLevel.ZERO);  // the extracted fields should never be compressed!
 	}
 
 	@Override
