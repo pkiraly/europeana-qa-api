@@ -115,6 +115,8 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 		if (languageSaturationMeasurementEnabled) {
 			languageSaturationCalculator = new LanguageSaturationCalculator(schema);
+			if (saturationExtendedResult)
+				languageSaturationCalculator.setResultType(LanguageSaturationCalculator.ResultTypes.EXTENDED);
 			calculators.add(languageSaturationCalculator);
 		}
 	}
