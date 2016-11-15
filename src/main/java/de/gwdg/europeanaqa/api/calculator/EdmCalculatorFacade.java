@@ -113,11 +113,11 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			calculators.add(languageCalculator);
 		}
 
-		if (languageSaturationMeasurementEnabled) {
-			languageSaturationCalculator = new MultilingualitySaturationCalculator(schema);
+		if (multilingualSaturationMeasurementEnabled) {
+			multilingualSaturationCalculator = new MultilingualitySaturationCalculator(schema);
 			if (saturationExtendedResult)
-				languageSaturationCalculator.setResultType(MultilingualitySaturationCalculator.ResultTypes.EXTENDED);
-			calculators.add(languageSaturationCalculator);
+				multilingualSaturationCalculator.setResultType(MultilingualitySaturationCalculator.ResultTypes.EXTENDED);
+			calculators.add(multilingualSaturationCalculator);
 		}
 	}
 
