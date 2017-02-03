@@ -51,7 +51,8 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 	public EdmCalculatorFacade(boolean enableFieldExistenceMeasurement, 
 			boolean enableFieldCardinalityMeasurement,
-			boolean enableCompletenessMeasurement, boolean enableTfIdfMeasurement, 
+			boolean enableCompletenessMeasurement, 
+			boolean enableTfIdfMeasurement, 
 			boolean enableProblemCatalogMeasurement) {
 		super(enableFieldExistenceMeasurement, enableFieldCardinalityMeasurement, enableCompletenessMeasurement, enableTfIdfMeasurement,
 			enableProblemCatalogMeasurement);
@@ -91,6 +92,9 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			completenessCalculator.setExistence(fieldExistenceMeasurementEnabled);
 			completenessCalculator.setCardinality(fieldCardinalityMeasurementEnabled);
 			completenessCalculator.collectFields(completenessCollectFields);
+			if (checkSkippableCollections) {
+				completenessCalculator.setSkippedEntryChecker(new EdmSkippedEntryChecker());
+			}
 			calculators.add(completenessCalculator);
 		}
 
