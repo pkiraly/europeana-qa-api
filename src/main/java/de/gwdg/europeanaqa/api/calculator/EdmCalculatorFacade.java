@@ -93,7 +93,9 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			completenessCalculator.setCardinality(fieldCardinalityMeasurementEnabled);
 			completenessCalculator.collectFields(completenessCollectFields);
 			if (checkSkippableCollections) {
-				completenessCalculator.setSkippedEntryChecker(new EdmSkippedEntryChecker());
+				completenessCalculator.setSkippedEntryChecker(
+					new EdmSkippedEntryChecker()
+				);
 			}
 			calculators.add(completenessCalculator);
 		}

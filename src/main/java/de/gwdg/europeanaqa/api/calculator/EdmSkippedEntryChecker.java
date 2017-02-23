@@ -1,6 +1,7 @@
 package de.gwdg.europeanaqa.api.calculator;
 
 import de.gwdg.metadataqa.api.calculator.SkippedEntryChecker;
+import de.gwdg.metadataqa.api.calculator.edm.EnhancementIdExtractor;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.model.XmlFieldInstance;
@@ -15,7 +16,7 @@ public class EdmSkippedEntryChecker implements SkippedEntryChecker, Serializable
 
 	@Override
 	public List<String> getSkippableCollectionIds(JsonPathCache jsonPathCache) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return EnhancementIdExtractor.extractIds(jsonPathCache);
 	}
 
 	@Override
