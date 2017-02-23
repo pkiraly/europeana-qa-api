@@ -4,13 +4,14 @@ import de.gwdg.metadataqa.api.calculator.SkippedEntryChecker;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.model.XmlFieldInstance;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
-public class EdmSkippedEntryChecker implements SkippedEntryChecker {
+public class EdmSkippedEntryChecker implements SkippedEntryChecker, Serializable {
 
 	@Override
 	public List<String> getSkippableCollectionIds(JsonPathCache jsonPathCache) {
