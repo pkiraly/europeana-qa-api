@@ -123,6 +123,11 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			multilingualSaturationCalculator = new MultilingualitySaturationCalculator(schema);
 			if (saturationExtendedResult)
 				multilingualSaturationCalculator.setResultType(MultilingualitySaturationCalculator.ResultTypes.EXTENDED);
+			if (checkSkippableCollections) {
+				multilingualSaturationCalculator.setSkippedEntryChecker(
+					new EdmSkippedEntryChecker()
+				);
+			}
 			calculators.add(multilingualSaturationCalculator);
 		}
 	}
