@@ -126,7 +126,8 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 			}
 		}
 		if (register.getUnlinkedEntities().size() > 0) {
-			LOGGER.log(Level.WARNING, "orphaned entities: {0}", StringUtils.join(register.getUnlinkedEntities(), ", "));
+			String id = getId(cache);
+			LOGGER.warning(String.format("%s has orphaned entities: %s", id, StringUtils.join(register.getUnlinkedEntities(), ", ")));
 		}
 		resultMap.put("orphanedEntities", register.getUnlinkedEntities().size());
 		resultMap.put("brokenProviderLinks", providerProxyLinks.size());
@@ -191,6 +192,13 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 			}
 		}
 		return contextualIds;
+	}
+
+	private String getId(JsonPathCache cache) {
+		String path = schema.getPathByLabel("ProvidedCHO/rdf:about").getAbsoluteJsonPath();
+		List<EdmFieldInstance> fieldInstances = cache.get(path);
+		LOGGER.info(fieldInstances.get(0).toString());
+		return fieldInstances.get(0).getValue();
 	}
 
 	@Override
