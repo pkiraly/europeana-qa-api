@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -24,6 +26,8 @@ import org.apache.commons.lang3.StringUtils;
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
 class OrphanedEntityCalculator implements Calculator, Serializable {
+
+	private static final Logger LOGGER = Logger.getLogger(OrphanedEntityCalculator.class.getCanonicalName());
 
 	public static final String CALCULATOR_NAME = "orphanedEntityCalculator";
 
@@ -87,15 +91,12 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 		resultMap = new FieldCounter<>();
 
 		LinkRegister register = new LinkRegister();
-		// "Proxy",
 		Map<String, EntityType> contextualIds = getContextualIds(cache);
 		register.putAll(new ArrayList(contextualIds.keySet()), LinkRegister.LinkingType.NONE);
-		// System.err.println("contextualIds: " + StringUtils.join(contextualIds, ", "));
 
 		List<String> removables;
 
 		List<String> providerProxyLinks = getProxyLinks(cache);
-		System.err.println("providerProxyLinks: " + StringUtils.join(providerProxyLinks, ", "));
 		removables = new ArrayList<>();
 		for (String uri : providerProxyLinks) {
 			if (register.exists(uri)) {
@@ -108,7 +109,6 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 		providerProxyLinks.removeAll(removables);
 
 		List<String> europeanaProxyLinks = EnhancementIdExtractor.extractIds(cache);
-		// System.err.println("europeanaProxyLinks: " + StringUtils.join(europeanaProxyLinks, ", "));
 		removables = new ArrayList<>();
 		for (String uri : europeanaProxyLinks) {
 			if (register.exists(uri)) {
@@ -126,7 +126,7 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 			}
 		}
 		if (register.getUnlinkedEntities().size() > 0) {
-			System.err.println("orphaned entities: " + StringUtils.join(register.getUnlinkedEntities(), ", "));
+			LOGGER.log(Level.WARNING, "orphaned entities: {0}", StringUtils.join(register.getUnlinkedEntities(), ", "));
 		}
 		resultMap.put("orphanedEntities", register.getUnlinkedEntities().size());
 		resultMap.put("brokenProviderLinks", providerProxyLinks.size());
@@ -142,7 +142,6 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 				for (EdmFieldInstance fieldInstance : fieldInstances) {
 					if (fieldInstance.isUrl() && fieldInstance.getUrl().equals(uri)) {
 						register.put(uri, LinkRegister.LinkingType.CONTEXTUAL_ENTITY);
-						System.err.println(String.format("%s (%s) is found as %s", uri, type, field));
 						break;
 					}
 				}
@@ -156,7 +155,6 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 			if (branch.getLabel().equals("Proxy")) {
 				Object rawProxy = cache.getFragment(branch.getJsonPath());
 				List<Object> proxies = Converter.jsonObjectToList(rawProxy);
-				// System.err.println("proxy: " + proxy.getClass());
 				for (JsonBranch child : branch.getChildren()) {
 					List<EdmFieldInstance> fieldInstances = cache.get(child.getJsonPath(), child.getJsonPath(), proxies.get(0));
 					if (fieldInstances != null 
@@ -164,9 +162,6 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 						for (EdmFieldInstance fieldInstance : fieldInstances) {
 							if (fieldInstance.isUrl()) {
 								proxyLinks.add(fieldInstance.getUrl());
-								System.err.println(child.getLabel() 
-									  + ": " 
-									  + fieldInstance.toString());
 							}
 						}
 					}

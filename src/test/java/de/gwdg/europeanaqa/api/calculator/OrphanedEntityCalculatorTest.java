@@ -86,11 +86,9 @@ public class OrphanedEntityCalculatorTest {
 
 	@Test
 	public void testissue8() throws URISyntaxException, IOException {
-		System.err.println("---testissue8---");
 		cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/issue8-multiple-same-languages.json"));
 		OrphanedEntityCalculator calculator = new OrphanedEntityCalculator(schema);
 		calculator.measure(cache);
-		System.err.println("---/testissue8---");
 		assertEquals("2,0,0", calculator.getCsv(false, CompressionLevel.NORMAL));
 	}
 }
