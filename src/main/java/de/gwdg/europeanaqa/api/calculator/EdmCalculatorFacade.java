@@ -45,6 +45,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 	private EdmDataProviderManager dataProviderManager;
 	private EdmDatasetManager datasetManager;
 	protected boolean abbreviate = false;
+	protected boolean orphanedEntityEnabled = false;
 	protected Formats format = Formats.OAI_PMH_XML;
 
 	public EdmCalculatorFacade() {}
@@ -130,6 +131,11 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			}
 			calculators.add(multilingualSaturationCalculator);
 		}
+
+		if (orphanedEntityEnabled) {
+			OrphanedEntityCalculator orphanedEntityCalculator = new OrphanedEntityCalculator(schema);
+			calculators.add(orphanedEntityCalculator);
+		}
 	}
 
 	@Override
@@ -143,6 +149,14 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 	public boolean abbreviate() {
 		return abbreviate;
+	}
+
+	public boolean isOrphanedEntityEnabled() {
+		return orphanedEntityEnabled;
+	}
+
+	public void setOrphanedEntityEnabled(boolean orphanedEntityEnabled) {
+		this.orphanedEntityEnabled = orphanedEntityEnabled;
 	}
 
 	public void saveDataProviders(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
@@ -180,5 +194,4 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		}
 		return schema;
 	}
-
 }
