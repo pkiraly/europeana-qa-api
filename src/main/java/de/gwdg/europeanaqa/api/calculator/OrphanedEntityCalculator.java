@@ -195,10 +195,9 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 	}
 
 	private String getId(JsonPathCache cache) {
-		String path = schema.getPathByLabel("ProvidedCHO/rdf:about").getAbsoluteJsonPath();
+		String path = schema.getPathByLabel("ProvidedCHO/rdf:about").getAbsoluteJsonPath().replace("[*]", "");
 		List<EdmFieldInstance> fieldInstances = cache.get(path);
-		LOGGER.info(fieldInstances.get(0).toString());
-		return fieldInstances.get(0).getValue();
+		return fieldInstances.get(0).getValue().replace("http://data.europeana.eu/item/", "");
 	}
 
 	@Override
