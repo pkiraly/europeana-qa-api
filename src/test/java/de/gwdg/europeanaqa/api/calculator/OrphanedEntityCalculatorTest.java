@@ -91,4 +91,20 @@ public class OrphanedEntityCalculatorTest {
 		calculator.measure(cache);
 		assertEquals("2,0,0", calculator.getCsv(false, CompressionLevel.NORMAL));
 	}
+
+	@Test
+	public void test92062a() throws URISyntaxException, IOException {
+		cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/orphaned-entities.json"));
+		OrphanedEntityCalculator calculator = new OrphanedEntityCalculator(schema);
+		calculator.measure(cache);
+		assertEquals("2,0,0", calculator.getCsv(false, CompressionLevel.NORMAL));
+	}
+
+	@Test
+	public void test92062b() throws URISyntaxException, IOException {
+		cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/orphaned-entities-2.json"));
+		OrphanedEntityCalculator calculator = new OrphanedEntityCalculator(schema);
+		calculator.measure(cache);
+		assertEquals("3,0,0", calculator.getCsv(false, CompressionLevel.NORMAL));
+	}
 }

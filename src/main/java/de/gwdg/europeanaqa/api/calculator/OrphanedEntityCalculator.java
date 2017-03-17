@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 
@@ -127,7 +126,11 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 		}
 		if (register.getUnlinkedEntities().size() > 0) {
 			String id = getId(cache);
-			LOGGER.warning(String.format("%s has orphaned entities: %s", id, StringUtils.join(register.getUnlinkedEntities(), ", ")));
+			List<String> entities = new ArrayList<>();
+			for (String uri : register.getUnlinkedEntities()) {
+				entities.add(String.format("%s (%s)", uri, contextualIds.get(uri)));
+			}
+			LOGGER.warning(String.format("%s has orphaned entities: %s", id, StringUtils.join(entities, ", ")));
 		}
 		resultMap.put("orphanedEntities", register.getUnlinkedEntities().size());
 		resultMap.put("brokenProviderLinks", providerProxyLinks.size());
@@ -141,9 +144,11 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 			List<EdmFieldInstance> fieldInstances = cache.get(branch.getAbsoluteJsonPath());
 			if (fieldInstances != null) {
 				for (EdmFieldInstance fieldInstance : fieldInstances) {
-					if (fieldInstance.isUrl() && fieldInstance.getUrl().equals(uri)) {
-						register.put(uri, LinkRegister.LinkingType.CONTEXTUAL_ENTITY);
-						break;
+					if (fieldInstance.isUrl()) {
+						if (fieldInstance.getUrl().equals(uri)) {
+							register.put(uri, LinkRegister.LinkingType.CONTEXTUAL_ENTITY);
+							break;
+						}
 					}
 				}
 			}
