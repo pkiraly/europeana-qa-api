@@ -34,7 +34,11 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		AGENT, CONCEPT, PLACE, TIMESPAN
 	}
 
-	private List<String> headers = Arrays.asList("unlinkedEntities", "brokenProviderLinks", "brokenEuropeanaLinks");
+	private List<String> headers = Arrays.asList(
+		"unlinkedEntities", "brokenProviderLinks", "brokenEuropeanaLinks",
+		"providerProxyLinksCount", "providerProxyValuesCount",
+		"europeanaProxyLinksCount", "contextualLinksCount"
+	);
 
 	private static final List<String> technicalFields = Arrays.asList(
 		"Proxy/ore:proxyIn", "Proxy/ore:proxyFor", "Proxy/rdf:about"
