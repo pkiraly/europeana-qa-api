@@ -36,6 +36,7 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 
 	private List<String> headers = Arrays.asList(
 		"unlinkedEntities", "brokenProviderLinks", "brokenEuropeanaLinks",
+		"contextualEntityCount",
 		"providerProxyLinksCount", "providerProxyValuesCount",
 		"europeanaProxyLinksCount", "contextualLinksCount"
 	);
@@ -96,6 +97,7 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 
 		LinkRegister register = new LinkRegister();
 		Map<String, EntityType> contextualIds = getContextualIds(cache);
+		int contextualEntityCount = contextualIds.size();
 		register.putAll(new ArrayList(contextualIds.keySet()), LinkRegister.LinkingType.NONE);
 
 		List<String> removables;
@@ -129,6 +131,7 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		resultMap.put("orphanedEntities", contextualIds.size());
 		resultMap.put("brokenProviderLinks", providerProxyLinks.size());
 		resultMap.put("brokenEuropeanaLinks", europeanaProxyLinks.size());
+		resultMap.put("contextualEntityCount", contextualEntityCount);
 		resultMap.put("providerProxyLinksCount", providerProxyLinksCount);
 		resultMap.put("providerProxyValuesCount", providerProxyValuesCount);
 		resultMap.put("europeanaProxyLinksCount", europeanaProxyLinksCount);
