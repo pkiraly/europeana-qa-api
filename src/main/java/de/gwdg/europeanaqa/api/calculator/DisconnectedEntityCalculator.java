@@ -99,35 +99,19 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		List<String> providerProxyValues = new ArrayList<>();
 
 		extractProviderProxyLinksAndValues(cache, providerProxyLinks, providerProxyValues);
+		int providerProxyLinksCount = providerProxyLinks.size();
+		int providerProxyValuesCount = providerProxyValues.size();
 		List<String> europeanaProxyLinks = EnhancementIdExtractor.extractIds(cache);
+		int europeanaProxyLinksCount = europeanaProxyLinks.size();
 
 		checkContextualIDsInProviderProxy(contextualIds, providerProxyLinks, providerProxyValues);
+		providerProxyLinksCount -= providerProxyLinks.size();
+		providerProxyValuesCount -= providerProxyValues.size();
 		checkContextualIDsInEuropeanaProxy(contextualIds, europeanaProxyLinks);
+		europeanaProxyLinksCount -= europeanaProxyLinks.size();
+		int contextualLinksCount = contextualIds.size();
 		checkContextualIDsInEntities(contextualIds, cache, register);
-
-		/*
-		removables = new ArrayList<>();
-		for (String uri : providerProxyLinks) {
-			if (register.exists(uri)) {
-				register.put(uri, LinkRegister.LinkingType.PROVIDER_PROXY);
-				removables.add(uri);
-			} else {
-				// System.err.println(String.format("URI %s is not a valid entity's URI", uri));
-			}
-		}
-		providerProxyLinks.removeAll(removables);
-
-		removables = new ArrayList<>();
-		for (String uri : europeanaProxyLinks) {
-			if (register.exists(uri)) {
-				register.put(uri, LinkRegister.LinkingType.EUROPEANA_PROXY);
-				removables.add(uri);
-			} else {
-				// System.err.println(String.format("URI %s is not a valid entity's URI", uri));
-			}
-		}
-		europeanaProxyLinks.removeAll(removables);
-		*/
+		contextualLinksCount -= contextualIds.size();
 
 		if (contextualIds.size() > 0) {
 			String id = getId(cache);
@@ -141,6 +125,10 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		resultMap.put("orphanedEntities", contextualIds.size());
 		resultMap.put("brokenProviderLinks", providerProxyLinks.size());
 		resultMap.put("brokenEuropeanaLinks", europeanaProxyLinks.size());
+		resultMap.put("providerProxyLinksCount", providerProxyLinksCount);
+		resultMap.put("providerProxyValuesCount", providerProxyValuesCount);
+		resultMap.put("europeanaProxyLinksCount", europeanaProxyLinksCount);
+		resultMap.put("contextualLinksCount", contextualLinksCount);
 	}
 
 	private boolean checkInternalProxyLinks(JsonPathCache cache, 
@@ -247,7 +235,8 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		}
 	}
 
-	private void checkContextualIDsInEntities(Map<String, EntityType> contextualIds, JsonPathCache cache, LinkRegister register) {
+	private void checkContextualIDsInEntities(Map<String, 
+			EntityType> contextualIds, JsonPathCache cache, LinkRegister register) {
 		List<String> removables;
 		if (contextualIds.size() > 0) {
 			removables = new ArrayList<>();
