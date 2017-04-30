@@ -103,6 +103,7 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 
 		checkContextualIDsInProviderProxy(contextualIds, providerProxyLinks, providerProxyValues);
 		checkContextualIDsInEuropeanaProxy(contextualIds, europeanaProxyLinks);
+		checkContextualIDsInEntities(contextualIds, cache, register);
 
 		/*
 		removables = new ArrayList<>();
@@ -127,18 +128,6 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		}
 		europeanaProxyLinks.removeAll(removables);
 		*/
-
-		if (contextualIds.size() > 0) {
-			removables = new ArrayList<>();
-			for (String uri : contextualIds.keySet()) {
-				if (checkInternalProxyLinks(cache, register, uri, contextualIds.get(uri))) {
-					removables.add(uri);
-				}
-			}
-			for (String removable : removables) {
-				contextualIds.remove(removable);
-			}
-		}
 
 		if (contextualIds.size() > 0) {
 			String id = getId(cache);
@@ -258,6 +247,20 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		}
 	}
 
+	private void checkContextualIDsInEntities(Map<String, EntityType> contextualIds, JsonPathCache cache, LinkRegister register) {
+		List<String> removables;
+		if (contextualIds.size() > 0) {
+			removables = new ArrayList<>();
+			for (String uri : contextualIds.keySet()) {
+				if (checkInternalProxyLinks(cache, register, uri, contextualIds.get(uri))) {
+					removables.add(uri);
+				}
+			}
+			for (String removable : removables) {
+				contextualIds.remove(removable);
+			}
+		}
+	}
 
 	private String getId(JsonPathCache cache) {
 		String path = schema.getPathByLabel("ProvidedCHO/rdf:about").getAbsoluteJsonPath().replace("[*]", "");
