@@ -45,7 +45,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 	private EdmDataProviderManager dataProviderManager;
 	private EdmDatasetManager datasetManager;
 	protected boolean abbreviate = false;
-	protected boolean orphanedEntityMeasurementEnabled = false;
+	protected boolean disconnectedEntityMeasurementEnabled = false;
 	protected Formats format = Formats.OAI_PMH_XML;
 
 	public EdmCalculatorFacade() {}
@@ -132,9 +132,9 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			calculators.add(multilingualSaturationCalculator);
 		}
 
-		if (orphanedEntityMeasurementEnabled) {
-			OrphanedEntityCalculator orphanedEntityCalculator = new OrphanedEntityCalculator(schema);
-			calculators.add(orphanedEntityCalculator);
+		if (disconnectedEntityMeasurementEnabled) {
+			DisconnectedEntityCalculator disconnectedEntityCalculator = new DisconnectedEntityCalculator(schema);
+			calculators.add(disconnectedEntityCalculator);
 		}
 	}
 
@@ -151,12 +151,12 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		return abbreviate;
 	}
 
-	public boolean isOrphanedEntityEnabled() {
-		return orphanedEntityMeasurementEnabled;
+	public boolean isDisconnectedEntityEnabled() {
+		return disconnectedEntityMeasurementEnabled;
 	}
 
-	public void enableOrphanedEntityMeasurement(boolean orphanedEntityMeasurementEnabled) {
-		this.orphanedEntityMeasurementEnabled = orphanedEntityMeasurementEnabled;
+	public void enableDisconnectedEntityMeasurement(boolean disconnectedEntityMeasurementEnabled) {
+		this.disconnectedEntityMeasurementEnabled = disconnectedEntityMeasurementEnabled;
 	}
 
 	public void saveDataProviders(String fileName) throws FileNotFoundException, UnsupportedEncodingException {

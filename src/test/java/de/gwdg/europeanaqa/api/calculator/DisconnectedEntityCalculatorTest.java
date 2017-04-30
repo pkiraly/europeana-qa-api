@@ -19,12 +19,12 @@ import static org.junit.Assert.*;
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
-public class OrphanedEntityCalculatorTest {
+public class DisconnectedEntityCalculatorTest {
 
 	JsonPathCache<EdmFieldInstance> cache;
 	Schema schema;
 
-	public OrphanedEntityCalculatorTest() {
+	public DisconnectedEntityCalculatorTest() {
 	}
 
 	@BeforeClass
@@ -47,7 +47,7 @@ public class OrphanedEntityCalculatorTest {
 	@Test
 	public void testMain() throws URISyntaxException, IOException {
 		cache = new JsonPathCache<>(FileUtils.readFirstLine("general/test.json"));
-		OrphanedEntityCalculator calculator = new OrphanedEntityCalculator(schema);
+		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
 		calculator.measure(cache);
 		assertEquals("0,0,0", calculator.getCsv(false, CompressionLevel.NORMAL));
 	}
@@ -55,7 +55,7 @@ public class OrphanedEntityCalculatorTest {
 	@Test
 	public void testPlace() throws URISyntaxException, IOException {
 		cache = new JsonPathCache<>(FileUtils.readFirstLine("general/test-place.json"));
-		OrphanedEntityCalculator calculator = new OrphanedEntityCalculator(schema);
+		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
 		calculator.measure(cache);
 		assertEquals("0,0,0", calculator.getCsv(false, CompressionLevel.NORMAL));
 	}
@@ -63,7 +63,7 @@ public class OrphanedEntityCalculatorTest {
 	@Test
 	public void testissue41() throws URISyntaxException, IOException {
 		cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/issue41-truncatedID.json"));
-		OrphanedEntityCalculator calculator = new OrphanedEntityCalculator(schema);
+		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
 		calculator.measure(cache);
 		assertEquals("0,0,0", calculator.getCsv(false, CompressionLevel.NORMAL));
 	}
@@ -71,7 +71,7 @@ public class OrphanedEntityCalculatorTest {
 	@Test
 	public void testissue5() throws URISyntaxException, IOException {
 		cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/issue5-array-in-innerarray.json"));
-		OrphanedEntityCalculator calculator = new OrphanedEntityCalculator(schema);
+		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
 		calculator.measure(cache);
 		assertEquals("0,0,0", calculator.getCsv(false, CompressionLevel.NORMAL));
 	}
@@ -79,7 +79,7 @@ public class OrphanedEntityCalculatorTest {
 	@Test
 	public void testissue6() throws URISyntaxException, IOException {
 		cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/issue6-handling-missing-provider.json"));
-		OrphanedEntityCalculator calculator = new OrphanedEntityCalculator(schema);
+		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
 		calculator.measure(cache);
 		assertEquals("0,0,0", calculator.getCsv(false, CompressionLevel.NORMAL));
 	}
@@ -87,15 +87,15 @@ public class OrphanedEntityCalculatorTest {
 	@Test
 	public void testissue8() throws URISyntaxException, IOException {
 		cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/issue8-multiple-same-languages.json"));
-		OrphanedEntityCalculator calculator = new OrphanedEntityCalculator(schema);
+		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
 		calculator.measure(cache);
-		assertEquals("2,0,0", calculator.getCsv(false, CompressionLevel.NORMAL));
+		assertEquals("0,0,0", calculator.getCsv(false, CompressionLevel.NORMAL));
 	}
 
 	@Test
 	public void test92062a() throws URISyntaxException, IOException {
 		cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/orphaned-entities.json"));
-		OrphanedEntityCalculator calculator = new OrphanedEntityCalculator(schema);
+		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
 		calculator.measure(cache);
 		assertEquals("2,0,0", calculator.getCsv(false, CompressionLevel.NORMAL));
 	}
@@ -103,7 +103,7 @@ public class OrphanedEntityCalculatorTest {
 	@Test
 	public void test92062b() throws URISyntaxException, IOException {
 		cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/orphaned-entities-2.json"));
-		OrphanedEntityCalculator calculator = new OrphanedEntityCalculator(schema);
+		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
 		calculator.measure(cache);
 		assertEquals("3,0,0", calculator.getCsv(false, CompressionLevel.NORMAL));
 	}

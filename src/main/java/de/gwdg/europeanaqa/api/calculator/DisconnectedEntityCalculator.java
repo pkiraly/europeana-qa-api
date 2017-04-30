@@ -24,9 +24,9 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
-class OrphanedEntityCalculator implements Calculator, Serializable {
+class DisconnectedEntityCalculator implements Calculator, Serializable {
 
-	private static final Logger LOGGER = Logger.getLogger(OrphanedEntityCalculator.class.getCanonicalName());
+	private static final Logger LOGGER = Logger.getLogger(DisconnectedEntityCalculator.class.getCanonicalName());
 
 	public static final String CALCULATOR_NAME = "orphanedEntityCalculator";
 
@@ -64,8 +64,9 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 			"Agent/edm:hasMet", "Agent/edm:isRelatedTo", "Agent/owl:sameAs"
 		));
 		contextualLinkFields.put(EntityType.CONCEPT, Arrays.asList(
-			"Concept/skos:broader", "Concept/skos:narrower", "Concept/skos:related",
-			"Concept/skos:broadMatch", "Concept/skos:narrowMatch", "Concept/skos:relatedMatch",
+			"Concept/skos:broader", "Concept/skos:narrower",
+			"Concept/skos:related", "Concept/skos:broadMatch",
+			"Concept/skos:narrowMatch", "Concept/skos:relatedMatch",
 			"Concept/skos:exactMatch", "Concept/skos:closeMatch"
 		));
 		contextualLinkFields.put(EntityType.PLACE, Arrays.asList(
@@ -79,7 +80,7 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 
 	protected Schema schema;
 
-	public OrphanedEntityCalculator(Schema schema) {
+	public DisconnectedEntityCalculator(Schema schema) {
 		this.schema = schema;
 	}
 
@@ -94,8 +95,16 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 		register.putAll(new ArrayList(contextualIds.keySet()), LinkRegister.LinkingType.NONE);
 
 		List<String> removables;
+		List<String> providerProxyLinks = new ArrayList<>();
+		List<String> providerProxyValues = new ArrayList<>();
 
-		List<String> providerProxyLinks = getProxyLinks(cache);
+		extractProviderProxyLinksAndValues(cache, providerProxyLinks, providerProxyValues);
+		List<String> europeanaProxyLinks = EnhancementIdExtractor.extractIds(cache);
+
+		checkContextualIDsInProviderProxy(contextualIds, providerProxyLinks, providerProxyValues);
+		checkContextualIDsInEuropeanaProxy(contextualIds, europeanaProxyLinks);
+
+		/*
 		removables = new ArrayList<>();
 		for (String uri : providerProxyLinks) {
 			if (register.exists(uri)) {
@@ -107,7 +116,6 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 		}
 		providerProxyLinks.removeAll(removables);
 
-		List<String> europeanaProxyLinks = EnhancementIdExtractor.extractIds(cache);
 		removables = new ArrayList<>();
 		for (String uri : europeanaProxyLinks) {
 			if (register.exists(uri)) {
@@ -118,26 +126,37 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 			}
 		}
 		europeanaProxyLinks.removeAll(removables);
+		*/
 
-		if (register.getUnlinkedEntities().size() > 0) {
-			for (String uri : register.getUnlinkedEntities()) {
-				checkInternalProxyLinks(cache, register, uri, contextualIds.get(uri));
+		if (contextualIds.size() > 0) {
+			removables = new ArrayList<>();
+			for (String uri : contextualIds.keySet()) {
+				if (checkInternalProxyLinks(cache, register, uri, contextualIds.get(uri))) {
+					removables.add(uri);
+				}
+			}
+			for (String removable : removables) {
+				contextualIds.remove(removable);
 			}
 		}
-		if (register.getUnlinkedEntities().size() > 0) {
+
+		if (contextualIds.size() > 0) {
 			String id = getId(cache);
 			List<String> entities = new ArrayList<>();
-			for (String uri : register.getUnlinkedEntities()) {
+			for (String uri : contextualIds.keySet()) {
 				entities.add(String.format("%s (%s)", uri, contextualIds.get(uri)));
 			}
 			LOGGER.warning(String.format("%s has orphaned entities: %s", id, StringUtils.join(entities, ", ")));
 		}
-		resultMap.put("orphanedEntities", register.getUnlinkedEntities().size());
+
+		resultMap.put("orphanedEntities", contextualIds.size());
 		resultMap.put("brokenProviderLinks", providerProxyLinks.size());
 		resultMap.put("brokenEuropeanaLinks", europeanaProxyLinks.size());
 	}
 
-	private void checkInternalProxyLinks(JsonPathCache cache, LinkRegister register, String uri, EntityType type) {
+	private boolean checkInternalProxyLinks(JsonPathCache cache, 
+			LinkRegister register, String uri, EntityType type) {
+		boolean found = false;
 		List<String> paths = contextualLinkFields.get(type);
 		for (String field : paths) {
 			JsonBranch branch = schema.getPathByLabel(field);
@@ -147,34 +166,42 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 					if (fieldInstance.isUrl()) {
 						if (fieldInstance.getUrl().equals(uri)) {
 							register.put(uri, LinkRegister.LinkingType.CONTEXTUAL_ENTITY);
+							found = true;
 							break;
 						}
 					}
 				}
 			}
 		}
+		return found;
 	}
 
-	private List<String> getProxyLinks(JsonPathCache cache) {
-		List<String> proxyLinks = new ArrayList<>();
+	private void extractProviderProxyLinksAndValues(JsonPathCache cache,
+			  List<String> providerProxyLinks,
+			  List<String> providerProxyValues) {
 		for (JsonBranch branch : schema.getPaths()) {
 			if (branch.getLabel().equals("Proxy")) {
 				Object rawProxy = cache.getFragment(branch.getJsonPath());
 				List<Object> proxies = Converter.jsonObjectToList(rawProxy);
 				for (JsonBranch child : branch.getChildren()) {
+					if (!isEnrichableField(child))
+						continue;
 					List<EdmFieldInstance> fieldInstances = cache.get(child.getJsonPath(), child.getJsonPath(), proxies.get(0));
-					if (fieldInstances != null 
-					    && enrichableFields.contains(child.getLabel())) {
-						for (EdmFieldInstance fieldInstance : fieldInstances) {
-							if (fieldInstance.isUrl()) {
-								proxyLinks.add(fieldInstance.getUrl());
-							}
-						}
+					if (fieldInstances == null)
+						continue;
+					for (EdmFieldInstance fieldInstance : fieldInstances) {
+						if (fieldInstance.isUrl())
+							providerProxyLinks.add(fieldInstance.getUrl());
+						else if (fieldInstance.hasValue())
+							providerProxyValues.add(fieldInstance.getValue());
 					}
 				}
 			}
 		}
-		return proxyLinks;
+	}
+
+	private static boolean isEnrichableField(JsonBranch child) {
+		return enrichableFields.contains(child.getLabel());
 	}
 
 	private Map<String, EntityType> getContextualIds(JsonPathCache cache) {
@@ -198,6 +225,39 @@ class OrphanedEntityCalculator implements Calculator, Serializable {
 		}
 		return contextualIds;
 	}
+
+	private void checkContextualIDsInProviderProxy(Map<String, EntityType> contextualIds, 
+			List<String> providerProxyLinks, 
+			List<String> providerProxyValues) {
+		List<String> removable = new ArrayList<>();
+		for (String id : contextualIds.keySet()) {
+			if (providerProxyLinks.contains(id)) {
+				removable.add(id);
+				providerProxyLinks.remove(id);
+			} else if (providerProxyValues.contains(id)) {
+				removable.add(id);
+				providerProxyValues.remove(id);
+			}
+		}
+		for (String id : removable) {
+			contextualIds.remove(id);
+		}
+	}
+
+	private void checkContextualIDsInEuropeanaProxy(Map<String, EntityType> contextualIds, 
+			List<String> europeanaProxyLinks) {
+		List<String> removable = new ArrayList<>();
+		for (String id : contextualIds.keySet()) {
+			if (europeanaProxyLinks.contains(id)) {
+				removable.add(id);
+				europeanaProxyLinks.remove(id);
+			}
+		}
+		for (String id : removable) {
+			contextualIds.remove(id);
+		}
+	}
+
 
 	private String getId(JsonPathCache cache) {
 		String path = schema.getPathByLabel("ProvidedCHO/rdf:about").getAbsoluteJsonPath().replace("[*]", "");
