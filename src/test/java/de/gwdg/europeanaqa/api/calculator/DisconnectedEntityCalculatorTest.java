@@ -107,4 +107,12 @@ public class DisconnectedEntityCalculatorTest {
 		calculator.measure(cache);
 		assertEquals("3,0,0,7,0,0,2,2", calculator.getCsv(false, CompressionLevel.NORMAL));
 	}
+
+	@Test
+	public void testE2DD942FC1F8519066C56D1136D99B8093A83727() throws URISyntaxException, IOException {
+		cache = new JsonPathCache<>(FileUtils.readFirstLine("disconnected-entities/E2DD942FC1F8519066C56D1136D99B8093A83727.json"));
+		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
+		calculator.measure(cache);
+		assertEquals("0,0,0,10,0,0,7,3", calculator.getCsv(false, CompressionLevel.NORMAL));
+	}
 }
