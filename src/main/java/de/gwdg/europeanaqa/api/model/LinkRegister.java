@@ -34,7 +34,6 @@ public class LinkRegister {
 		return register.get(uri);
 	}
 
-
 	public List<String> getUnlinkedEntities() {
 		List<String> unlinkedEntities = new ArrayList<>();
 		for (String uri : register.keySet()) {

@@ -29,6 +29,8 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 	private static final Logger logger = Logger.getLogger(EdmCalculatorFacade.class.getCanonicalName());
 
+	protected EdmMultilingualitySaturationCalculator multilingualSaturationCalculator;
+
 	public enum Formats {
 
 		OAI_PMH_XML("xml"),
@@ -121,9 +123,9 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		}
 
 		if (multilingualSaturationMeasurementEnabled) {
-			multilingualSaturationCalculator = new MultilingualitySaturationCalculator(schema);
+			multilingualSaturationCalculator = new EdmMultilingualitySaturationCalculator(schema);
 			if (saturationExtendedResult)
-				multilingualSaturationCalculator.setResultType(MultilingualitySaturationCalculator.ResultTypes.EXTENDED);
+				// multilingualSaturationCalculator.setResultType(MultilingualitySaturationCalculator.ResultTypes.EXTENDED);
 			if (checkSkippableCollections) {
 				multilingualSaturationCalculator.setSkippedEntryChecker(
 					new EdmSkippedEntryChecker()

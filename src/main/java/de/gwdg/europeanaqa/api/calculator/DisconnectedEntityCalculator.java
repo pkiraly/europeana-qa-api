@@ -63,6 +63,14 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		entityBranchLabels.put("Timespan/rdf:about", EntityType.TIMESPAN);
 	}
 
+	public static final Map<EntityType, String> entityTypeToBranchLabels = new HashMap<>();
+	static {
+		entityTypeToBranchLabels.put(EntityType.AGENT, "Agent");
+		entityTypeToBranchLabels.put(EntityType.CONCEPT, "Concept");
+		entityTypeToBranchLabels.put(EntityType.PLACE, "Place");
+		entityTypeToBranchLabels.put(EntityType.TIMESPAN, "Timespan");
+	}
+
 	private static final Map<EntityType, List<String>> contextualLinkFields = new HashMap<>();
 	static {
 		contextualLinkFields.put(EntityType.AGENT, Arrays.asList(
@@ -188,7 +196,7 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		return enrichableFields.contains(child.getLabel());
 	}
 
-	private Map<String, EntityType> getContextualIds(JsonPathCache cache) {
+	public Map<String, EntityType> getContextualIds(JsonPathCache cache) {
 		Map<String, EntityType> contextualIds = new HashMap<>();
 		for (JsonBranch branch : schema.getPaths()) {
 			if (entityBranchLabels.containsKey(branch.getLabel())) {
