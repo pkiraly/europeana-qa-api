@@ -144,7 +144,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 		}
 	}
 
-	private void measureExistingCollection(Object rawJsonFragment, 
+	private void measureExistingCollection(Object rawJsonFragment,
 		  JsonBranch collection,
 		  JsonPathCache cache,
 		  List<String> skippableIds,
@@ -255,11 +255,10 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 			}
 		} else {
 			increase(languages, LanguageSaturationType.STRING);
-			/*
-			LOGGER.warning(
-				String.format("%s is not existing (link from %s)", 
-					jsonPath, field.getAbsoluteJsonPath()));
-			*/
+			String message = String.format(
+				"The %s: %s does not have prefLabels (link from %s)",
+				type.name(), url, field.getAbsoluteJsonPath());
+			LOGGER.warning(message);
 		}
 	}
 
@@ -375,7 +374,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 		return result;
 	}
 
-	private FieldCounter<Double> calculateScore(Map<String, 
+	private FieldCounter<Double> calculateScore(Map<String,
 			List<SortedMap<LanguageSaturationType, Double>>> rawLanguageMap) {
 		double sum, average, normalized;
 		List<Double> sums = new ArrayList<>();
@@ -483,9 +482,9 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 		return contextualIds.keySet().contains(field.getValue());
 	}
 
-	private String selectEntityById(String jsonPath, String url) {
+	public static String selectEntityById(String jsonPath, String url) {
 		return jsonPath
-		        + "[?(@['@about'] == '" + url + "')]"
+		        + "[?(@['@about'] == '" + url.replace("'", "\\'") + "')]"
 		        + "['skos:prefLabel']";
 	}
 

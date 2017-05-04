@@ -52,19 +52,19 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 	public EdmCalculatorFacade() {}
 
-	public EdmCalculatorFacade(boolean enableFieldExistenceMeasurement, 
+	public EdmCalculatorFacade(boolean enableFieldExistenceMeasurement,
 			boolean enableFieldCardinalityMeasurement,
-			boolean enableCompletenessMeasurement, 
-			boolean enableTfIdfMeasurement, 
+			boolean enableCompletenessMeasurement,
+			boolean enableTfIdfMeasurement,
 			boolean enableProblemCatalogMeasurement) {
 		super(enableFieldExistenceMeasurement, enableFieldCardinalityMeasurement, enableCompletenessMeasurement, enableTfIdfMeasurement,
 			enableProblemCatalogMeasurement);
 	}
 
-	public EdmCalculatorFacade(boolean enableFieldExistenceMeasurement, 
+	public EdmCalculatorFacade(boolean enableFieldExistenceMeasurement,
 			boolean enableFieldCardinalityMeasurement,
-			boolean enableCompletenessMeasurement, boolean enableTfIdfMeasurement, 
-			boolean enableProblemCatalogMeasurement, 
+			boolean enableCompletenessMeasurement, boolean enableTfIdfMeasurement,
+			boolean enableProblemCatalogMeasurement,
 			boolean abbreviate) {
 		super(enableFieldExistenceMeasurement, enableFieldCardinalityMeasurement, enableCompletenessMeasurement, enableTfIdfMeasurement, enableProblemCatalogMeasurement);
 		this.abbreviate = abbreviate;
@@ -87,8 +87,8 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			fieldExtractor.setDatasetManager(datasetManager);
 		}
 
-		if (completenessMeasurementEnabled 
-				|| fieldExistenceMeasurementEnabled 
+		if (completenessMeasurementEnabled
+				|| fieldExistenceMeasurementEnabled
 				|| fieldCardinalityMeasurementEnabled) {
 			completenessCalculator = new CompletenessCalculator(schema);
 			completenessCalculator.setCompleteness(completenessMeasurementEnabled);

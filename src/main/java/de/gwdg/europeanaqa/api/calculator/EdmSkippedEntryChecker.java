@@ -21,7 +21,7 @@ public class EdmSkippedEntryChecker implements SkippedEntryChecker, Serializable
 
 	@Override
 	public <T extends XmlFieldInstance> String extractId(T value) {
-		if (value instanceof EdmFieldInstance 
+		if (value instanceof EdmFieldInstance
 			&& ((EdmFieldInstance)value).hasResource())
 		{
 			return ((EdmFieldInstance)value).getResource();

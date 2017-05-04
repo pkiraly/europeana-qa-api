@@ -77,7 +77,7 @@ public class EdmSaturationProperty {
 
 	@Override
 	public String toString() {
-		return "{" 
+		return "{"
 		        + "taggedLiteralsCount=" + taggedLiteralsCount
 		        + ", type=" + type
 		        + ", distinctLanguages=" + distinctLanguages

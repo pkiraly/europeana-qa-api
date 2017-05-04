@@ -79,7 +79,7 @@ public class EdmSaturationMap {
 		if (proxyId == EdmSaturationPropertyContainer.PROVIDER_PROXY)
 			return (double)languagesInProviderProxy
 			       / (double)taggedPropertiesInProviderProxy;
-		return (double)languagesInEuropeanaProxy 
+		return (double)languagesInEuropeanaProxy
 		       / (double)taggedPropertiesInEuropeanaProxy;
 	}
 

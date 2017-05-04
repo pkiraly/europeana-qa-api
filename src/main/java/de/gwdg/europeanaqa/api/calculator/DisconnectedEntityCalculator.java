@@ -146,7 +146,7 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		resultMap.put("contextualLinksCount", contextualLinksCount);
 	}
 
-	private boolean checkInternalProxyLinks(JsonPathCache cache, 
+	private boolean checkInternalProxyLinks(JsonPathCache cache,
 			LinkRegister register, String uri, EntityType type) {
 		boolean found = false;
 		List<String> paths = contextualLinkFields.get(type);
@@ -218,8 +218,8 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		return contextualIds;
 	}
 
-	private void checkContextualIDsInProviderProxy(Map<String, EntityType> contextualIds, 
-			List<String> providerProxyLinks, 
+	private void checkContextualIDsInProviderProxy(Map<String, EntityType> contextualIds,
+			List<String> providerProxyLinks,
 			List<String> providerProxyValues) {
 		List<String> removable = new ArrayList<>();
 		for (String id : contextualIds.keySet()) {
@@ -236,7 +236,7 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		}
 	}
 
-	private void checkContextualIDsInEuropeanaProxy(Map<String, EntityType> contextualIds, 
+	private void checkContextualIDsInEuropeanaProxy(Map<String, EntityType> contextualIds,
 			List<String> europeanaProxyLinks) {
 		List<String> removable = new ArrayList<>();
 		for (String id : contextualIds.keySet()) {
@@ -250,7 +250,7 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		}
 	}
 
-	private void checkContextualIDsInEntities(Map<String, 
+	private void checkContextualIDsInEntities(Map<String,
 			EntityType> contextualIds, JsonPathCache cache, LinkRegister register) {
 		List<String> removables;
 		if (contextualIds.size() > 0) {

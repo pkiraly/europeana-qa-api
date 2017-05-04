@@ -77,7 +77,7 @@ public class EdmFieldExtractorTest {
 	public void testDataset() throws URISyntaxException, IOException {
 		calculator.measure(cache);
 		assertEquals(3, calculator.getResultMap().size());
-		assertEquals("92062_Ag_EU_TEL_a0480_Austria", 
+		assertEquals("92062_Ag_EU_TEL_a0480_Austria",
 			calculator.getResultMap().get("dataset"));
 
 		calculator.abbreviate(true);
@@ -97,7 +97,7 @@ public class EdmFieldExtractorTest {
 		assertEquals("National Library of France",
 			calculator.getResultMap().get("dataProvider"));
 
-		assertEquals("9200365_Ag_EU_TEL_a0142_Gallica", 
+		assertEquals("9200365_Ag_EU_TEL_a0142_Gallica",
 			calculator.getResultMap().get("dataset"));
 
 		calculator.abbreviate(true);

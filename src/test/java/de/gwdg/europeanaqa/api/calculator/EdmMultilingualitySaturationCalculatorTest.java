@@ -62,6 +62,17 @@ public class EdmMultilingualitySaturationCalculatorTest {
 	}
 
 	@Test
+	public void selectEntityById() throws URISyntaxException, IOException {
+		String path = EdmMultilingualitySaturationCalculator.selectEntityById(
+			"$.['skos:Concept']", "http://dbpedia.org/resource/Pierre-Paul_Prud'hon");
+
+		String expected = "$.['skos:Concept']"
+				  + "[?(@['@about'] == 'http://dbpedia.org/resource/Pierre-Paul_Prud\\'hon')]"
+				  + "['skos:prefLabel']";
+		assertEquals(expected, path);
+	}
+
+	@Test
 	public void testMeasure() throws URISyntaxException, IOException {
 		JsonPathCache cache = new JsonPathCache(
 				  FileUtils.readFirstLine("general/test.json"));
