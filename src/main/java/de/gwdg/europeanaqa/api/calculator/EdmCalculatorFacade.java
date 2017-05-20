@@ -16,6 +16,7 @@ import de.gwdg.metadataqa.api.problemcatalog.TitleAndDescriptionAreSame;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.schema.EdmSchema;
+import de.gwdg.metadataqa.api.schema.Schema;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 	@Override
 	public void configure() {
-		EdmSchema schema = getSchema();
+		EdmSchema schema = (EdmSchema)getSchema();
 
 		calculators = new ArrayList<>();
 		fieldExtractor = new EdmFieldExtractor(schema);
@@ -181,7 +182,8 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		this.format = format;
 	}
 
-	private EdmSchema getSchema() {
+	@Override
+	public Schema getSchema() {
 		EdmSchema schema;
 		if (format == null) {
 			schema = new EdmOaiPmhXmlSchema();
