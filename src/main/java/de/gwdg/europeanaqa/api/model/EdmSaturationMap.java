@@ -98,11 +98,11 @@ public class EdmSaturationMap {
 	}
 
 	public double getNumberOfLanguagesPerPropertyInObject() {
-		int taggedLiteralsCount = taggedLiteralsInProviderProxy + taggedLiteralsInEuropeanaProxy;
-		if (taggedLiteralsCount == 0)
+		int taggedPropertiesCount = taggedPropertiesInProviderProxy + taggedPropertiesInEuropeanaProxy;
+		if (taggedPropertiesCount == 0)
 			return 0.0;
 		int languageCount = languagesInProviderProxy + languagesInEuropeanaProxy;
-		return (double)languageCount / (double)taggedLiteralsCount;
+		return (double)languageCount / (double)taggedPropertiesCount;
 	}
 
 	public EdmSaturationProperty createOrGetProperty(String fieldName, int providerNr) {
