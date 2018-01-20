@@ -38,16 +38,20 @@ public class MultiFieldExtractor extends FieldExtractor {
 
 	@Override
 	public void measure(JsonPathCache cache) throws InvalidJsonException {
-		super.measure(cache);
+		// super.measure(cache);
+		resultMap = new FieldCounter<>();
+
 
 		for (Map.Entry<String, String> entry : schema.getExtractableFields().entrySet()) {
-			System.err.printf("%s -> %s\n", entry.getKey(), entry.getValue());
-			List<EdmFieldInstance> edmValues = cache.get(entry.getValue());
+			String key = entry.getKey();
+			String path = entry.getValue();
+			System.err.printf("%s -> %s\n", key, path);
+			List<EdmFieldInstance> edmValues = cache.get(path);
 			List<String> values = new ArrayList<>();
 			for (EdmFieldInstance edmValue : edmValues) {
 				values.add(edmValue.getValue());
 			}
-			resultMap.put(entry.getKey(), values);
+			resultMap.put(key, values);
 		}
 	}
 
