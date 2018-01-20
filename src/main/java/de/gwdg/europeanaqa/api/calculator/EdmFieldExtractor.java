@@ -30,6 +30,7 @@ public class EdmFieldExtractor extends FieldExtractor {
 
 	public EdmFieldExtractor(Schema schema) {
 		super(schema);
+		/*
 		if (!schema.getExtractableFields().containsKey(super.FIELD_NAME)) {
 			throw new IllegalArgumentException(String.format(ILLEGAL_ARGUMENT_TPL, super.FIELD_NAME));
 		}
@@ -39,6 +40,7 @@ public class EdmFieldExtractor extends FieldExtractor {
 		if (!schema.getExtractableFields().containsKey(DATA_PROVIDER)) {
 			throw new IllegalArgumentException(String.format(ILLEGAL_ARGUMENT_TPL, DATA_PROVIDER));
 		}
+		*/
 	}
 
 	@Override
