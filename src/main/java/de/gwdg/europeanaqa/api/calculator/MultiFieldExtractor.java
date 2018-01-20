@@ -42,13 +42,11 @@ public class MultiFieldExtractor implements Calculator, Serializable {
 
 	@Override
 	public void measure(JsonPathCache cache) throws InvalidJsonException {
-		// super.measure(cache);
 		resultMap = new FieldCounter<>();
 
 		for (Map.Entry<String, String> entry : schema.getExtractableFields().entrySet()) {
 			String key = entry.getKey();
 			String path = entry.getValue();
-			System.err.printf("%s -> %s\n", key, path);
 			List<EdmFieldInstance> edmValues = cache.get(path);
 			List<String> values = new ArrayList<>();
 			if (edmValues != null)
@@ -88,5 +86,4 @@ public class MultiFieldExtractor implements Calculator, Serializable {
 	public String getCalculatorName() {
 		return null;
 	}
-
 }
