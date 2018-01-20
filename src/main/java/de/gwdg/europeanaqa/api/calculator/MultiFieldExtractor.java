@@ -41,6 +41,7 @@ public class MultiFieldExtractor extends FieldExtractor {
 		super.measure(cache);
 
 		for (Map.Entry<String, String> entry : schema.getExtractableFields().entrySet()) {
+			System.err.printf("%s -> %s\n", entry.getKey(), entry.getValue());
 			List<EdmFieldInstance> edmValues = cache.get(entry.getValue());
 			List<String> values = new ArrayList<>();
 			for (EdmFieldInstance edmValue : edmValues) {
