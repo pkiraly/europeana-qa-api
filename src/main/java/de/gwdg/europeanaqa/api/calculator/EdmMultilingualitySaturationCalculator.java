@@ -38,6 +38,11 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 
 	private static final Logger LOGGER = Logger.getLogger(EdmMultilingualitySaturationCalculator.class.getCanonicalName());
 	private static final String NA = "n.a.";
+	public static final String FULLBEAN_SCHEMA_PREF_LABEL_SELECTOR =
+		"%s[?(@['about'] == '%s')]['prefLabel']";
+	public static final String OAIXML_SCHEMA_PREF_LABEL_SELECTOR =
+		"%s[?(@['@about'] == '%s')]['skos:prefLabel']";
+	private boolean isEdmFullBeanSchema = false;
 
 	public enum ResultTypes {
 		NORMAL        (0),
@@ -73,6 +78,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 
 	public EdmMultilingualitySaturationCalculator(Schema schema) {
 		this.schema = schema;
+		isEdmFullBeanSchema = schema.getClass().getSimpleName().equals("EdmFullBeanSchema");
 		JsonBranch providerProxy = schema.getPathByLabel("Proxy");
 		JsonBranch europeanaProxy = null;
 		try {
@@ -166,8 +172,10 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 				} else {
 					for (JsonBranch child : collection.getChildren()) {
 						if (!schema.getNoLanguageFields().contains(child.getLabel())) {
-							String address = String.format("%s/%d/%s",
-								  collection.getJsonPath(), i, child.getJsonPath());
+							String address = String.format(
+								"%s/%d/%s",
+								 collection.getJsonPath(), i, child.getJsonPath()
+							);
 							extractLanguageTags(jsonFragment, child, address, cache, rawLanguageSaturationMap, providerNr);
 						}
 					}
@@ -199,9 +207,13 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 			increase(languages, LanguageSaturationType.NA);
 		}
 
-		EdmSaturationProperty property = edmSaturationMap.createOrGetProperty(field.getLabel(), providerNr);
+		EdmSaturationProperty property = edmSaturationMap.createOrGetProperty(
+			field.getLabel(), providerNr
+		);
 		property.setDistinctLanguages(individualLanguages);
-		SortedMap<LanguageSaturationType, Double> best = transformLanguages(languages, individualLanguages.size());
+		SortedMap<LanguageSaturationType, Double> best = transformLanguages(
+			languages, individualLanguages.size()
+		);
 		if (best.size() == 0) {
 			System.err.println(String.format(
 				"NULL in %s",
@@ -210,7 +222,11 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 			property.setTypedCount(LanguageSaturationType.NA, 0);
 		} else {
 			LanguageSaturationType type = best.firstKey();
-			property.setTypedCount(type, best.get(type).intValue());
+			int count = (type == LanguageSaturationType.TRANSLATION
+			            || type == LanguageSaturationType.LANGUAGE)
+				? ((Double)languages.get(LanguageSaturationType.LANGUAGE).getTotal()).intValue()
+				: best.get(type).intValue();
+			property.setTypedCount(type, count);
 		}
 
 		updateMaps(
@@ -300,7 +316,8 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 	}
 
 	private SortedMap<LanguageSaturationType, Double> transformLanguages(
-			Map<LanguageSaturationType, BasicCounter> languages, int languageCount) {
+			Map<LanguageSaturationType, BasicCounter> languages,
+			int languageCount) {
 		SortedMap<LanguageSaturationType, Double> result = new TreeMap<>();
 		for (LanguageSaturationType lang : languages.keySet()) {
 			result.put(lang, languages.get(lang).getTotal());
@@ -315,6 +332,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 				// normalizeTranslationCount(languageCount)
 			);
 		}
+
 		if (languageCount > 1) {
 			result = keepOnlyTheBest(result);
 		}
@@ -482,10 +500,11 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 		return contextualIds.keySet().contains(field.getValue());
 	}
 
-	public static String selectEntityById(String jsonPath, String url) {
-		return jsonPath
-		        + "[?(@['@about'] == '" + url.replace("'", "\\'") + "')]"
-		        + "['skos:prefLabel']";
-	}
+	public String selectEntityById(String jsonPath, String url) {
+		String pattern = isEdmFullBeanSchema
+			? FULLBEAN_SCHEMA_PREF_LABEL_SELECTOR
+			: OAIXML_SCHEMA_PREF_LABEL_SELECTOR;
 
+		return String.format(pattern, jsonPath, url.replace("'", "\\'"));
+	}
 }
