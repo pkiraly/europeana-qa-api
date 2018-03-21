@@ -36,7 +36,7 @@ public class EdmDataProviderManagerTest {
 	public void testSize() {
 		EdmDataProviderManager manager = new EdmDataProviderManager();
 
-		assertEquals(3940, manager.getData().keySet().size());
+		assertEquals(5362, manager.getData().keySet().size());
 	}
 
 	@Test
