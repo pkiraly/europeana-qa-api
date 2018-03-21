@@ -71,6 +71,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 	private SkippedEntitySelector skippedEntitySelector = new SkippedEntitySelector();
 	Map<String, DisconnectedEntityCalculator.EntityType> contextualIds;
 	EdmSaturationMap edmSaturationMap;
+	private String recordId;
 
 	public EdmMultilingualitySaturationCalculator() {
 		// this.recordID = null;
@@ -114,6 +115,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 
 		edmSaturationMap = new EdmSaturationMap();
 		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
+		recordId = cache.getRecordId();
 		contextualIds = calculator.getContextualIds(cache);
 		rawLanguageSaturationMap = new LinkedHashMap<>();
 		measureHierarchicalSchema(cache);
@@ -272,8 +274,8 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 		} else {
 			increase(languages, LanguageSaturationType.STRING);
 			String message = String.format(
-				"The %s: %s does not have prefLabels (link from %s)",
-				type.name(), url, field.getAbsoluteJsonPath());
+				"The %s: %s does not have prefLabels (link from record %s, field %s)",
+				type.name(), url, recordId, field.getLabel());
 			LOGGER.warning(message);
 		}
 	}
