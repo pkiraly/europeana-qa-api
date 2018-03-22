@@ -17,5 +17,4 @@ public class EdmDatasetManager extends AbbreviationManager {
 	public Map<String, Integer> getDatasets() {
 		return data;
 	}
-
 }

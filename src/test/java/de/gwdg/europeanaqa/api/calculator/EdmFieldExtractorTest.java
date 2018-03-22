@@ -104,5 +104,4 @@ public class EdmFieldExtractorTest {
 		calculator.measure(cache);
 		assertEquals("1632", calculator.getResultMap().get("dataset"));
 	}
-
 }

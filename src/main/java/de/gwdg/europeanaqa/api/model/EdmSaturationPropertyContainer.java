@@ -1,8 +1,5 @@
 package de.gwdg.europeanaqa.api.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
  * @author Péter Király <peter.kiraly at gwdg.de>

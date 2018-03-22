@@ -1614,5 +1614,4 @@ public class EdmMultilingualitySaturationCalculatorTest {
 		assertEquals(3.000000, (double)languages.get("DistinctLanguagesInObject"), 0.001);
 		assertEquals(1.333333, (double)languages.get("TaggedLiteralsPerLanguageInObject"), 0.001);
 	}
-
 }

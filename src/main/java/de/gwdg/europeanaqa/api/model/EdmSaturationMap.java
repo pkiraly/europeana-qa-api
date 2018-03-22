@@ -3,13 +3,11 @@ package de.gwdg.europeanaqa.api.model;
 import de.gwdg.metadataqa.api.counter.FieldCounter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -289,5 +287,4 @@ public class EdmSaturationMap {
 			return 0.0;
 		return (double)taggedLiteralsInObject / getDistinctLanguagesInObject();
 	}
-
 }

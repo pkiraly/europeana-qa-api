@@ -51,6 +51,10 @@ public class EdmDataProviderManagerTest {
 		
 		assertTrue(manager.getData().containsKey("Österreichische Nationalbibliothek - Austrian National Library"));
 		assertEquals(2, (int) manager.getData().get("Österreichische Nationalbibliothek - Austrian National Library"));
+
+		String name = manager.searchById(3716);
+		String expected = "Mediterranean Archaeological Research Institute-Vrije Universiteit Brussel /\n          The Cyprus Institute - STARC";
+		assertEquals(expected, name);
 	}
 
 	@Test

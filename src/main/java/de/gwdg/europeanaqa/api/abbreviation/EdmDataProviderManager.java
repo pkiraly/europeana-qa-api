@@ -17,5 +17,4 @@ public class EdmDataProviderManager extends AbbreviationManager {
 	public Map<String, Integer> getDataProviders() {
 		return data;
 	}
-
 }

@@ -10,7 +10,6 @@ import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -123,5 +122,4 @@ public class EdmFieldExtractor extends FieldExtractor {
 		}
 		return headers;
 	}
-
 }
