@@ -2234,4 +2234,4 @@
 2482;2064133_Museumsdorf Cloppenburg - NiedersÃ¤chsische
 2483;2064127_Geomuseum der WWU MÃ¼nster
 2484;2064132_Geomuseum der WWU MÃ¼nster
-
+2485;08701_Ag_EU_BHL
