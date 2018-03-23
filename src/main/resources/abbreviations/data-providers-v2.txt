@@ -4065,7 +4065,7 @@
 4066;Babord-Num
 4067;CIRDÒC-Mediatèca occitana
 4068;Istituto per la Storia del Risorgimento Italiano
-4069;Bibliothèque municipale de Chambéry 
+4069; 	Bibliothèque municipale de Chambéry 
 4070;Médiathèque du Centre national de la danse
 4071;The Árni Magnússon Institute for Icelandic Studies
 4072;Schola Graphidis Art Collection, Hungarian University of Fine Arts - High School of Visual Arts, Budapest
@@ -4494,7 +4494,7 @@
 4495;L-Arkivji Nazzjonali ta' Malta
 4496;Þjóðskjalasafn Íslands
 4497;International Institute of Social History - Amsterdam
-4498;Library of the National Archives, Bucharest
+4498; Library of the National Archives, Bucharest
 4499;National Historical Central Archives, Bucharest
 4500;Kansallisarkisto
 4501;Biblioteca Navarra Digital
@@ -5360,3 +5360,4 @@
 5361;Ολυμπιακό Μουσείο
 5362;Επιμελητήριο Εικαστικών Τεχνών Ελλάδος
 5363;Εφορεία Αρχαιοτήτων Ευβοίας 
+5364; Diözesanarchiv St. Pölten
