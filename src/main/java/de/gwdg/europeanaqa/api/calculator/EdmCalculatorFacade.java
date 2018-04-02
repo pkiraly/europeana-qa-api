@@ -41,6 +41,14 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		private Formats(String name) {
 			this.name = name;
 		}
+
+		public static Formats byCode(String code) {
+			for(Formats format : values())
+				if (format.name.equals(code))
+					return format;
+			return null;
+		}
+
 	};
 
 	protected EdmFieldExtractor fieldExtractor;
