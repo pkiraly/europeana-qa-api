@@ -10,6 +10,7 @@ import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,12 +18,15 @@ import java.util.List;
  */
 public class EdmFieldExtractor extends FieldExtractor {
 
+	private static final Logger logger = Logger.getLogger(EdmFieldExtractor.class.getCanonicalName());
+
 	public static final String CALCULATOR_NAME = "edmFieldExtractor";
 
 	private final static String ILLEGAL_ARGUMENT_TPL = "An EDM-based schema should define path for '%' in the extractable fields.";
 
 	private static final String DATA_PROVIDER = "dataProvider";
 	private static final String DATASET = "dataset";
+
 
 	private EdmDataProviderManager dataProviderManager;
 	private EdmDatasetManager datasetsManager;
@@ -48,7 +52,13 @@ public class EdmFieldExtractor extends FieldExtractor {
 		List<EdmFieldInstance> datasets = cache.get(schema.getExtractableFields().get(DATASET));
 		List<EdmFieldInstance> providers = cache.get(schema.getExtractableFields().get(DATA_PROVIDER));
 		if (abbreviate) {
-			resultMap.put(DATASET, getDatasetCode(datasets.get(0).getValue()));
+			if (datasets == null) {
+				logger.warning("Missing dataset!" + resultMap.get(super.FIELD_NAME));
+				resultMap.put(DATASET, "null");
+			} else {
+				String dataset = datasets.get(0).getValue();
+				resultMap.put(DATASET, getDatasetCode(dataset));
+			}
 			if (providers == null || providers.isEmpty()) {
 				resultMap.put(DATA_PROVIDER, "null");
 			} else {
