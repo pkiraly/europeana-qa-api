@@ -51,14 +51,11 @@ public class MultiFieldExtractor implements Calculator, Serializable {
 		for (Map.Entry<String, String> entry : schema.getExtractableFields().entrySet()) {
 			String key = entry.getKey();
 			String path = entry.getValue();
-			// logger.info(String.format("%s -- %s", key, path));
 			List<EdmFieldInstance> edmValues = cache.get(path);
 			List<String> values = new ArrayList<>();
 			if (edmValues != null)
 				for (EdmFieldInstance edmValue : edmValues)
 					values.add(edmValue.getValue());
-			if (values.size() > 0)
-				logger.info(String.format("%s --> %s", key, StringUtils.join(values, ", ")));
 			resultMap.put(key, values);
 		}
 	}
