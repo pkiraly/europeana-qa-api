@@ -58,7 +58,7 @@ public class MultiFieldExtractor implements Calculator, Serializable {
 				for (EdmFieldInstance edmValue : edmValues)
 					values.add(edmValue.getValue());
 			if (values.size() > 0)
-				logger.info(String.format("--> %s", StringUtils.join(values, ", ")));
+				logger.info(String.format("%s --> %s", key, StringUtils.join(values, ", ")));
 			resultMap.put(key, values);
 		}
 	}
