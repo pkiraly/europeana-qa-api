@@ -9,18 +9,22 @@ import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
 public class MultiFieldExtractor implements Calculator, Serializable {
+
+	private static final Logger logger = Logger.getLogger(MultiFieldExtractor.class.getCanonicalName());
 
 	public static final String CALCULATOR_NAME = "edmFieldExtractor";
 
@@ -47,11 +51,13 @@ public class MultiFieldExtractor implements Calculator, Serializable {
 		for (Map.Entry<String, String> entry : schema.getExtractableFields().entrySet()) {
 			String key = entry.getKey();
 			String path = entry.getValue();
+			logger.info(String.format("%s -- %s", key, path));
 			List<EdmFieldInstance> edmValues = cache.get(path);
 			List<String> values = new ArrayList<>();
 			if (edmValues != null)
 				for (EdmFieldInstance edmValue : edmValues)
 					values.add(edmValue.getValue());
+			logger.info(String.format("--> %s", StringUtils.join(values, ", ")));
 			resultMap.put(key, values);
 		}
 	}
