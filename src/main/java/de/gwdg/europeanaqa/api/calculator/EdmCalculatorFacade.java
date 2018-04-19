@@ -3,10 +3,7 @@ package de.gwdg.europeanaqa.api.calculator;
 import com.jayway.jsonpath.InvalidJsonException;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDataProviderManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
-import de.gwdg.metadataqa.api.calculator.CalculatorFacade;
-import de.gwdg.metadataqa.api.calculator.CompletenessCalculator;
-import de.gwdg.metadataqa.api.calculator.LanguageCalculator;
-import de.gwdg.metadataqa.api.calculator.TfIdfCalculator;
+import de.gwdg.metadataqa.api.calculator.*;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.problemcatalog.EmptyStrings;
 import de.gwdg.metadataqa.api.problemcatalog.LongSubject;
@@ -56,6 +53,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 	private EdmDatasetManager datasetManager;
 	protected boolean abbreviate = false;
 	protected boolean disconnectedEntityMeasurementEnabled = false;
+	protected boolean uniquenessMeasurementEnabled = false;
 	protected Formats format = Formats.OAI_PMH_XML;
 
 	public EdmCalculatorFacade() {}
@@ -146,6 +144,11 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			DisconnectedEntityCalculator disconnectedEntityCalculator = new DisconnectedEntityCalculator(schema);
 			calculators.add(disconnectedEntityCalculator);
 		}
+
+		if (uniquenessMeasurementEnabled) {
+			UniquenessCalculator uniquenessCalculator = new UniquenessCalculator(schema);
+			calculators.add(uniquenessCalculator);
+		}
 	}
 
 	@Override
@@ -167,6 +170,15 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 	public void enableDisconnectedEntityMeasurement(boolean disconnectedEntityMeasurementEnabled) {
 		this.disconnectedEntityMeasurementEnabled = disconnectedEntityMeasurementEnabled;
+	}
+
+
+	public boolean isUniquenessMeasurementEnabled() {
+		return uniquenessMeasurementEnabled;
+	}
+
+	public void enableUniquenessMeasurementEnabled(boolean uniquenessMeasurementEnabled) {
+		this.uniquenessMeasurementEnabled = uniquenessMeasurementEnabled;
 	}
 
 	public void saveDataProviders(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
