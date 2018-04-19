@@ -1,6 +1,8 @@
 package de.gwdg.europeanaqa.api.calculator;
 
 import com.jayway.jsonpath.InvalidJsonException;
+import com.jayway.jsonpath.JsonPath;
+import de.gwdg.metadataqa.api.json.JsonBranch;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDataProviderManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
@@ -51,26 +53,25 @@ public class EdmFieldExtractor extends FieldExtractor {
 
 		List<EdmFieldInstance> datasets = cache.get(schema.getExtractableFields().get(DATASET));
 		List<EdmFieldInstance> providers = cache.get(schema.getExtractableFields().get(DATA_PROVIDER));
+		String dataset = datasets != null   && !datasets.isEmpty()  ? datasets.get(0).getValue()  : null;
+		String provider = providers != null && !providers.isEmpty() ? providers.get(0).getValue() : null;
+		if (provider == null) {
+			JsonBranch branch = schema.getPathByLabel("Aggregation/edm:dataProvider");
+			providers = cache.get(branch.getAbsoluteJsonPath());
+			provider = providers != null && !providers.isEmpty() ? providers.get(0).getValue() : null;
+		}
+		if (dataset == null) {
+			logger.warning("Missing dataset!" + resultMap.get(super.FIELD_NAME));
+		}
+		if (provider == null) {
+			logger.warning("Missing provider!" + resultMap.get(super.FIELD_NAME));
+		}
 		if (abbreviate) {
-			if (datasets == null) {
-				logger.warning("Missing dataset!" + resultMap.get(super.FIELD_NAME));
-				resultMap.put(DATASET, "null");
-			} else {
-				String dataset = datasets.get(0).getValue();
-				resultMap.put(DATASET, getDatasetCode(dataset));
-			}
-			if (providers == null || providers.isEmpty()) {
-				resultMap.put(DATA_PROVIDER, "null");
-			} else {
-				resultMap.put(DATA_PROVIDER, getDataProviderCode(providers.get(0).getValue()));
-			}
+			resultMap.put(DATASET, (dataset == null) ? "null" : getDatasetCode(dataset));
+			resultMap.put(DATA_PROVIDER, (provider == null) ? "null" : getDataProviderCode(provider));
 		} else {
-			resultMap.put(DATASET, datasets.get(0).getValue());
-			if (providers == null || providers.isEmpty()) {
-				resultMap.put(DATA_PROVIDER, "null");
-			} else {
-				resultMap.put(DATA_PROVIDER, providers.get(0).getValue());
-			}
+			resultMap.put(DATASET, dataset);
+			resultMap.put(DATA_PROVIDER, (provider == null) ? "null" : provider);
 		}
 	}
 
