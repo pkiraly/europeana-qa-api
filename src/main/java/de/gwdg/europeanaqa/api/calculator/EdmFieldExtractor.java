@@ -61,10 +61,10 @@ public class EdmFieldExtractor extends FieldExtractor {
 			provider = providers != null && !providers.isEmpty() ? providers.get(0).getValue() : null;
 		}
 		if (dataset == null) {
-			logger.warning("Missing dataset!" + resultMap.get(super.FIELD_NAME));
+			logger.warning("Missing dataset! " + resultMap.get(super.FIELD_NAME) + "\n" + cache.getJsonString());
 		}
 		if (provider == null) {
-			logger.warning("Missing provider!" + resultMap.get(super.FIELD_NAME));
+			logger.warning("Missing provider! " + resultMap.get(super.FIELD_NAME) + "\n" + cache.getJsonString());
 		}
 		if (abbreviate) {
 			resultMap.put(DATASET, (dataset == null) ? "null" : getDatasetCode(dataset));
