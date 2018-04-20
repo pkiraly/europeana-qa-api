@@ -11,6 +11,7 @@ import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -28,7 +29,10 @@ public class EdmFieldExtractor extends FieldExtractor {
 
 	private static final String DATA_PROVIDER = "dataProvider";
 	private static final String DATASET = "dataset";
-
+	private static final List<String> paths = Arrays.asList(
+		"Aggregation/edm:dataProvider",
+		"Aggregation/edm:provider"
+	);
 
 	private EdmDataProviderManager dataProviderManager;
 	private EdmDatasetManager datasetsManager;
@@ -56,9 +60,13 @@ public class EdmFieldExtractor extends FieldExtractor {
 		String dataset = datasets != null   && !datasets.isEmpty()  ? datasets.get(0).getValue()  : null;
 		String provider = providers != null && !providers.isEmpty() ? providers.get(0).getValue() : null;
 		if (provider == null) {
-			JsonBranch branch = schema.getPathByLabel("Aggregation/edm:dataProvider");
-			providers = cache.get(branch.getAbsoluteJsonPath());
-			provider = providers != null && !providers.isEmpty() ? providers.get(0).getValue() : null;
+			for (String path : paths) {
+				JsonBranch branch = schema.getPathByLabel(path);
+				providers = cache.get(branch.getAbsoluteJsonPath());
+				provider = providers != null && !providers.isEmpty() ? providers.get(0).getValue() : null;
+				if (provider != null)
+					break;
+			}
 		}
 		if (dataset == null) {
 			logger.warning("Missing dataset! " + resultMap.get(super.FIELD_NAME) + "\n" + cache.getJsonString());
