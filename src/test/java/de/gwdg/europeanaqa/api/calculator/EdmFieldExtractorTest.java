@@ -5,6 +5,7 @@ import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
 import de.gwdg.metadataqa.api.counter.Counters;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
+import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.FileUtils;
@@ -103,5 +104,30 @@ public class EdmFieldExtractorTest {
 		calculator.abbreviate(true);
 		calculator.measure(cache);
 		assertEquals("1632", calculator.getResultMap().get("dataset"));
+	}
+
+	@Test
+	public void testExtension() throws URISyntaxException, IOException {
+		Schema schema = new EdmFullBeanSchema();
+		calculator = new EdmFieldExtractor(schema);
+		calculator.setDataProviderManager(new EdmDataProviderManager());
+		calculator.setDatasetManager(new EdmDatasetManager());
+		cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/missing-provider.json"));
+		calculator.measure(cache);
+		assertEquals(3, calculator.getResultMap().size());
+
+		assertEquals("/91943/5B14E82B8060CE780394F215B9631E7432068659",
+			calculator.getResultMap().get(calculator.FIELD_NAME));
+
+		assertEquals("Universitat Autònoma de Barcelona",
+			calculator.getResultMap().get("dataProvider"));
+
+		assertEquals("91943_L_Es_BibCatalunya_josepvinyal",
+			calculator.getResultMap().get("dataset"));
+
+		calculator.abbreviate(true);
+		calculator.measure(cache);
+		assertEquals("1354", calculator.getResultMap().get("dataset"));
+		assertEquals("1230", calculator.getResultMap().get("dataProvider"));
 	}
 }

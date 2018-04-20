@@ -62,7 +62,7 @@ public class EdmFieldExtractor extends FieldExtractor {
 		if (provider == null) {
 			for (String path : paths) {
 				JsonBranch branch = schema.getPathByLabel(path);
-				providers = cache.get(branch.getAbsoluteJsonPath());
+				providers = cache.get(branch.getAbsoluteJsonPath().replace("[*]", ""));
 				provider = providers != null && !providers.isEmpty() ? providers.get(0).getValue() : null;
 				if (provider != null)
 					break;
