@@ -35,7 +35,7 @@ public class EdmDatasetManagerTest {
 	@Test
 	public void testSize() {
 		EdmDatasetManager manager = new EdmDatasetManager();
-		assertEquals(2237, manager.getData().keySet().size());
+		assertEquals(2312, manager.getData().keySet().size());
 	}
 
 	@Test
