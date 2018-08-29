@@ -11,7 +11,7 @@ public class EdmDataProviderManager extends AbbreviationManager {
 
 	public EdmDataProviderManager() {
 		super();
-		initialize("abbreviations/data-providers-v2.txt", true);
+		initialize("abbreviations/data-providers-v3.txt", true);
 	}
 
 	public Map<String, Integer> getDataProviders() {

@@ -57,13 +57,13 @@ public class EdmFieldExtractor extends FieldExtractor {
 
 		List<EdmFieldInstance> datasets = cache.get(schema.getExtractableFields().get(DATASET));
 		List<EdmFieldInstance> providers = cache.get(schema.getExtractableFields().get(DATA_PROVIDER));
-		String dataset = datasets != null   && !datasets.isEmpty()  ? datasets.get(0).getValue()  : null;
-		String provider = providers != null && !providers.isEmpty() ? providers.get(0).getValue() : null;
+		String dataset  = (datasets != null && !datasets.isEmpty())   ? datasets.get(0).getValue()  : null;
+		String provider = (providers != null && !providers.isEmpty()) ? providers.get(0).getValue() : null;
 		if (provider == null) {
 			for (String path : paths) {
 				JsonBranch branch = schema.getPathByLabel(path);
 				providers = cache.get(branch.getAbsoluteJsonPath().replace("[*]", ""));
-				provider = providers != null && !providers.isEmpty() ? providers.get(0).getValue() : null;
+				provider = (providers != null && !providers.isEmpty()) ? providers.get(0).getValue() : null;
 				if (provider != null)
 					break;
 			}

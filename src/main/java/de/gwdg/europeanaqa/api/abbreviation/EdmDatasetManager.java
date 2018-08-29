@@ -11,7 +11,7 @@ public class EdmDatasetManager extends AbbreviationManager {
 
 	public EdmDatasetManager() {
 		super();
-		initialize("abbreviations/datasets-v2.txt", true);
+		initialize("abbreviations/datasets-v3.txt", true);
 	}
 
 	public Map<String, Integer> getDatasets() {
