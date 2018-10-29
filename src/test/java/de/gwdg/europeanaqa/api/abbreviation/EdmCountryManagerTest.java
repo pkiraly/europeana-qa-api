@@ -11,6 +11,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class EdmCountryManagerTest {
 
+	private EdmCountryManager manager;
+
 	public EdmCountryManagerTest() {
 	}
 
@@ -24,6 +26,7 @@ public class EdmCountryManagerTest {
 
 	@Before
 	public void setUp() {
+		manager = new EdmCountryManager();
 	}
 
 	@After
@@ -32,33 +35,25 @@ public class EdmCountryManagerTest {
 
 	@Test
 	public void testSize() {
-		EdmCountryManager manager = new EdmCountryManager();
-
-		assertEquals(1, manager.getData().keySet().size());
+		assertEquals(39, manager.getData().keySet().size());
 	}
 
 	@Test
 	public void testGetData() {
-		EdmCountryManager manager = new EdmCountryManager();
+		assertTrue(manager.getData().containsKey("austria"));
+		assertEquals(2, (int) manager.getData().get("austria"));
 
-		assertTrue(manager.getData().containsKey("Austria"));
-		assertEquals(1, (int) manager.getData().get("Austria"));
-
-		String name = manager.searchById(1);
-		String expected = "Austria";
-		assertEquals(expected, name);
+		assertEquals("europe", manager.searchById(1));
+		assertEquals("austria", manager.searchById(2));
 	}
 
 	@Test
 	public void testGetData2() {
-		EdmCountryManager manager = new EdmCountryManager();
-		assertEquals(1, (int) manager.getData().get("Austria"));
+		assertEquals(2, (int) manager.getData().get("austria"));
 	}
 
 	@Test
 	public void testLookup() {
-		EdmCountryManager manager = new EdmCountryManager();
-
-		assertEquals(1, (int) manager.lookup("Austria"));
+		assertEquals(2, (int) manager.lookup("austria"));
 	}
 }

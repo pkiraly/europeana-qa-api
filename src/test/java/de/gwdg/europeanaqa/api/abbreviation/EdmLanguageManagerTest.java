@@ -11,6 +11,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class EdmLanguageManagerTest {
 
+	private EdmLanguageManager manager;
+
 	public EdmLanguageManagerTest() {
 	}
 
@@ -24,6 +26,7 @@ public class EdmLanguageManagerTest {
 
 	@Before
 	public void setUp() {
+		manager = new EdmLanguageManager();
 	}
 
 	@After
@@ -32,33 +35,25 @@ public class EdmLanguageManagerTest {
 
 	@Test
 	public void testSize() {
-		EdmLanguageManager manager = new EdmLanguageManager();
-
-		assertEquals(1, manager.getData().keySet().size());
+		assertEquals(33, manager.getData().keySet().size());
 	}
 
 	@Test
 	public void testGetData() {
-		EdmLanguageManager manager = new EdmLanguageManager();
-
 		assertTrue(manager.getData().containsKey("de"));
-		assertEquals(1, (int) manager.getData().get("de"));
+		assertEquals(6, (int) manager.getData().get("de"));
 
-		String name = manager.searchById(1);
-		String expected = "de";
-		assertEquals(expected, name);
+		assertEquals("mul", manager.searchById(1));
+		assertEquals("de", manager.searchById(6));
 	}
 
 	@Test
 	public void testGetData2() {
-		EdmLanguageManager manager = new EdmLanguageManager();
-		assertEquals(1, (int) manager.getData().get("de"));
+		assertEquals(6, (int) manager.getData().get("de"));
 	}
 
 	@Test
 	public void testLookup() {
-		EdmLanguageManager manager = new EdmLanguageManager();
-
-		assertEquals(1, (int) manager.lookup("de"));
+		assertEquals(6, (int) manager.lookup("de"));
 	}
 }
