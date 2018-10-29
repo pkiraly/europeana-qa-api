@@ -137,10 +137,11 @@ public class EdmFieldExtractorTest {
 	public void testExtended() throws URISyntaxException, IOException {
 		schema.addExtractableField(
 			"country",
-			schema.getPathByLabel("EuropeanaAggregation/edm:country").getAbsoluteJsonPath(0));
+			schema.getPathByLabel("EuropeanaAggregation/edm:country").getAbsoluteJsonPath(0) + "[0]"
+		);
 		schema.addExtractableField(
 			"language",
-			schema.getPathByLabel("EuropeanaAggregation/edm:language").getAbsoluteJsonPath(0)
+			schema.getPathByLabel("EuropeanaAggregation/edm:language").getAbsoluteJsonPath(0) + "[0]"
 		);
 
 		calculator.measure(cache);

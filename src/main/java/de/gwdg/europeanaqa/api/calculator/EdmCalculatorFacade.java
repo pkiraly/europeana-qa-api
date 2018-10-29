@@ -89,12 +89,12 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		if (extendedFieldExtraction) {
 			schema.addExtractableField(
 				"country",
-				schema.getPathByLabel("EuropeanaAggregation/edm:country").getAbsoluteJsonPath(0)
+				schema.getPathByLabel("EuropeanaAggregation/edm:country").getAbsoluteJsonPath(0) + "[0]"
 			);
 			fieldExtractor.addAbbreviationManager("country", new EdmCountryManager());
 			schema.addExtractableField(
 				"language",
-				schema.getPathByLabel("EuropeanaAggregation/edm:language").getAbsoluteJsonPath(0)
+				schema.getPathByLabel("EuropeanaAggregation/edm:language").getAbsoluteJsonPath(0) + "[0]"
 			);
 			fieldExtractor.addAbbreviationManager("language", new EdmCountryManager());
 		}

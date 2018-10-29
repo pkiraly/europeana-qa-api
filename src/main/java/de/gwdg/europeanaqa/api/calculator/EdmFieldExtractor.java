@@ -87,7 +87,11 @@ public class EdmFieldExtractor extends FieldExtractor {
 			   || field.equals(DATASET)
 				|| field.equals(DATA_PROVIDER))
 				continue;
-			String value = extractValueByPath(cache, entry.getValue());
+			String jsonPath = entry.getValue();
+			logger.info(field + " -> jsonPath: " + jsonPath);
+			String value = extractValueByPath(cache, jsonPath);
+			if (value.equals("na"))
+				logger.info(cache.getJsonString());
 			if (abbreviate) {
 				value = abbreviationManagers.get(field).lookup(value).toString();
 			}
