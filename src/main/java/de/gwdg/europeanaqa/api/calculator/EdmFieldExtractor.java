@@ -1,7 +1,7 @@
 package de.gwdg.europeanaqa.api.calculator;
 
 import com.jayway.jsonpath.InvalidJsonException;
-import com.jayway.jsonpath.JsonPath;
+import de.gwdg.metadataqa.api.abbreviation.AbbreviationManager;
 import de.gwdg.metadataqa.api.json.JsonBranch;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDataProviderManager;
@@ -10,9 +10,8 @@ import de.gwdg.metadataqa.api.calculator.FieldExtractor;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -36,6 +35,7 @@ public class EdmFieldExtractor extends FieldExtractor {
 
 	private EdmDataProviderManager dataProviderManager;
 	private EdmDatasetManager datasetsManager;
+	private Map<String, AbbreviationManager> abbreviationManagers;
 	private boolean abbreviate;
 
 	public EdmFieldExtractor(Schema schema) {
@@ -49,20 +49,19 @@ public class EdmFieldExtractor extends FieldExtractor {
 		if (!schema.getExtractableFields().containsKey(DATA_PROVIDER)) {
 			throw new IllegalArgumentException(String.format(ILLEGAL_ARGUMENT_TPL, DATA_PROVIDER));
 		}
+		abbreviationManagers = new HashMap<>();
 	}
 
 	@Override
 	public void measure(JsonPathCache cache) throws InvalidJsonException {
 		super.measure(cache);
 
-		List<EdmFieldInstance> datasets = cache.get(schema.getExtractableFields().get(DATASET));
-		List<EdmFieldInstance> providers = cache.get(schema.getExtractableFields().get(DATA_PROVIDER));
-		String dataset  = (datasets != null && !datasets.isEmpty())   ? datasets.get(0).getValue()  : null;
-		String provider = (providers != null && !providers.isEmpty()) ? providers.get(0).getValue() : null;
+		String dataset  = extractValueByKey(cache, DATASET, null);
+		String provider = extractValueByKey(cache, DATA_PROVIDER, null);
 		if (provider == null) {
 			for (String path : paths) {
 				JsonBranch branch = schema.getPathByLabel(path);
-				providers = cache.get(branch.getAbsoluteJsonPath().replace("[*]", ""));
+				List<EdmFieldInstance> providers = cache.get(branch.getAbsoluteJsonPath().replace("[*]", ""));
 				provider = (providers != null && !providers.isEmpty()) ? providers.get(0).getValue() : null;
 				if (provider != null)
 					break;
@@ -81,6 +80,42 @@ public class EdmFieldExtractor extends FieldExtractor {
 			resultMap.put(DATASET, dataset);
 			resultMap.put(DATA_PROVIDER, (provider == null) ? "null" : provider);
 		}
+
+		for (Map.Entry<String, String> entry : schema.getExtractableFields().entrySet()) {
+			String field = entry.getKey();
+			if (field.equals(super.FIELD_NAME)
+			   || field.equals(DATASET)
+				|| field.equals(DATA_PROVIDER))
+				continue;
+			System.err.println(field);
+			String value = extractValueByPath(cache, entry.getValue());
+			if (abbreviate) {
+				value = abbreviationManagers.get(field).lookup(value).toString();
+			}
+			resultMap.put(field, value);
+		}
+	}
+
+	private String extractValueByKey(JsonPathCache cache, String key, String defaultValue) {
+		if (!schema.getExtractableFields().containsKey(key))
+			return defaultValue;
+
+		String jsonPath = schema.getExtractableFields().get(key);
+		return extractValueByPath(cache, jsonPath, defaultValue);
+	}
+
+	private String extractValueByKey(JsonPathCache cache, String key) {
+		return extractValueByKey(cache, key, "na");
+	}
+
+	private String extractValueByPath(JsonPathCache cache, String jsonPath) {
+		return extractValueByPath(cache, jsonPath, "na");
+	}
+
+	private String extractValueByPath(JsonPathCache cache, String jsonPath, String defaultValue) {
+		List<EdmFieldInstance> instances = cache.get(jsonPath);
+		String value = (instances != null && !instances.isEmpty()) ? instances.get(0).getValue() : defaultValue;
+		return value;
 	}
 
 	@Override
@@ -118,6 +153,10 @@ public class EdmFieldExtractor extends FieldExtractor {
 
 	public void setDatasetManager(EdmDatasetManager datasetsManager) {
 		this.datasetsManager = datasetsManager;
+	}
+
+	public void addAbbreviationManager(String field, AbbreviationManager manager) {
+		abbreviationManagers.put(field, manager);
 	}
 
 	public boolean abbreviate() {

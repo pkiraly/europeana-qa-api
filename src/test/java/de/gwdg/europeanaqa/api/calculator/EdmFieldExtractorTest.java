@@ -1,7 +1,9 @@
 package de.gwdg.europeanaqa.api.calculator;
 
+import de.gwdg.europeanaqa.api.abbreviation.EdmCountryManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDataProviderManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
+import de.gwdg.europeanaqa.api.abbreviation.EdmLanguageManager;
 import de.gwdg.metadataqa.api.counter.Counters;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
@@ -24,9 +26,9 @@ import static org.junit.Assert.*;
  */
 public class EdmFieldExtractorTest {
 
-	Counters counters = new Counters();
 	EdmFieldExtractor calculator;
 	JsonPathCache<EdmFieldInstance> cache;
+	Schema schema;
 
 	public EdmFieldExtractorTest() {
 	}
@@ -41,7 +43,9 @@ public class EdmFieldExtractorTest {
 
 	@Before
 	public void setUp() throws URISyntaxException, IOException {
-		Schema schema = new EdmOaiPmhXmlSchema();
+		System.err.println("setUp");
+		schema = new EdmOaiPmhXmlSchema();
+		System.err.printf("setUp extractables: %d\n", schema.getExtractableFields().size());
 		calculator = new EdmFieldExtractor(schema);
 		calculator.setDataProviderManager(new EdmDataProviderManager());
 		calculator.setDatasetManager(new EdmDatasetManager());
@@ -54,10 +58,13 @@ public class EdmFieldExtractorTest {
 
 	@Test
 	public void testId() throws URISyntaxException, IOException {
+		System.err.println("testId");
+		System.err.printf("testId extractables: %d\n", schema.getExtractableFields().size());
 		calculator.measure(cache);
 		assertEquals(3, calculator.getResultMap().size());
 		assertEquals("92062/BibliographicResource_1000126015451",
 			calculator.getResultMap().get(calculator.FIELD_NAME));
+		System.err.println("/testId");
 	}
 
 	@Test
@@ -129,5 +136,41 @@ public class EdmFieldExtractorTest {
 		calculator.measure(cache);
 		assertEquals("1354", calculator.getResultMap().get("dataset"));
 		assertEquals("1230", calculator.getResultMap().get("dataProvider"));
+	}
+
+	@Test
+	public void testExtended() throws URISyntaxException, IOException {
+		schema.addExtractableField(
+			"country",
+			schema.getPathByLabel("EuropeanaAggregation/edm:country").getAbsoluteJsonPath(0));
+		schema.addExtractableField(
+			"language",
+			schema.getPathByLabel("EuropeanaAggregation/edm:language").getAbsoluteJsonPath(0)
+		);
+
+		calculator.measure(cache);
+		assertEquals(5, calculator.getResultMap().size());
+		assertEquals("Austria", calculator.getResultMap().get("country"));
+		assertEquals("de", calculator.getResultMap().get("language"));
+	}
+
+	@Test
+	public void testExtendedWithAbbreviation() throws URISyntaxException, IOException {
+		schema.addExtractableField(
+			"country",
+			schema.getPathByLabel("EuropeanaAggregation/edm:country").getAbsoluteJsonPath(0));
+		schema.addExtractableField(
+			"language",
+			schema.getPathByLabel("EuropeanaAggregation/edm:language").getAbsoluteJsonPath(0)
+		);
+
+		calculator.abbreviate(true);
+		calculator.addAbbreviationManager("country", new EdmCountryManager());
+		calculator.addAbbreviationManager("language", new EdmLanguageManager());
+
+		calculator.measure(cache);
+		assertEquals(5, calculator.getResultMap().size());
+		assertEquals("1", calculator.getResultMap().get("country"));
+		assertEquals("1", calculator.getResultMap().get("language"));
 	}
 }

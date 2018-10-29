@@ -1,6 +1,7 @@
 package de.gwdg.europeanaqa.api.calculator;
 
 import com.jayway.jsonpath.InvalidJsonException;
+import de.gwdg.europeanaqa.api.abbreviation.EdmCountryManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDataProviderManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
 import de.gwdg.metadataqa.api.calculator.*;
@@ -54,6 +55,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 	protected boolean abbreviate = false;
 	protected boolean disconnectedEntityMeasurementEnabled = false;
 	protected boolean uniquenessMeasurementEnabled = false;
+	protected boolean extendedFieldExtraction = false;
 	protected Formats format = Formats.OAI_PMH_XML;
 
 	public EdmCalculatorFacade() {}
@@ -84,6 +86,19 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		calculators = new ArrayList<>();
 		fieldExtractor = new EdmFieldExtractor(schema);
 		fieldExtractor.abbreviate(abbreviate);
+		if (extendedFieldExtraction) {
+			schema.addExtractableField(
+				"country",
+				schema.getPathByLabel("EuropeanaAggregation/edm:country").getAbsoluteJsonPath(0)
+			);
+			fieldExtractor.addAbbreviationManager("country", new EdmCountryManager());
+			schema.addExtractableField(
+				"language",
+				schema.getPathByLabel("EuropeanaAggregation/edm:language").getAbsoluteJsonPath(0)
+			);
+			fieldExtractor.addAbbreviationManager("language", new EdmCountryManager());
+		}
+
 		calculators.add(fieldExtractor);
 
 		if (abbreviate) {
@@ -199,6 +214,14 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 	public void setFormat(Formats format) {
 		this.format = format;
+	}
+
+	public boolean isExtendedFieldExtraction() {
+		return extendedFieldExtraction;
+	}
+
+	public void setExtendedFieldExtraction(boolean extendedFieldExtraction) {
+		this.extendedFieldExtraction = extendedFieldExtraction;
 	}
 
 	@Override
