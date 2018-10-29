@@ -12,7 +12,7 @@ public class EdmLanguageManager extends AbbreviationManager {
 
 	public EdmLanguageManager() {
 		super();
-		initialize("abbreviations/languages-v1.txt", true);
+		initialize("abbreviations/languages-v1.csv", true);
 	}
 
 	public Map<String, Integer> getData() {

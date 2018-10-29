@@ -12,7 +12,7 @@ public class EdmCountryManager extends AbbreviationManager {
 
 	public EdmCountryManager() {
 		super();
-		initialize("abbreviations/countries-v1.txt", true);
+		initialize("abbreviations/countries-v1.csv", true);
 	}
 
 	public Map<String, Integer> getData() {
