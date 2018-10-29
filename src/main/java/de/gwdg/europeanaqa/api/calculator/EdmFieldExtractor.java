@@ -87,7 +87,6 @@ public class EdmFieldExtractor extends FieldExtractor {
 			   || field.equals(DATASET)
 				|| field.equals(DATA_PROVIDER))
 				continue;
-			System.err.println(field);
 			String value = extractValueByPath(cache, entry.getValue());
 			if (abbreviate) {
 				value = abbreviationManagers.get(field).lookup(value).toString();

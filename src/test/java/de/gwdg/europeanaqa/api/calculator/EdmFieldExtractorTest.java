@@ -43,9 +43,7 @@ public class EdmFieldExtractorTest {
 
 	@Before
 	public void setUp() throws URISyntaxException, IOException {
-		System.err.println("setUp");
 		schema = new EdmOaiPmhXmlSchema();
-		System.err.printf("setUp extractables: %d\n", schema.getExtractableFields().size());
 		calculator = new EdmFieldExtractor(schema);
 		calculator.setDataProviderManager(new EdmDataProviderManager());
 		calculator.setDatasetManager(new EdmDatasetManager());
@@ -58,13 +56,10 @@ public class EdmFieldExtractorTest {
 
 	@Test
 	public void testId() throws URISyntaxException, IOException {
-		System.err.println("testId");
-		System.err.printf("testId extractables: %d\n", schema.getExtractableFields().size());
 		calculator.measure(cache);
 		assertEquals(3, calculator.getResultMap().size());
 		assertEquals("92062/BibliographicResource_1000126015451",
 			calculator.getResultMap().get(calculator.FIELD_NAME));
-		System.err.println("/testId");
 	}
 
 	@Test
