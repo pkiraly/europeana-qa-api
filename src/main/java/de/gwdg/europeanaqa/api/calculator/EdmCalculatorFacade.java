@@ -5,6 +5,7 @@ import com.jayway.jsonpath.InvalidJsonException;
 import de.gwdg.europeanaqa.api.abbreviation.EdmCountryManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDataProviderManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
+import de.gwdg.europeanaqa.api.abbreviation.EdmLanguageManager;
 import de.gwdg.metadataqa.api.calculator.*;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.problemcatalog.EmptyStrings;
@@ -100,7 +101,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 				"language",
 				getJsonPathForExtractor(schema, "EuropeanaAggregation/edm:language", index)
 			);
-			fieldExtractor.addAbbreviationManager("language", new EdmCountryManager());
+			fieldExtractor.addAbbreviationManager("language", new EdmLanguageManager());
 		}
 
 		calculators.add(fieldExtractor);
