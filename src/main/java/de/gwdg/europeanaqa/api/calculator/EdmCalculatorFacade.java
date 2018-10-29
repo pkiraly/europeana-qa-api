@@ -1,6 +1,7 @@
 package de.gwdg.europeanaqa.api.calculator;
 
 import com.jayway.jsonpath.InvalidJsonException;
+
 import de.gwdg.europeanaqa.api.abbreviation.EdmCountryManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDataProviderManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
@@ -14,8 +15,10 @@ import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.schema.EdmSchema;
 import de.gwdg.metadataqa.api.schema.Schema;
+
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -87,14 +90,15 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		fieldExtractor = new EdmFieldExtractor(schema);
 		fieldExtractor.abbreviate(abbreviate);
 		if (extendedFieldExtraction) {
+			int index = format == Formats.FULLBEAN ? -1 : 0;
 			schema.addExtractableField(
 				"country",
-				schema.getPathByLabel("EuropeanaAggregation/edm:country").getAbsoluteJsonPath(0) + "[0]"
+				getJsonPathForExtractor(schema, "EuropeanaAggregation/edm:country", index)
 			);
 			fieldExtractor.addAbbreviationManager("country", new EdmCountryManager());
 			schema.addExtractableField(
 				"language",
-				schema.getPathByLabel("EuropeanaAggregation/edm:language").getAbsoluteJsonPath(0) + "[0]"
+				getJsonPathForExtractor(schema, "EuropeanaAggregation/edm:language", index)
 			);
 			fieldExtractor.addAbbreviationManager("language", new EdmCountryManager());
 		}
@@ -164,6 +168,10 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			UniquenessCalculator uniquenessCalculator = new UniquenessCalculator(schema);
 			calculators.add(uniquenessCalculator);
 		}
+	}
+
+	private String getJsonPathForExtractor(EdmSchema schema, String label, int index) {
+		return schema.getPathByLabel(label).getAbsoluteJsonPath(index) + "[0]";
 	}
 
 	@Override
