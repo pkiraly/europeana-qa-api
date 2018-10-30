@@ -88,7 +88,7 @@ public class EdmFieldExtractor extends FieldExtractor {
 				|| field.equals(DATA_PROVIDER))
 				continue;
 			String jsonPath = entry.getValue();
-			String value = extractValueByPath(cache, jsonPath).toLowerCase();
+			String value = extractValueByPath(cache, jsonPath, "na");
 			if (value.equals("na"))
 				logger.info(cache.getJsonString());
 			if (abbreviate) {
@@ -116,7 +116,9 @@ public class EdmFieldExtractor extends FieldExtractor {
 
 	private String extractValueByPath(JsonPathCache cache, String jsonPath, String defaultValue) {
 		List<EdmFieldInstance> instances = cache.get(jsonPath);
-		String value = (instances != null && !instances.isEmpty()) ? instances.get(0).getValue() : defaultValue;
+		String value = (instances != null && !instances.isEmpty())
+			? instances.get(0).getValue()
+			: defaultValue;
 		return value;
 	}
 

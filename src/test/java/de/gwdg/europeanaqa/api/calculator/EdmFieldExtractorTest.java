@@ -146,7 +146,7 @@ public class EdmFieldExtractorTest {
 
 		calculator.measure(cache);
 		assertEquals(5, calculator.getResultMap().size());
-		assertEquals("austria", calculator.getResultMap().get("country"));
+		assertEquals("Austria", calculator.getResultMap().get("country"));
 		assertEquals("de", calculator.getResultMap().get("language"));
 	}
 
@@ -166,7 +166,7 @@ public class EdmFieldExtractorTest {
 
 		calculator.measure(cache);
 		assertEquals(5, calculator.getResultMap().size());
-		assertEquals("2", calculator.getResultMap().get("country"));
+		assertEquals("47", calculator.getResultMap().get("country"));
 		assertEquals("6", calculator.getResultMap().get("language"));
 	}
 }
