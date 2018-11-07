@@ -2,10 +2,7 @@ package de.gwdg.europeanaqa.api.calculator;
 
 import com.jayway.jsonpath.InvalidJsonException;
 
-import de.gwdg.europeanaqa.api.abbreviation.EdmCountryManager;
-import de.gwdg.europeanaqa.api.abbreviation.EdmDataProviderManager;
-import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
-import de.gwdg.europeanaqa.api.abbreviation.EdmLanguageManager;
+import de.gwdg.europeanaqa.api.abbreviation.*;
 import de.gwdg.metadataqa.api.calculator.*;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.problemcatalog.EmptyStrings;
@@ -92,6 +89,11 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		fieldExtractor.abbreviate(abbreviate);
 		if (extendedFieldExtraction) {
 			int index = format == Formats.FULLBEAN ? -1 : 0;
+			schema.addExtractableField(
+				"provider",
+				getJsonPathForExtractor(schema, "EuropeanaAggregation/edm:provider", index)
+			);
+			fieldExtractor.addAbbreviationManager("provider", new EdmProviderManager());
 			schema.addExtractableField(
 				"country",
 				getJsonPathForExtractor(schema, "EuropeanaAggregation/edm:country", index)
