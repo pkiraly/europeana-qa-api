@@ -69,11 +69,11 @@ public class EdmFieldExtractor extends FieldExtractor {
 			}
 		}
 		if (dataset == null) {
-			logger.warning("Missing dataset! " + resultMap.get(super.FIELD_NAME) + "\n" + cache.getJsonString());
+			logger.warning("Missing dataset! " + resultMap.get(super.FIELD_NAME)); // + "\n" + cache.getJsonString());
 			dataset = "na";
 		}
 		if (provider == null) {
-			logger.warning("Missing provider! " + resultMap.get(super.FIELD_NAME) + "\n" + cache.getJsonString());
+			// logger.warning("Missing provider! " + resultMap.get(super.FIELD_NAME)); // + "\n" + cache.getJsonString());
 			provider = "na";
 		}
 		if (abbreviate) {
