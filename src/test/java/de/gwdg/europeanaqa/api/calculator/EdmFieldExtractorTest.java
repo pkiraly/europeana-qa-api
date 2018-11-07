@@ -121,8 +121,7 @@ public class EdmFieldExtractorTest {
 		assertEquals("/91943/5B14E82B8060CE780394F215B9631E7432068659",
 			calculator.getResultMap().get(calculator.FIELD_NAME));
 
-		assertEquals("Universitat Autònoma de Barcelona",
-			calculator.getResultMap().get("dataProvider"));
+		assertEquals("na", calculator.getResultMap().get("dataProvider"));
 
 		assertEquals("91943_L_Es_BibCatalunya_josepvinyal",
 			calculator.getResultMap().get("dataset"));
@@ -130,7 +129,7 @@ public class EdmFieldExtractorTest {
 		calculator.abbreviate(true);
 		calculator.measure(cache);
 		assertEquals("1354", calculator.getResultMap().get("dataset"));
-		assertEquals("1230", calculator.getResultMap().get("dataProvider"));
+		assertEquals("0", calculator.getResultMap().get("dataProvider"));
 	}
 
 	@Test
