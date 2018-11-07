@@ -10,6 +10,7 @@ import de.gwdg.metadataqa.api.calculator.FieldExtractor;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -29,9 +30,10 @@ public class EdmFieldExtractor extends FieldExtractor {
 	private static final String DATA_PROVIDER = "dataProvider";
 	private static final String DATASET = "dataset";
 	private static final List<String> paths = Arrays.asList(
-		"Aggregation/edm:dataProvider",
-		"Aggregation/edm:provider"
+		"Aggregation/edm:dataProvider"
+		// "Aggregation/edm:provider"
 	);
+	private static Map<String, String> pathCache = new HashMap<>();
 
 	private EdmDataProviderManager dataProviderManager;
 	private EdmDatasetManager datasetsManager;
@@ -60,25 +62,26 @@ public class EdmFieldExtractor extends FieldExtractor {
 		String provider = extractValueByKey(cache, DATA_PROVIDER, null);
 		if (provider == null) {
 			for (String path : paths) {
-				JsonBranch branch = schema.getPathByLabel(path);
-				List<EdmFieldInstance> providers = cache.get(branch.getAbsoluteJsonPath().replace("[*]", ""));
-				provider = (providers != null && !providers.isEmpty()) ? providers.get(0).getValue() : null;
+				String jsonPath = getJsonPath(path);
+				provider = extractValueByPath(cache, jsonPath, null);
 				if (provider != null)
 					break;
 			}
 		}
 		if (dataset == null) {
 			logger.warning("Missing dataset! " + resultMap.get(super.FIELD_NAME) + "\n" + cache.getJsonString());
+			dataset = "na";
 		}
 		if (provider == null) {
 			logger.warning("Missing provider! " + resultMap.get(super.FIELD_NAME) + "\n" + cache.getJsonString());
+			provider = "na";
 		}
 		if (abbreviate) {
-			resultMap.put(DATASET, (dataset == null) ? "null" : getDatasetCode(dataset));
-			resultMap.put(DATA_PROVIDER, (provider == null) ? "null" : getDataProviderCode(provider));
+			resultMap.put(DATASET, getDatasetCode(dataset));
+			resultMap.put(DATA_PROVIDER, getDataProviderCode(provider));
 		} else {
 			resultMap.put(DATASET, dataset);
-			resultMap.put(DATA_PROVIDER, (provider == null) ? "null" : provider);
+			resultMap.put(DATA_PROVIDER, provider);
 		}
 
 		for (Map.Entry<String, String> entry : schema.getExtractableFields().entrySet()) {
@@ -96,6 +99,14 @@ public class EdmFieldExtractor extends FieldExtractor {
 			}
 			resultMap.put(field, value);
 		}
+	}
+
+	private String getJsonPath(String path) {
+		if (!pathCache.containsKey(path)) {
+			JsonBranch branch = schema.getPathByLabel(path);
+			pathCache.put(path, branch.getAbsoluteJsonPath().replace("[*]", ""));
+		}
+		return pathCache.get(path);
 	}
 
 	private String extractValueByKey(JsonPathCache cache, String key, String defaultValue) {

@@ -1,3 +1,4 @@
+0;na
 1;00101_M_PT_Gulbenkian_biblioteca_digital
 2;00501_L_GR_UniPatras_kosmopolis_dc
 3;00718_A_DE_Landesarchiv_ese_1_0000005584

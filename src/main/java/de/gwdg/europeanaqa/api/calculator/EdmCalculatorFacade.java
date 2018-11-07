@@ -91,7 +91,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			int index = format == Formats.FULLBEAN ? -1 : 0;
 			schema.addExtractableField(
 				"provider",
-				getJsonPathForExtractor(schema, "EuropeanaAggregation/edm:provider", index)
+				getJsonPathForExtractor(schema, "Aggregation/edm:provider", index)
 			);
 			fieldExtractor.addAbbreviationManager("provider", new EdmProviderManager());
 			schema.addExtractableField(
