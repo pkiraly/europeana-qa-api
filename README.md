@@ -218,3 +218,6 @@ will produce
 _0:1;en:1
 ```
 because the first Hamlet doesn't have any language code specified, and the second one has `"en"`.
+
+[![Build Status](https://travis-ci.org/pkiraly/europeana-qa-api.svg?branch=master)](https://travis-ci.org/pkiraly/europeana-qa-api)
+[![Coverage Status](https://coveralls.io/repos/github/pkiraly/europeana-qa-api/badge.svg?branch=master)](https://coveralls.io/github/pkiraly/europeana-qa-api?branch=master)
