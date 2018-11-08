@@ -10,7 +10,6 @@ import de.gwdg.metadataqa.api.calculator.FieldExtractor;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -128,7 +127,7 @@ public class EdmFieldExtractor extends FieldExtractor {
 	private String extractValueByPath(JsonPathCache cache, String jsonPath, String defaultValue) {
 		List<EdmFieldInstance> instances = cache.get(jsonPath);
 		String value = (instances != null && !instances.isEmpty())
-			? instances.get(0).getValue()
+			? instances.get(0).getValue().trim()
 			: defaultValue;
 		return value;
 	}

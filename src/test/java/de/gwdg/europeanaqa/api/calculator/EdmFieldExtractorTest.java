@@ -4,7 +4,6 @@ import de.gwdg.europeanaqa.api.abbreviation.EdmCountryManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDataProviderManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmLanguageManager;
-import de.gwdg.metadataqa.api.counter.Counters;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
