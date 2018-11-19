@@ -35,8 +35,7 @@ public class EdmDataProviderManagerTest {
 	@Test
 	public void testSize() {
 		EdmDataProviderManager manager = new EdmDataProviderManager();
-
-		assertEquals(5477, manager.getData().keySet().size());
+		assertEquals(5494, manager.getData().keySet().size());
 	}
 
 	@Test
@@ -60,9 +59,9 @@ public class EdmDataProviderManagerTest {
 	@Test
 	public void testGetDatasets() {
 		EdmDataProviderManager manager = new EdmDataProviderManager();
-		assertEquals(264, (int) manager.getDataProviders().get("Preiser Records; Austria"));
-		assertEquals(1001, (int) manager.getDataProviders().get("Pipeline Music"));
-		assertEquals(2, (int) manager.getDataProviders().get("Österreichische Nationalbibliothek - Austrian National Library"));
+		assertEquals(264, (int) manager.getData().get("Preiser Records; Austria"));
+		assertEquals(1001, (int) manager.getData().get("Pipeline Music"));
+		assertEquals(2, (int) manager.getData().get("Österreichische Nationalbibliothek - Austrian National Library"));
 	}
 
 	@Test

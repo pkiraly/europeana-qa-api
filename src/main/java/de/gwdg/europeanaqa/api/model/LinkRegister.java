@@ -11,34 +11,82 @@ import java.util.Map;
  */
 public class LinkRegister {
 
+	/**
+	 * Linking types enumeration.
+	 */
 	public enum LinkingType {
-		NONE, CONTEXTUAL_ENTITY, PROVIDER_PROXY, EUROPEANA_PROXY
+		/**
+		 * None.
+		 */
+		NONE,
+		/**
+		 * Contextual entity.
+		 */
+		CONTEXTUAL_ENTITY,
+		/**
+		 * Provider proxy.
+		 */
+		PROVIDER_PROXY,
+		/**
+		 * Europeana proxy.
+		 */
+		EUROPEANA_PROXY
 	}
 
+	/**
+	 * The URI register. It contains pairs of URIs and its type.
+	 */
 	private Map<String, LinkingType> register = new HashMap<>();
 
-	public void put(String uri, LinkingType type) {
+	/**
+	 * Put a URI and type pair to register.
+	 * @param uri String The URI
+	 * @param type LinkingType The type of the URI
+	 */
+	public final void put(final String uri, final LinkingType type) {
 		register.put(uri, type);
 	}
 
-	public void putAll(List<String> uris, LinkingType type) {
-		for (String uri : uris)
+	/**
+	 * Put a list of URIs with the same type to register.
+	 * @param uris String The URI
+	 * @param type LinkingType The type of the URI
+	 */
+	public final void putAll(final List<String> uris,
+									 final LinkingType type) {
+		for (String uri : uris) {
 			put(uri, type);
+		}
 	}
 
-	public boolean exists(String uri) {
+	/**
+	 * Does URI exist in the register?
+	 * @param uri String The URI
+	 * @return boolean True if the URI is already registered, otherwise false.
+	 */
+	public final boolean exists(final String uri) {
 		return register.containsKey(uri);
 	}
 
-	public LinkingType get(String uri) {
+	/**
+	 * Returns the link type of a registered URI.
+	 * @param uri String The URI
+	 * @return LinkingType The type of the URI
+	 */
+	public final LinkingType get(final String uri) {
 		return register.get(uri);
 	}
 
-	public List<String> getUnlinkedEntities() {
+	/**
+	 * Get the URIs for which the type is NONE.
+	 * @return List<String> The list of unlinked URIs
+	 */
+	public final List<String> getUnlinkedEntities() {
 		List<String> unlinkedEntities = new ArrayList<>();
 		for (String uri : register.keySet()) {
-			if (register.get(uri).equals(LinkingType.NONE))
+			if (register.get(uri).equals(LinkingType.NONE)) {
 				unlinkedEntities.add(uri);
+			}
 		}
 		return unlinkedEntities;
 	}

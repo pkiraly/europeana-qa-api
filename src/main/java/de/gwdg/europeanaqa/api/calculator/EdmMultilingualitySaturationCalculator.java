@@ -44,9 +44,19 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 		"%s[?(@['@about'] == '%s')]['skos:prefLabel']";
 	private boolean isEdmFullBeanSchema = false;
 
+	/**
+	 * The result's types.
+	 */
 	public enum ResultTypes {
-		NORMAL        (0),
-		EXTENDED      (1);
+
+		/**
+		 * Normal type.
+		 */
+		NORMAL(0),
+		/**
+		 * Extended type containing average and normalized scores.
+		 */
+		EXTENDED(1);
 
 		private final int value;
 
@@ -69,8 +79,8 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 	private List<JsonBranch> providers;
 	private SkippedEntryChecker skippedEntryChecker = null;
 	private SkippedEntitySelector skippedEntitySelector = new SkippedEntitySelector();
-	Map<String, DisconnectedEntityCalculator.EntityType> contextualIds;
-	EdmSaturationMap edmSaturationMap;
+	private Map<String, DisconnectedEntityCalculator.EntityType> contextualIds;
+	private EdmSaturationMap edmSaturationMap;
 	private String recordId;
 
 	public EdmMultilingualitySaturationCalculator() {
@@ -165,9 +175,10 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 				Object jsonFragment = jsonFragments.get(i);
 				if (skippedEntitySelector.isCollectionSkippable(skippableIds,
 						  collection, i, cache, jsonFragment)) {
-					LOGGER.info(
-						String.format("skip %s (%s)",
-							collection.getLabel(), ((LinkedHashMap)jsonFragment).get("@about")
+					LOGGER.info(String.format(
+						"skip %s (%s)",
+						collection.getLabel(),
+						((LinkedHashMap) jsonFragment).get("@about")
 					));
 					measureMissingCollection(collection);
 					// TODO???
@@ -226,7 +237,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 			LanguageSaturationType type = best.firstKey();
 			int count = (type == LanguageSaturationType.TRANSLATION
 			            || type == LanguageSaturationType.LANGUAGE)
-				? ((Double)languages.get(LanguageSaturationType.LANGUAGE).getTotal()).intValue()
+				? ((Double) languages.get(LanguageSaturationType.LANGUAGE).getTotal()).intValue()
 				: best.get(type).intValue();
 			property.setTypedCount(type, count);
 		}
@@ -262,7 +273,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 		           ? fieldInstance.getResource()
 		           : fieldInstance.getValue();
 		DisconnectedEntityCalculator.EntityType type = contextualIds.get(url);
-		String label = DisconnectedEntityCalculator.entityTypeToBranchLabels.get(type);
+		String label = DisconnectedEntityCalculator.ENTITY_TYPE_TO_BRANCH_LABELS.get(type);
 		JsonBranch entityBranch = schema.getPathByLabel(label);
 		String jsonPath = selectEntityById(entityBranch.getJsonPath(), url);
 		List<EdmFieldInstance> values = cache.get(jsonPath);
@@ -300,8 +311,9 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 	private String extractLanguagesFromRaw(Map<String, Integer> languages) {
 		String result = "";
 		for (String lang : languages.keySet()) {
-			if (result.length() > 0)
+			if (result.length() > 0) {
 				result += ";";
+			}
 			result += lang + ":" + languages.get(lang);
 		}
 		return result;
@@ -310,8 +322,9 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 	private String extractLanguages(Map<String, BasicCounter> languages) {
 		String result = "";
 		for (String lang : languages.keySet()) {
-			if (result.length() > 0)
+			if (result.length() > 0) {
 				result += ";";
+			}
 			result += lang + ":" + languages.get(lang).getTotalAsInt();
 		}
 		return result;
@@ -329,7 +342,8 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 				&& result.get(LanguageSaturationType.LANGUAGE) > 1
 				&& languageCount > 1) {
 			Double count = result.remove(LanguageSaturationType.LANGUAGE);
-			result.put(LanguageSaturationType.TRANSLATION,
+			result.put(
+				LanguageSaturationType.TRANSLATION,
 				(double) languageCount
 				// normalizeTranslationCount(languageCount)
 			);
@@ -377,13 +391,16 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 	private SortedMap<LanguageSaturationType, Double> keepOnlyTheBest(SortedMap<LanguageSaturationType, Double> result) {
 		if (result.size() > 1) {
 			LanguageSaturationType best = LanguageSaturationType.NA;
-			for (LanguageSaturationType key : result.keySet())
-				if (key.value() > best.value())
+			for (LanguageSaturationType key : result.keySet()) {
+				if (key.value() > best.value()) {
 					best = key;
+				}
+			}
 
 			if (best != LanguageSaturationType.NA) {
 				double modifier = 0.0;
-				if (best == LanguageSaturationType.TRANSLATION && result.containsKey(LanguageSaturationType.STRING)) {
+				if (best == LanguageSaturationType.TRANSLATION
+					&& result.containsKey(LanguageSaturationType.STRING)) {
 					modifier = -0.2;
 				}
 				SortedMap<LanguageSaturationType, Double> replacement = new TreeMap<>();
@@ -407,8 +424,9 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 			boolean isSet = false;
 			for (SortedMap<LanguageSaturationType, Double> value : values) {
 				double saturation = value.firstKey().value();
-				if (saturation == -1.0)
+				if (saturation == -1.0) {
 					continue;
+				}
 				if (countWithWeight) {
 					double weight = value.get(value.firstKey());
 					if (value.firstKey() == LanguageSaturationType.TRANSLATION) {
@@ -419,9 +437,11 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 				isSet = true;
 			}
 			if (!isSet) {
-				sum = average = normalized = LanguageSaturationType.NA.value();
+				sum = LanguageSaturationType.NA.value();
+				average = LanguageSaturationType.NA.value();
+				normalized = LanguageSaturationType.NA.value();
 			} else {
-				average = sum / (double)values.size();
+				average = sum / (double) values.size();
 				normalized = normalize(average);
 				sums.add(sum);
 			}
@@ -454,13 +474,14 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 	private double summarize(List<Double> sums) {
 		double sum;
 		sum = 0.0;
-		for (Double item : sums)
+		for (Double item : sums) {
 			sum += item;
+		}
 		return sum;
 	}
 
 	private static double normalize(double average) {
-		return 1.0 - (1.0/(average + 1.0));
+		return 1.0 - (1.0 / (average + 1.0));
 	}
 
 	private Object normalizeRawValue(List<SortedMap<LanguageSaturationType, Double>> values) {

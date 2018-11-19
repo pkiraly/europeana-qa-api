@@ -1,7 +1,6 @@
 package de.gwdg.europeanaqa.api.abbreviation;
 
 import de.gwdg.metadataqa.api.abbreviation.AbbreviationManager;
-import java.util.Map;
 
 /**
  *
@@ -9,12 +8,11 @@ import java.util.Map;
  */
 public class EdmDataProviderManager extends AbbreviationManager {
 
+	/**
+	 * Constructor.
+	 */
 	public EdmDataProviderManager() {
 		super();
 		initialize("abbreviations/data-providers-v3.txt", true);
-	}
-
-	public Map<String, Integer> getDataProviders() {
-		return data;
 	}
 }

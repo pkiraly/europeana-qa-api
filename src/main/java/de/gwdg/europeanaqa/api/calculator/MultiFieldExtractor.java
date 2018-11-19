@@ -9,7 +9,6 @@ import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,21 +23,21 @@ import java.util.logging.Logger;
  */
 public class MultiFieldExtractor implements Calculator, Serializable {
 
-	private static final Logger logger = Logger.getLogger(MultiFieldExtractor.class.getCanonicalName());
+	private static final Logger LOGGER = Logger.getLogger(MultiFieldExtractor.class.getCanonicalName());
 
 	public static final String CALCULATOR_NAME = "edmFieldExtractor";
 
-	private final static String ILLEGAL_ARGUMENT_TPL = "An EDM-based schema should define path for '%' in the extractable fields.";
+	private static final String ILLEGAL_ARGUMENT_TPL = "An EDM-based schema should define path for '%' in the extractable fields.";
 
-	public String FIELD_NAME = "recordId";
+	public static final String FIELD_NAME = "recordId";
 	private static final String DATA_PROVIDER = "dataProvider";
 	private static final String DATASET = "dataset";
 
 	private EdmDataProviderManager dataProviderManager;
 	private EdmDatasetManager datasetsManager;
 	private boolean abbreviate;
-	protected FieldCounter<List<String>> resultMap;
-	protected Schema schema;
+	private FieldCounter<List<String>> resultMap;
+	private Schema schema;
 
 	public MultiFieldExtractor(Schema schema) {
 		this.schema = schema;
@@ -53,9 +52,11 @@ public class MultiFieldExtractor implements Calculator, Serializable {
 			String path = entry.getValue();
 			List<EdmFieldInstance> edmValues = cache.get(path);
 			List<String> values = new ArrayList<>();
-			if (edmValues != null)
-				for (EdmFieldInstance edmValue : edmValues)
+			if (edmValues != null) {
+				for (EdmFieldInstance edmValue : edmValues) {
 					values.add(edmValue.getValue());
+				}
+			}
 			resultMap.put(key, values);
 		}
 	}

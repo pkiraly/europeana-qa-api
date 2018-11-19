@@ -2,13 +2,25 @@ package de.gwdg.europeanaqa.api.calculator;
 
 import com.jayway.jsonpath.InvalidJsonException;
 
-import de.gwdg.europeanaqa.api.abbreviation.*;
-import de.gwdg.metadataqa.api.calculator.*;
+import de.gwdg.europeanaqa.api.abbreviation.EdmCountryManager;
+import de.gwdg.europeanaqa.api.abbreviation.EdmDataProviderManager;
+import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
+import de.gwdg.europeanaqa.api.abbreviation.EdmProviderManager;
+import de.gwdg.europeanaqa.api.abbreviation.EdmLanguageManager;
+
+import de.gwdg.metadataqa.api.calculator.CalculatorFacade;
+import de.gwdg.metadataqa.api.calculator.CompletenessCalculator;
+import de.gwdg.metadataqa.api.calculator.LanguageCalculator;
+import de.gwdg.metadataqa.api.calculator.TfIdfCalculator;
+import de.gwdg.metadataqa.api.calculator.UniquenessCalculator;
+
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
+
 import de.gwdg.metadataqa.api.problemcatalog.EmptyStrings;
 import de.gwdg.metadataqa.api.problemcatalog.LongSubject;
 import de.gwdg.metadataqa.api.problemcatalog.ProblemCatalog;
 import de.gwdg.metadataqa.api.problemcatalog.TitleAndDescriptionAreSame;
+
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.schema.EdmSchema;
@@ -26,40 +38,51 @@ import java.util.logging.Logger;
  */
 public class EdmCalculatorFacade extends CalculatorFacade {
 
-	private static final Logger logger = Logger.getLogger(EdmCalculatorFacade.class.getCanonicalName());
+	private static final Logger LOGGER = Logger.getLogger(EdmCalculatorFacade.class.getCanonicalName());
 
-	protected EdmMultilingualitySaturationCalculator multilingualSaturationCalculator;
+	private EdmMultilingualitySaturationCalculator multilingualSaturationCalculator;
 
+	/**
+	 * Available input formats.
+	 */
 	public enum Formats {
 
+		/**
+		 * XML via OAI-PMH service.
+		 */
 		OAI_PMH_XML("xml"),
+		/**
+		 * FullBean JSON format via Record API and MongoDB export.
+		 */
 		FULLBEAN("fullbean");
 
 		private final String name;
 
-		private Formats(String name) {
+		Formats(String name) {
 			this.name = name;
 		}
 
 		public static Formats byCode(String code) {
-			for(Formats format : values())
-				if (format.name.equals(code))
+			for (Formats format : values()) {
+				if (format.name.equals(code)) {
 					return format;
+				}
+			}
 			return null;
 		}
 
 	};
 
-	protected EdmFieldExtractor fieldExtractor;
+	private EdmFieldExtractor fieldExtractor;
 	private EdmDataProviderManager dataProviderManager;
 	private EdmDatasetManager datasetManager;
-	protected boolean abbreviate = false;
-	protected boolean disconnectedEntityMeasurementEnabled = false;
-	protected boolean uniquenessMeasurementEnabled = false;
-	protected boolean extendedFieldExtraction = false;
-	protected Formats format = Formats.OAI_PMH_XML;
+	private boolean abbreviate = false;
+	private boolean disconnectedEntityMeasurementEnabled = false;
+	private boolean uniquenessMeasurementEnabled = false;
+	private boolean extendedFieldExtraction = false;
+	private Formats format = Formats.OAI_PMH_XML;
 
-	public EdmCalculatorFacade() {}
+	public EdmCalculatorFacade() { }
 
 	public EdmCalculatorFacade(boolean enableFieldExistenceMeasurement,
 			boolean enableFieldCardinalityMeasurement,
@@ -82,13 +105,15 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 	@Override
 	public void configure() {
-		EdmSchema schema = (EdmSchema)getSchema();
+		EdmSchema schema = (EdmSchema) getSchema();
 
 		calculators = new ArrayList<>();
 		fieldExtractor = new EdmFieldExtractor(schema);
 		fieldExtractor.abbreviate(abbreviate);
 		if (extendedFieldExtraction) {
-			int index = format == Formats.FULLBEAN ? -1 : 0;
+			int index = (format == Formats.FULLBEAN)
+				? -1
+				: 0;
 			schema.addExtractableField(
 				"provider",
 				getJsonPathForExtractor(schema, "Aggregation/edm:provider", index)
@@ -152,8 +177,11 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 		if (multilingualSaturationMeasurementEnabled) {
 			multilingualSaturationCalculator = new EdmMultilingualitySaturationCalculator(schema);
-			if (saturationExtendedResult)
+			/*
+			if (saturationExtendedResult) {
 				// multilingualSaturationCalculator.setResultType(MultilingualitySaturationCalculator.ResultTypes.EXTENDED);
+			}
+			*/
 			if (checkSkippableCollections) {
 				multilingualSaturationCalculator.setSkippedEntryChecker(
 					new EdmSkippedEntryChecker()
@@ -241,7 +269,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		if (format == null) {
 			schema = new EdmOaiPmhXmlSchema();
 		} else {
-			switch(format) {
+			switch (format) {
 				case FULLBEAN:
 					schema = new EdmFullBeanSchema(); break;
 				case OAI_PMH_XML:

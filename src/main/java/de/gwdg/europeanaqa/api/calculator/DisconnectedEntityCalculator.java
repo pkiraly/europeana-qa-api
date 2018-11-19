@@ -26,99 +26,172 @@ import org.apache.commons.lang3.StringUtils;
  */
 class DisconnectedEntityCalculator implements Calculator, Serializable {
 
-	private static final Logger LOGGER = Logger.getLogger(DisconnectedEntityCalculator.class.getCanonicalName());
+	/**
+	 * Logger.
+	 */
+	private static final Logger LOGGER =
+		Logger.getLogger(
+			DisconnectedEntityCalculator.class.getCanonicalName());
 
+	/**
+	 * The name of this calculator.
+	 */
 	public static final String CALCULATOR_NAME = "orphanedEntityCalculator";
 
+	/**
+	 * Entity types.
+	 */
 	public enum EntityType {
-		AGENT, CONCEPT, PLACE, TIMESPAN
+		/**
+		 * Agent.
+		 */
+		AGENT,
+		/**
+		 * Concept.
+		 */
+		CONCEPT,
+		/**
+		 * Place.
+		 */
+		PLACE,
+		/**
+		 * Timespan.
+		 */
+		TIMESPAN
 	}
 
+	/**
+	 * List of headers.
+	 */
 	private List<String> headers = Arrays.asList(
-		"unlinkedEntities", "brokenProviderLinks", "brokenEuropeanaLinks",
-		"contextualEntityCount",
+		"unlinkedEntities", "brokenProviderLinks",
+		"brokenEuropeanaLinks", "contextualEntityCount",
 		"providerProxyLinksCount", "providerProxyValuesCount",
 		"europeanaProxyLinksCount", "contextualLinksCount"
 	);
 
-	private static final List<String> technicalFields = Arrays.asList(
+	/**
+	 * List of technical fields.
+	 */
+	private static final List<String> TECHNICAL_FIELDS = Arrays.asList(
 		"Proxy/ore:proxyIn", "Proxy/ore:proxyFor", "Proxy/rdf:about"
 	);
 
-	private static final List<String> enrichableFields = Arrays.asList(
-		"Proxy/dc:contributor", "Proxy/dc:publisher", "Proxy/dc:creator",
-		"Proxy/dc:subject", "Proxy/dc:type", "Proxy/edm:hasType", "Proxy/dc:coverage",
-		"Proxy/dcterms:spatial", "Proxy/edm:currentLocation", "Proxy/dc:date",
-		"Proxy/dcterms:created", "Proxy/dcterms:issued", "Proxy/dcterms:temporal",
-		"Proxy/edm:hasMet",
-		"Proxy/dc:format", "Proxy/dcterms:conformsTo",
-		"Proxy/dcterms:medium", "Proxy/edm:isRelatedTo"
+	/**
+	 * List of enrichable fields.
+	 */
+	private static final List<String> ENRICHABLE_FIELDS = Arrays.asList(
+		"Proxy/dc:contributor", "Proxy/dc:publisher",
+		"Proxy/dc:creator", "Proxy/dc:subject", "Proxy/dc:type",
+		"Proxy/edm:hasType", "Proxy/dc:coverage",
+		"Proxy/dcterms:spatial", "Proxy/edm:currentLocation",
+		"Proxy/dc:date", "Proxy/dcterms:created",
+		"Proxy/dcterms:issued", "Proxy/dcterms:temporal",
+		"Proxy/edm:hasMet", "Proxy/dc:format",
+		"Proxy/dcterms:conformsTo", "Proxy/dcterms:medium",
+		"Proxy/edm:isRelatedTo"
 	);
 
-	private static final Map<String, EntityType> entityBranchLabels = new HashMap<>();
+	/**
+	 * Maps of entity branch labels and entity types.
+	 */
+	private static final Map<String, EntityType> ENTITY_BRANCH_LABELS =
+		new HashMap<>();
 	static {
-		entityBranchLabels.put("Agent/rdf:about", EntityType.AGENT);
-		entityBranchLabels.put("Concept/rdf:about", EntityType.CONCEPT);
-		entityBranchLabels.put("Place/rdf:about", EntityType.PLACE);
-		entityBranchLabels.put("Timespan/rdf:about", EntityType.TIMESPAN);
+		ENTITY_BRANCH_LABELS.put("Agent/rdf:about", EntityType.AGENT);
+		ENTITY_BRANCH_LABELS.put("Concept/rdf:about", EntityType.CONCEPT);
+		ENTITY_BRANCH_LABELS.put("Place/rdf:about", EntityType.PLACE);
+		ENTITY_BRANCH_LABELS.put("Timespan/rdf:about", EntityType.TIMESPAN);
 	}
 
-	public static final Map<EntityType, String> entityTypeToBranchLabels = new HashMap<>();
+	/**
+	 * Maps of entity types to labels.
+	 */
+	public static final Map<EntityType, String> ENTITY_TYPE_TO_BRANCH_LABELS =
+		new HashMap<>();
 	static {
-		entityTypeToBranchLabels.put(EntityType.AGENT, "Agent");
-		entityTypeToBranchLabels.put(EntityType.CONCEPT, "Concept");
-		entityTypeToBranchLabels.put(EntityType.PLACE, "Place");
-		entityTypeToBranchLabels.put(EntityType.TIMESPAN, "Timespan");
+		ENTITY_TYPE_TO_BRANCH_LABELS.put(EntityType.AGENT, "Agent");
+		ENTITY_TYPE_TO_BRANCH_LABELS.put(EntityType.CONCEPT, "Concept");
+		ENTITY_TYPE_TO_BRANCH_LABELS.put(EntityType.PLACE, "Place");
+		ENTITY_TYPE_TO_BRANCH_LABELS.put(EntityType.TIMESPAN, "Timespan");
 	}
 
-	private static final Map<EntityType, List<String>> contextualLinkFields = new HashMap<>();
+	/**
+	 * Register the fields belong to the contextual entities.
+	 */
+	private static final Map<EntityType, List<String>> CONTEXTUAL_LINK_FIELDS =
+		new HashMap<>();
 	static {
-		contextualLinkFields.put(EntityType.AGENT, Arrays.asList(
-			"Agent/edm:hasMet", "Agent/edm:isRelatedTo", "Agent/owl:sameAs"
+		CONTEXTUAL_LINK_FIELDS.put(EntityType.AGENT, Arrays.asList(
+			"Agent/edm:hasMet", "Agent/edm:isRelatedTo",
+			"Agent/owl:sameAs"
 		));
-		contextualLinkFields.put(EntityType.CONCEPT, Arrays.asList(
+		CONTEXTUAL_LINK_FIELDS.put(EntityType.CONCEPT, Arrays.asList(
 			"Concept/skos:broader", "Concept/skos:narrower",
 			"Concept/skos:related", "Concept/skos:broadMatch",
 			"Concept/skos:narrowMatch", "Concept/skos:relatedMatch",
 			"Concept/skos:exactMatch", "Concept/skos:closeMatch"
 		));
-		contextualLinkFields.put(EntityType.PLACE, Arrays.asList(
-			"Place/dcterms:isPartOf", "Place/dcterms:hasPart", "Place/owl:sameAs"
+		CONTEXTUAL_LINK_FIELDS.put(EntityType.PLACE, Arrays.asList(
+			"Place/dcterms:isPartOf", "Place/dcterms:hasPart",
+			"Place/owl:sameAs"
 		));
-		contextualLinkFields.put(EntityType.TIMESPAN, Arrays.asList(
+		CONTEXTUAL_LINK_FIELDS.put(EntityType.TIMESPAN, Arrays.asList(
 			"Timespan/dcterms:isPartOf", "Timespan/dcterms:hasPart",
 			"Timespan/edm:isNextInSequence", "Timespan/owl:sameAs"
 		));
 	}
 
-	protected Schema schema;
+	/**
+	 * The schema.
+	 */
+	private Schema schema;
 
-	public DisconnectedEntityCalculator(Schema schema) {
+	/**
+	 * Contructor.
+	 * @param schema Schema The schema to use by the functions.
+	 */
+	DisconnectedEntityCalculator(final Schema schema) {
 		this.schema = schema;
 	}
 
+	/**
+	 * The result map.
+	 */
 	private FieldCounter resultMap;
 
 	@Override
-	public void measure(JsonPathCache cache) {
+	public void measure(final JsonPathCache cache) {
 		resultMap = new FieldCounter<>();
 
 		LinkRegister register = new LinkRegister();
 		Map<String, EntityType> contextualIds = getContextualIds(cache);
 		int contextualEntityCount = contextualIds.size();
-		register.putAll(new ArrayList(contextualIds.keySet()), LinkRegister.LinkingType.NONE);
+		register.putAll(
+			new ArrayList(contextualIds.keySet()),
+			LinkRegister.LinkingType.NONE
+		);
 
 		List<String> removables;
 		List<String> providerProxyLinks = new ArrayList<>();
 		List<String> providerProxyValues = new ArrayList<>();
 
-		extractProviderProxyLinksAndValues(cache, providerProxyLinks, providerProxyValues);
+		extractProviderProxyLinksAndValues(
+			cache,
+			providerProxyLinks,
+			providerProxyValues
+		);
 		int providerProxyLinksCount = providerProxyLinks.size();
 		int providerProxyValuesCount = providerProxyValues.size();
-		List<String> europeanaProxyLinks = EnhancementIdExtractor.extractIds(cache);
+		List<String> europeanaProxyLinks = EnhancementIdExtractor
+			.extractIds(cache);
 		int europeanaProxyLinksCount = europeanaProxyLinks.size();
 
-		checkContextualIDsInProviderProxy(contextualIds, providerProxyLinks, providerProxyValues);
+		checkContextualIDsInProviderProxy(
+			contextualIds,
+			providerProxyLinks,
+			providerProxyValues
+		);
 		providerProxyLinksCount -= providerProxyLinks.size();
 		providerProxyValuesCount -= providerProxyValues.size();
 		checkContextualIDsInEuropeanaProxy(contextualIds, europeanaProxyLinks);
@@ -131,9 +204,16 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 			String id = getId(cache);
 			List<String> entities = new ArrayList<>();
 			for (String uri : contextualIds.keySet()) {
-				entities.add(String.format("%s (%s)", uri, contextualIds.get(uri)));
+				entities.add(String.format(
+					"%s (%s)",
+					uri, contextualIds.get(uri)
+				));
 			}
-			LOGGER.warning(String.format("%s has orphaned entities: %s", id, StringUtils.join(entities, ", ")));
+			LOGGER.warning(String.format(
+				"%s has orphaned entities: %s",
+				id,
+				StringUtils.join(entities, ", "))
+			);
 		}
 
 		resultMap.put("orphanedEntities", contextualIds.size());
@@ -146,10 +226,20 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		resultMap.put("contextualLinksCount", contextualLinksCount);
 	}
 
+	/**
+	 * Checks the internal proxy links.
+	 * @param cache
+	 * @param register
+	 * @param uri
+	 * @param type
+	 * @return
+	 */
 	private boolean checkInternalProxyLinks(JsonPathCache cache,
-			LinkRegister register, String uri, EntityType type) {
+														 LinkRegister register,
+														 final String uri,
+														 final EntityType type) {
 		boolean found = false;
-		List<String> paths = contextualLinkFields.get(type);
+		List<String> paths = CONTEXTUAL_LINK_FIELDS.get(type);
 		for (String field : paths) {
 			JsonBranch branch = schema.getPathByLabel(field);
 			List<EdmFieldInstance> fieldInstances = cache.get(branch.getAbsoluteJsonPath());
@@ -168,24 +258,34 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		return found;
 	}
 
+	/**
+	 * Extracts Provider Proxy links and values.
+	 * @param cache
+	 * @param providerProxyLinks The container of provider proxy links
+	 * @param providerProxyValues The container of provider proxy values
+	 */
 	private void extractProviderProxyLinksAndValues(JsonPathCache cache,
-			  List<String> providerProxyLinks,
-			  List<String> providerProxyValues) {
+																	List<String> providerProxyLinks,
+																	List<String> providerProxyValues) {
 		for (JsonBranch branch : schema.getPaths()) {
 			if (branch.getLabel().equals("Proxy")) {
 				Object rawProxy = cache.getFragment(branch.getJsonPath());
 				List<Object> proxies = Converter.jsonObjectToList(rawProxy);
 				for (JsonBranch child : branch.getChildren()) {
-					if (!isEnrichableField(child))
+					if (!isEnrichableField(child)) {
 						continue;
-					List<EdmFieldInstance> fieldInstances = cache.get(child.getJsonPath(), child.getJsonPath(), proxies.get(0));
-					if (fieldInstances == null)
+					}
+					List<EdmFieldInstance> fieldInstances =
+						cache.get(child.getJsonPath(), child.getJsonPath(), proxies.get(0));
+					if (fieldInstances == null) {
 						continue;
+					}
 					for (EdmFieldInstance fieldInstance : fieldInstances) {
-						if (fieldInstance.isUrl())
+						if (fieldInstance.isUrl()) {
 							providerProxyLinks.add(fieldInstance.getUrl());
-						else if (fieldInstance.hasValue())
+						} else if (fieldInstance.hasValue()) {
 							providerProxyValues.add(fieldInstance.getValue());
+						}
 					}
 				}
 			}
@@ -193,20 +293,23 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 	}
 
 	private static boolean isEnrichableField(JsonBranch child) {
-		return enrichableFields.contains(child.getLabel());
+		return ENRICHABLE_FIELDS.contains(child.getLabel());
 	}
 
 	public Map<String, EntityType> getContextualIds(JsonPathCache cache) {
 		Map<String, EntityType> contextualIds = new HashMap<>();
 		for (JsonBranch branch : schema.getPaths()) {
-			if (entityBranchLabels.containsKey(branch.getLabel())) {
+			if (ENTITY_BRANCH_LABELS.containsKey(branch.getLabel())) {
 				Object rawJsonFragment = cache.getFragment(branch.getAbsoluteJsonPath());
 				List<Object> jsonFragments = Converter.jsonObjectToList(rawJsonFragment);
 				if (jsonFragments.size() > 0) {
-					for(Object jsonFragment : jsonFragments) {
+					for (Object jsonFragment : jsonFragments) {
 						if (jsonFragment != null) {
 							if (jsonFragment instanceof String) {
-								contextualIds.put((String)jsonFragment, entityBranchLabels.get(branch.getLabel()));
+								contextualIds.put(
+									(String) jsonFragment,
+									ENTITY_BRANCH_LABELS.get(branch.getLabel())
+								);
 							} else {
 								System.err.println(jsonFragment.getClass().getCanonicalName());
 							}
@@ -250,26 +353,43 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		}
 	}
 
-	private void checkContextualIDsInEntities(Map<String,
-			EntityType> contextualIds, JsonPathCache cache, LinkRegister register) {
-		List<String> removables;
+	/**
+	 * Check the the contextual IDs in the entities.
+	 * @param contextualIds
+	 * @param cache
+	 * @param register
+	 */
+	private void checkContextualIDsInEntities(Map<String, EntityType> contextualIds,
+															JsonPathCache cache,
+															LinkRegister register) {
 		if (contextualIds.size() > 0) {
-			removables = new ArrayList<>();
+			List<String> removableURIs = new ArrayList<>();
 			for (String uri : contextualIds.keySet()) {
 				if (checkInternalProxyLinks(cache, register, uri, contextualIds.get(uri))) {
-					removables.add(uri);
+					removableURIs.add(uri);
 				}
 			}
-			for (String removable : removables) {
+			for (String removable : removableURIs) {
 				contextualIds.remove(removable);
 			}
 		}
 	}
 
+	/**
+	 * Get the ID of the record.
+	 * @param cache The JSON path cache
+	 * @return The ID of the record
+	 */
 	private String getId(JsonPathCache cache) {
-		String path = schema.getPathByLabel("ProvidedCHO/rdf:about").getAbsoluteJsonPath().replace("[*]", "");
+		String path = schema
+			.getPathByLabel("ProvidedCHO/rdf:about")
+			.getAbsoluteJsonPath()
+			.replace("[*]", "");
 		List<EdmFieldInstance> fieldInstances = cache.get(path);
-		return fieldInstances.get(0).getValue().replace("http://data.europeana.eu/item/", "");
+		return fieldInstances
+			.get(0)
+			.getValue()
+			.replace("http://data.europeana.eu/item/", "");
 	}
 
 	@Override
@@ -279,13 +399,15 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 
 	@Override
 	public Map<String, Map<String, ? extends Object>> getLabelledResultMap() {
-		Map<String, Map<String, ? extends Object>> labelledResultMap = new LinkedHashMap<>();
+		Map<String, Map<String, ? extends Object>> labelledResultMap =
+			new LinkedHashMap<>();
 		labelledResultMap.put(getCalculatorName(), resultMap.getMap());
 		return labelledResultMap;
 	}
 
 	@Override
-	public String getCsv(boolean withLabels, CompressionLevel compressionLevel) {
+	public String getCsv(final boolean withLabels,
+								final CompressionLevel compressionLevel) {
 		return resultMap.getList(withLabels, compressionLevel);
 	}
 

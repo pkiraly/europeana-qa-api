@@ -11,7 +11,11 @@ import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -20,15 +24,15 @@ import java.util.logging.Logger;
  */
 public class EdmFieldExtractor extends FieldExtractor {
 
-	private static final Logger logger = Logger.getLogger(EdmFieldExtractor.class.getCanonicalName());
+	private static final Logger LOGGER = Logger.getLogger(EdmFieldExtractor.class.getCanonicalName());
 
 	public static final String CALCULATOR_NAME = "edmFieldExtractor";
 
-	private final static String ILLEGAL_ARGUMENT_TPL = "An EDM-based schema should define path for '%' in the extractable fields.";
+	private static final String ILLEGAL_ARGUMENT_TPL = "An EDM-based schema should define path for '%' in the extractable fields.";
 
 	private static final String DATA_PROVIDER = "dataProvider";
 	private static final String DATASET = "dataset";
-	private static final List<String> paths = Arrays.asList(
+	private static final List<String> PATHS = Arrays.asList(
 		"Aggregation/edm:dataProvider"
 		// "Aggregation/edm:provider"
 	);
@@ -60,19 +64,20 @@ public class EdmFieldExtractor extends FieldExtractor {
 		String dataset  = extractValueByKey(cache, DATASET, null);
 		String provider = extractValueByKey(cache, DATA_PROVIDER, null);
 		if (provider == null) {
-			for (String path : paths) {
+			for (String path : PATHS) {
 				String jsonPath = getJsonPath(path);
 				provider = extractValueByPath(cache, jsonPath, null);
-				if (provider != null)
+				if (provider != null) {
 					break;
+				}
 			}
 		}
 		if (dataset == null) {
-			logger.warning("Missing dataset! " + resultMap.get(super.FIELD_NAME)); // + "\n" + cache.getJsonString());
+			LOGGER.warning("Missing dataset! " + resultMap.get(super.FIELD_NAME)); // + "\n" + cache.getJsonString());
 			dataset = "na";
 		}
 		if (provider == null) {
-			// logger.warning("Missing provider! " + resultMap.get(super.FIELD_NAME)); // + "\n" + cache.getJsonString());
+			// LOGGER.warning("Missing provider! " + resultMap.get(super.FIELD_NAME)); // + "\n" + cache.getJsonString());
 			provider = "na";
 		}
 		if (abbreviate) {
@@ -87,12 +92,14 @@ public class EdmFieldExtractor extends FieldExtractor {
 			String field = entry.getKey();
 			if (field.equals(super.FIELD_NAME)
 			   || field.equals(DATASET)
-				|| field.equals(DATA_PROVIDER))
+				|| field.equals(DATA_PROVIDER)) {
 				continue;
+			}
 			String jsonPath = entry.getValue();
 			String value = extractValueByPath(cache, jsonPath, "na");
-			if (value.equals("na"))
-				logger.info(cache.getJsonString());
+			if (value.equals("na")) {
+				LOGGER.info(cache.getJsonString());
+			}
 			if (abbreviate) {
 				value = abbreviationManagers.get(field).lookup(value).toString();
 			}
@@ -109,8 +116,9 @@ public class EdmFieldExtractor extends FieldExtractor {
 	}
 
 	private String extractValueByKey(JsonPathCache cache, String key, String defaultValue) {
-		if (!schema.getExtractableFields().containsKey(key))
+		if (!schema.getExtractableFields().containsKey(key)) {
 			return defaultValue;
+		}
 
 		String jsonPath = schema.getExtractableFields().get(key);
 		return extractValueByPath(cache, jsonPath, defaultValue);

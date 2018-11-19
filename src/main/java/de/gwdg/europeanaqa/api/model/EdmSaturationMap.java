@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class EdmSaturationMap {
 
-	public List<EdmSaturationPropertyContainer> properties;
+	private List<EdmSaturationPropertyContainer> properties;
 	private Map<String, Integer> index;
 	private int taggedLiteralsInProviderProxy;
 	private int taggedLiteralsInEuropeanaProxy;
@@ -29,12 +29,18 @@ public class EdmSaturationMap {
 	private Set<String> distinctLanguagesInEuropeanaProxy;
 	private Set<String> distinctLanguagesInObject;
 
+	/**
+	 * Contructs an EdmSaturationMap object.
+	 */
 	public EdmSaturationMap() {
 		properties = new ArrayList<>();
 		index = new HashMap<>();
 	}
 
-	public void calculate() {
+	/**
+	 * Calculate scores.
+	 */
+	public final void calculate() {
 		taggedPropertiesInProviderProxy = 0;
 		taggedPropertiesInEuropeanaProxy = 0;
 		taggedLiteralsInProviderProxy = 0;
@@ -61,49 +67,61 @@ public class EdmSaturationMap {
 				distinctLanguagesInEuropeanaProxy.addAll(property.getDistinctLanguages());
 			}
 		}
-		taggedLiteralsInObject = taggedLiteralsInProviderProxy + taggedLiteralsInEuropeanaProxy;
-		taggedPropertiesInObject = taggedPropertiesInProviderProxy + taggedPropertiesInEuropeanaProxy;
+		taggedLiteralsInObject =
+			taggedLiteralsInProviderProxy + taggedLiteralsInEuropeanaProxy;
+		taggedPropertiesInObject =
+			taggedPropertiesInProviderProxy + taggedPropertiesInEuropeanaProxy;
 
 		distinctLanguagesInObject = new HashSet<>();
 		distinctLanguagesInObject.addAll(distinctLanguagesInEuropeanaProxy);
 		distinctLanguagesInObject.addAll(distinctLanguagesInProviderProxy);
 	}
 
+	/**
+	 * Gets number of distinct languages in an EDM object.
+	 * @return number of distinct languages
+	 */
 	public int getDistinctLanguagesInObject() {
 		return distinctLanguagesInObject.size();
 	}
 
 	public double getNumberOfLanguagesPerPropertyPerProxy(int proxyId) {
-		if (proxyId == EdmSaturationPropertyContainer.PROVIDER_PROXY)
-			return (double)languagesInProviderProxy
-			       / (double)taggedPropertiesInProviderProxy;
-		return (double)languagesInEuropeanaProxy
-		       / (double)taggedPropertiesInEuropeanaProxy;
+		if (proxyId == EdmSaturationPropertyContainer.PROVIDER_PROXY) {
+			return (double) languagesInProviderProxy
+				/ (double) taggedPropertiesInProviderProxy;
+		}
+		return (double) languagesInEuropeanaProxy
+		       / (double) taggedPropertiesInEuropeanaProxy;
 	}
 
 	private double getNumberOfLanguagesPerPropertyInProviderProxy() {
-		if (taggedPropertiesInProviderProxy == 0)
+		if (taggedPropertiesInProviderProxy == 0) {
 			return 0.0;
-		return (double)languagesInProviderProxy
-		       / (double)taggedPropertiesInProviderProxy;
+		}
+		return (double) languagesInProviderProxy
+		       / (double) taggedPropertiesInProviderProxy;
 	}
 
 	private double getNumberOfLanguagesPerPropertyInEuropeanaProxy() {
-		if (taggedPropertiesInEuropeanaProxy == 0)
+		if (taggedPropertiesInEuropeanaProxy == 0) {
 			return 0.0;
-		return (double)languagesInEuropeanaProxy
-		       / (double)taggedPropertiesInEuropeanaProxy;
+		}
+		return (double) languagesInEuropeanaProxy
+		       / (double) taggedPropertiesInEuropeanaProxy;
 	}
 
 	public double getNumberOfLanguagesPerPropertyInObject() {
-		int taggedPropertiesCount = taggedPropertiesInProviderProxy + taggedPropertiesInEuropeanaProxy;
-		if (taggedPropertiesCount == 0)
+		int taggedPropertiesCount =
+			taggedPropertiesInProviderProxy + taggedPropertiesInEuropeanaProxy;
+		if (taggedPropertiesCount == 0) {
 			return 0.0;
+		}
 		int languageCount = languagesInProviderProxy + languagesInEuropeanaProxy;
-		return (double)languageCount / (double)taggedPropertiesCount;
+		return (double) languageCount / (double) taggedPropertiesCount;
 	}
 
-	public EdmSaturationProperty createOrGetProperty(String fieldName, int providerNr) {
+	public EdmSaturationProperty createOrGetProperty(String fieldName,
+																	 int providerNr) {
 		EdmSaturationPropertyContainer container;
 		if (index.containsKey(fieldName)) {
 			container = properties.get(index.get(fieldName));
@@ -199,29 +217,29 @@ public class EdmSaturationMap {
 	private FieldCounter<Double> getGeneralCsv() {
 		FieldCounter<Double> saturationResult = new FieldCounter<>();
 		saturationResult.put("NumberOfLanguagesPerPropertyInProviderProxy",
-		  (double)getNumberOfLanguagesPerPropertyInProviderProxy());
+		  (double) getNumberOfLanguagesPerPropertyInProviderProxy());
 		saturationResult.put("NumberOfLanguagesPerPropertyInEuropeanaProxy",
-		  (double)getNumberOfLanguagesPerPropertyInEuropeanaProxy());
+		  (double) getNumberOfLanguagesPerPropertyInEuropeanaProxy());
 		saturationResult.put("NumberOfLanguagesPerPropertyInObject",
-		  (double)getNumberOfLanguagesPerPropertyInObject());
+		  (double) getNumberOfLanguagesPerPropertyInObject());
 		saturationResult.put("TaggedLiteralsInProviderProxy",
-		  (double)getTaggedLiteralsInProviderProxy());
+		  (double) getTaggedLiteralsInProviderProxy());
 		saturationResult.put("TaggedLiteralsInEuropeanaProxy",
-		  (double)getTaggedLiteralsInEuropeanaProxy());
+		  (double) getTaggedLiteralsInEuropeanaProxy());
 		saturationResult.put("DistinctLanguageCountInProviderProxy",
-		  (double)getDistinctLanguageCountInProviderProxy());
+		  (double) getDistinctLanguageCountInProviderProxy());
 		saturationResult.put("DistinctLanguageCountInEuropeanaProxy",
-		  (double)getDistinctLanguageCountInEuropeanaProxy());
+		  (double) getDistinctLanguageCountInEuropeanaProxy());
 		saturationResult.put("TaggedLiteralsInObject",
-		  (double)getTaggedLiteralsInObject());
+		  (double) getTaggedLiteralsInObject());
 		saturationResult.put("DistinctLanguagesInObject",
-		  (double)getDistinctLanguagesInObject());
+		  (double) getDistinctLanguagesInObject());
 		saturationResult.put("TaggedLiteralsPerLanguageInProviderProxy",
-		  (double)getTaggedLiteralsPerLanguageInProviderProxy());
+		  (double) getTaggedLiteralsPerLanguageInProviderProxy());
 		saturationResult.put("TaggedLiteralsPerLanguageInEuropeanaProxy",
-		  (double)getTaggedLiteralsPerLanguageInEuropeanaProxy());
+		  (double) getTaggedLiteralsPerLanguageInEuropeanaProxy());
 		saturationResult.put("TaggedLiteralsPerLanguageInObject",
-		  (double)getTaggedLiteralsPerLanguageInObject());
+		  (double) getTaggedLiteralsPerLanguageInObject());
 		return saturationResult;
 	}
 
@@ -269,22 +287,25 @@ public class EdmSaturationMap {
 	}
 
 	public double getTaggedLiteralsPerLanguageInProviderProxy() {
-		if (getDistinctLanguageCountInProviderProxy() == 0)
+		if (getDistinctLanguageCountInProviderProxy() == 0) {
 			return 0.0;
-		return (double)taggedLiteralsInProviderProxy
+		}
+		return (double) taggedLiteralsInProviderProxy
 		        / getDistinctLanguageCountInProviderProxy();
 	}
 
 	public double getTaggedLiteralsPerLanguageInEuropeanaProxy() {
-		if (getDistinctLanguageCountInEuropeanaProxy() == 0)
+		if (getDistinctLanguageCountInEuropeanaProxy() == 0) {
 			return 0.0;
-		return (double)taggedLiteralsInEuropeanaProxy
+		}
+		return (double) taggedLiteralsInEuropeanaProxy
 		        / getDistinctLanguageCountInEuropeanaProxy();
 	}
 
 	public double getTaggedLiteralsPerLanguageInObject() {
-		if (getDistinctLanguagesInObject() == 0)
+		if (getDistinctLanguagesInObject() == 0) {
 			return 0.0;
-		return (double)taggedLiteralsInObject / getDistinctLanguagesInObject();
+		}
+		return (double) taggedLiteralsInObject / getDistinctLanguagesInObject();
 	}
 }

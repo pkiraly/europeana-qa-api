@@ -1,7 +1,6 @@
 package de.gwdg.europeanaqa.api.abbreviation;
 
 import de.gwdg.metadataqa.api.abbreviation.AbbreviationManager;
-import java.util.Map;
 
 /**
  *
@@ -9,12 +8,11 @@ import java.util.Map;
  */
 public class EdmDatasetManager extends AbbreviationManager {
 
+	/**
+	 * Constructor.
+	 */
 	public EdmDatasetManager() {
 		super();
 		initialize("abbreviations/datasets-v3.txt", true);
-	}
-
-	public Map<String, Integer> getDatasets() {
-		return data;
 	}
 }

@@ -12,60 +12,67 @@ import java.util.Set;
  */
 public class EdmSaturationProperty {
 
-	int taggedLiteralsCount = 0;
-	LanguageSaturationType type;
-	Set<String> distinctLanguages;
-	int distinctLanguageCount = 0;
+	private int taggedLiteralsCount = 0;
+	private LanguageSaturationType type;
+	private Set<String> distinctLanguages;
+	private int distinctLanguageCount = 0;
 
-	public double getNumberOfLiteralsPerLanguage() {
-		if (distinctLanguageCount == 0)
+	public final double getNumberOfLiteralsPerLanguage() {
+		if (distinctLanguageCount == 0) {
 			return 0.0;
-		return (double)taggedLiteralsCount / (double)distinctLanguageCount;
+		}
+		return (double) taggedLiteralsCount / (double) distinctLanguageCount;
 	}
 
-	public int getTaggedLiteralsCount() {
+	public final int getTaggedLiteralsCount() {
 		return taggedLiteralsCount;
 	}
 
-	public void setTaggedLiteralsCount(int taggedLiteralsCount) {
-		this.taggedLiteralsCount = taggedLiteralsCount;
+	public final void setTaggedLiteralsCount(final int pTaggedLiteralsCount) {
+		this.taggedLiteralsCount = pTaggedLiteralsCount;
 	}
 
-	public LanguageSaturationType getType() {
+	public final LanguageSaturationType getType() {
 		return type;
 	}
 
-	public void setType(LanguageSaturationType type) {
-		this.type = type;
+	public final void setType(final LanguageSaturationType pType) {
+		this.type = pType;
 	}
 
-	public Set<String> getDistinctLanguages() {
+	public final Set<String> getDistinctLanguages() {
 		return distinctLanguages;
 	}
 
-	public void setDistinctLanguages(Set<String> distinctLanguages) {
-		this.distinctLanguages = distinctLanguages;
+	public final void setDistinctLanguages(final Set<String> pDistinctLanguages) {
+		this.distinctLanguages = pDistinctLanguages;
 		distinctLanguageCount = distinctLanguages.size();
 	}
 
-	public FieldCounter<Double> getCsv(String propertyName) {
+	public final FieldCounter<Double> getCsv(final String propertyName) {
 		FieldCounter<Double> values = new FieldCounter<>();
 		if (getType().isTaggedLiteral()) {
-			values.put(propertyName + "/taggedLiterals",
-			          (double)getTaggedLiteralsCount());
-			values.put(propertyName + "/languages",
-			          (double)getDistinctLanguages().size());
-			values.put(propertyName + "/literalsPerLanguage",
-			           (double)getNumberOfLiteralsPerLanguage());
+			values.put(
+				propertyName + "/taggedLiterals",
+				(double) getTaggedLiteralsCount()
+			);
+			values.put(
+				propertyName + "/languages",
+				(double) getDistinctLanguages().size()
+			);
+			values.put(
+				propertyName + "/literalsPerLanguage",
+				(double) getNumberOfLiteralsPerLanguage()
+			);
 		} else {
-			values.put(propertyName + "/taggedLiterals", (double)getType().value());
+			values.put(propertyName + "/taggedLiterals", (double) getType().value());
 			values.put(propertyName + "/languages", 0.0);
 			values.put(propertyName + "/literalsPerLanguage", 0.0);
 		}
 		return values;
 	}
 
-	static List<String> getHeaders(String propertyName) {
+	static List<String> getHeaders(final String propertyName) {
 		return Arrays.asList(
 			propertyName + "/taggedLiterals",
 			propertyName + "/languages",
@@ -74,7 +81,7 @@ public class EdmSaturationProperty {
 	}
 
 	@Override
-	public String toString() {
+	public final String toString() {
 		return "{"
 		        + "taggedLiteralsCount=" + taggedLiteralsCount
 		        + ", type=" + type
@@ -84,9 +91,10 @@ public class EdmSaturationProperty {
 		        + '}';
 	}
 
-	public void setTypedCount(LanguageSaturationType type, int taggedStringCount) {
-		setType(type);
-		if (type.equals(LanguageSaturationType.NA)) {
+	public final void setTypedCount(final LanguageSaturationType pType,
+											  final int taggedStringCount) {
+		setType(pType);
+		if (pType.equals(LanguageSaturationType.NA)) {
 			this.taggedLiteralsCount = 0;
 		} else {
 			this.taggedLiteralsCount = taggedStringCount;

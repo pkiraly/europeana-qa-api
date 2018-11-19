@@ -55,9 +55,9 @@ public class EdmDatasetManagerTest {
 	@Test
 	public void testGetDatasets() {
 		EdmDatasetManager manager = new EdmDatasetManager();
-		assertEquals(1, (int) manager.getDatasets().get("00101_M_PT_Gulbenkian_biblioteca_digital"));
-		assertEquals(1501, (int) manager.getDatasets().get("9200221_Ag_EU_TEL_a1122_Romania_Academy"));
-		assertEquals(1725, (int) manager.getDatasets().get("92062_Ag_EU_TEL_a0480_Austria"));
+		assertEquals(1, (int) manager.getData().get("00101_M_PT_Gulbenkian_biblioteca_digital"));
+		assertEquals(1501, (int) manager.getData().get("9200221_Ag_EU_TEL_a1122_Romania_Academy"));
+		assertEquals(1725, (int) manager.getData().get("92062_Ag_EU_TEL_a0480_Austria"));
 	}
 
 	@Test

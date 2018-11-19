@@ -5476,3 +5476,20 @@
 5476;ОФХ архивных документов, старопечатных изданий и рукописей
 5477;Универзитетска библиотека Београд
 5478;Ազգային գրադարանը գրադարանագիտական
+5479;Biblioteca Digital Memoria de Madrid
+5480;Bibliothèque municipale de Chambéry
+5481;Church of the Visitation of the Blessed Virgin Mary
+5482;Den Hirschsprungske Samling
+5483;Kode Art Museum of Bergen
+5484;Library of the National Archives, Bucharest
+5485;Magyar Kereskedelmi és Vendéglátóipari Múzeum
+5486;M. K. Čiurlionis National Museum of Art
+5487;Museen Böttcherstraße, Paula Modersohn-Becker Museum, Bremen
+5488;Museu del Disseny de Barcelona
+5489;Sapienza Digital Library
+5490;Šiaulių „Aušros“ muziejus
+5491;Trapholt Museum for Moderne Kunst
+5492;Vilnius Cathedral
+5493;Επιτροπή Ποντιακών Μελετών (Ε.Π.Μ.)
+5494;Εφορεία Αρχαιοτήτων Ευβοίας
+5495;Державний політехнічний музей

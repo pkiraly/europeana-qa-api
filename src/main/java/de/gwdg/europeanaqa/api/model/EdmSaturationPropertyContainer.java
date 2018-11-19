@@ -5,13 +5,13 @@ package de.gwdg.europeanaqa.api.model;
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
 class EdmSaturationPropertyContainer {
-	
+
 	public static final int PROVIDER_PROXY = 0;
 	public static final int EUROPEANA_PROXY = 1;
 
-	String propertyName;
-	EdmSaturationProperty providerProxy;
-	EdmSaturationProperty europeanaProxy;
+	private String propertyName;
+	private EdmSaturationProperty providerProxy;
+	private EdmSaturationProperty europeanaProxy;
 
 	EdmSaturationPropertyContainer(String propertyName) {
 		this.propertyName = propertyName;
