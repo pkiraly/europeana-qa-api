@@ -311,7 +311,8 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 									ENTITY_BRANCH_LABELS.get(branch.getLabel())
 								);
 							} else {
-								System.err.println(jsonFragment.getClass().getCanonicalName());
+								LOGGER.info("jsonFragment is not String, but "
+									+ jsonFragment.getClass().getCanonicalName());
 							}
 						}
 					}

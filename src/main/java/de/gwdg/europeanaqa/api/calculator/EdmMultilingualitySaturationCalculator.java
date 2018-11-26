@@ -34,13 +34,19 @@ import java.util.logging.Logger;
  */
 public class EdmMultilingualitySaturationCalculator implements Calculator, Serializable {
 
+	private static final Logger LOGGER = Logger.getLogger(
+		EdmMultilingualitySaturationCalculator.class.getCanonicalName());
+
+	/**
+	 * Name of the calculator.
+	 */
 	public static final String CALCULATOR_NAME = "edmMultilingualitySaturation";
 
-	private static final Logger LOGGER = Logger.getLogger(EdmMultilingualitySaturationCalculator.class.getCanonicalName());
 	private static final String NA = "n.a.";
-	public static final String FULLBEAN_SCHEMA_PREF_LABEL_SELECTOR =
+
+	private static final String FULLBEAN_SCHEMA_PREF_LABEL_SELECTOR =
 		"%s[?(@['about'] == '%s')]['prefLabel']";
-	public static final String OAIXML_SCHEMA_PREF_LABEL_SELECTOR =
+	private static final String OAIXML_SCHEMA_PREF_LABEL_SELECTOR =
 		"%s[?(@['@about'] == '%s')]['skos:prefLabel']";
 	private boolean isEdmFullBeanSchema = false;
 
@@ -64,6 +70,10 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 			this.value = value;
 		}
 
+		/**
+		 * Gets the value.
+		 * @return The value.
+		 */
 		public int value() {
 			return value;
 		}
@@ -83,10 +93,17 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 	private EdmSaturationMap edmSaturationMap;
 	private String recordId;
 
+	/**
+	 * Creates an object.
+	 */
 	public EdmMultilingualitySaturationCalculator() {
 		// this.recordID = null;
 	}
 
+	/**
+	 * Constructor.
+	 * @param schema The schema object.
+	 */
 	public EdmMultilingualitySaturationCalculator(Schema schema) {
 		this.schema = schema;
 		isEdmFullBeanSchema = schema.getClass().getSimpleName().equals("EdmFullBeanSchema");
@@ -129,7 +146,6 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 		contextualIds = calculator.getContextualIds(cache);
 		rawLanguageSaturationMap = new LinkedHashMap<>();
 		measureHierarchicalSchema(cache);
-		// System.err.println(edmSaturationMap);
 		// saturationMap = calculateScore(rawLanguageSaturationMap);
 	}
 
@@ -228,7 +244,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 			languages, individualLanguages.size()
 		);
 		if (best.size() == 0) {
-			System.err.println(String.format(
+			LOGGER.severe(String.format(
 				"NULL in %s",
 				address
 			));
@@ -511,6 +527,10 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 		return skippedEntryChecker;
 	}
 
+	/**
+	 * Sets a skipped entity checker.
+	 * @param skippedEntryChecker a skipped entity checker
+	 */
 	public void setSkippedEntryChecker(SkippedEntryChecker skippedEntryChecker) {
 		this.skippedEntryChecker = skippedEntryChecker;
 		skippedEntitySelector.setSkippedEntryChecker(skippedEntryChecker);
@@ -523,6 +543,12 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 		return contextualIds.keySet().contains(field.getValue());
 	}
 
+	/**
+	 * Creates a JSON path selector for prefLabel of a contextual entity identified by an URI.
+	 * @param jsonPath The JSON path of the entity
+	 * @param url The URI identifier
+	 * @return a JSON path selector of the prefLabel
+	 */
 	public String selectEntityById(String jsonPath, String url) {
 		String pattern = isEdmFullBeanSchema
 			? FULLBEAN_SCHEMA_PREF_LABEL_SELECTOR

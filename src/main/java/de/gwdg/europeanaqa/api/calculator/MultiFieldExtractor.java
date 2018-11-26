@@ -23,13 +23,18 @@ import java.util.logging.Logger;
  */
 public class MultiFieldExtractor implements Calculator, Serializable {
 
-	private static final Logger LOGGER = Logger.getLogger(MultiFieldExtractor.class.getCanonicalName());
+	private static final Logger LOGGER = Logger.getLogger(
+		MultiFieldExtractor.class.getCanonicalName());
 
+	/**
+	 * Name of the calculator.
+	 */
 	public static final String CALCULATOR_NAME = "edmFieldExtractor";
 
-	private static final String ILLEGAL_ARGUMENT_TPL = "An EDM-based schema should define path for '%' in the extractable fields.";
+	private static final String ILLEGAL_ARGUMENT_TPL =
+		"An EDM-based schema should define path for '%' in the extractable fields.";
 
-	public static final String FIELD_NAME = "recordId";
+	private static final String FIELD_NAME = "recordId";
 	private static final String DATA_PROVIDER = "dataProvider";
 	private static final String DATASET = "dataset";
 
@@ -39,6 +44,10 @@ public class MultiFieldExtractor implements Calculator, Serializable {
 	private FieldCounter<List<String>> resultMap;
 	private Schema schema;
 
+	/**
+	 * Creates a new object.
+	 * @param schema The schema
+	 */
 	public MultiFieldExtractor(Schema schema) {
 		this.schema = schema;
 	}

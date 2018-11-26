@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
+ * Container of EDM multilingual saturation properties.
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
 public class EdmSaturationProperty {
@@ -17,6 +17,10 @@ public class EdmSaturationProperty {
 	private Set<String> distinctLanguages;
 	private int distinctLanguageCount = 0;
 
+	/**
+	 * Gets the number of literals per language.
+	 * @return number of literals per language
+	 */
 	public final double getNumberOfLiteralsPerLanguage() {
 		if (distinctLanguageCount == 0) {
 			return 0.0;
@@ -24,31 +28,60 @@ public class EdmSaturationProperty {
 		return (double) taggedLiteralsCount / (double) distinctLanguageCount;
 	}
 
+	/**
+	 * Gets the number of tagged literals.
+	 * @return number of tagged literals
+	 */
 	public final int getTaggedLiteralsCount() {
 		return taggedLiteralsCount;
 	}
 
+	/**
+	 * Sets the number of tagged literals.
+	 * @param pTaggedLiteralsCount number of tagged literals
+	 */
 	public final void setTaggedLiteralsCount(final int pTaggedLiteralsCount) {
 		this.taggedLiteralsCount = pTaggedLiteralsCount;
 	}
 
+	/**
+	 * Gets the language saturation type.
+	 * @return language saturation type
+	 */
 	public final LanguageSaturationType getType() {
 		return type;
 	}
 
+	/**
+	 * Sets the language saturation type.
+	 * @param pType language saturation type
+	 */
 	public final void setType(final LanguageSaturationType pType) {
 		this.type = pType;
 	}
 
+	/**
+	 * Gets the distinct languages.
+	 * @return Set of distinct languages
+	 */
 	public final Set<String> getDistinctLanguages() {
 		return distinctLanguages;
 	}
 
+	/**
+	 * Sets the distinct languages.
+	 * @param pDistinctLanguages distinct languages
+	 */
 	public final void setDistinctLanguages(final Set<String> pDistinctLanguages) {
 		this.distinctLanguages = pDistinctLanguages;
 		distinctLanguageCount = distinctLanguages.size();
 	}
 
+	/**
+	 * Get the multilinguality values for a property.
+	 * @param propertyName The property name.
+	 * @return multilinguality values.
+	 */
 	public final FieldCounter<Double> getCsv(final String propertyName) {
 		FieldCounter<Double> values = new FieldCounter<>();
 		if (getType().isTaggedLiteral()) {
@@ -91,13 +124,18 @@ public class EdmSaturationProperty {
 		        + '}';
 	}
 
+	/**
+	 * Sets language saturation type and tagged literals count.
+	 * @param pType language saturation type
+	 * @param pTaggedLiteralsCount tagged literals count
+	 */
 	public final void setTypedCount(final LanguageSaturationType pType,
-											  final int taggedStringCount) {
+											  final int pTaggedLiteralsCount) {
 		setType(pType);
 		if (pType.equals(LanguageSaturationType.NA)) {
 			this.taggedLiteralsCount = 0;
 		} else {
-			this.taggedLiteralsCount = taggedStringCount;
+			this.taggedLiteralsCount = pTaggedLiteralsCount;
 		}
 	}
 }

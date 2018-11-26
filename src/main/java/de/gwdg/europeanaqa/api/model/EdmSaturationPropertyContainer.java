@@ -45,6 +45,10 @@ class EdmSaturationPropertyContainer {
 
 	@Override
 	public String toString() {
-		return "{" + "propertyName=" + propertyName + ", providerProxy=" + providerProxy + ", europeanaProxy=" + europeanaProxy + '}';
+		return "{"
+			+ "propertyName=" + propertyName
+			+ ", providerProxy=" + providerProxy
+			+ ", europeanaProxy=" + europeanaProxy
+			+ '}';
 	}
 }

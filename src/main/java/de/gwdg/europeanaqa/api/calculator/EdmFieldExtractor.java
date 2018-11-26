@@ -24,11 +24,16 @@ import java.util.logging.Logger;
  */
 public class EdmFieldExtractor extends FieldExtractor {
 
-	private static final Logger LOGGER = Logger.getLogger(EdmFieldExtractor.class.getCanonicalName());
+	private static final Logger LOGGER = Logger.getLogger(
+		EdmFieldExtractor.class.getCanonicalName());
 
+	/**
+	 * Name of the calculator.
+	 */
 	public static final String CALCULATOR_NAME = "edmFieldExtractor";
 
-	private static final String ILLEGAL_ARGUMENT_TPL = "An EDM-based schema should define path for '%' in the extractable fields.";
+	private static final String ILLEGAL_ARGUMENT_TPL =
+		"An EDM-based schema should define path for '%' in the extractable fields.";
 
 	private static final String DATA_PROVIDER = "dataProvider";
 	private static final String DATASET = "dataset";
@@ -43,16 +48,26 @@ public class EdmFieldExtractor extends FieldExtractor {
 	private Map<String, AbbreviationManager> abbreviationManagers;
 	private boolean abbreviate;
 
+	/**
+	 * Creates a new object.
+	 * @param schema The schema object
+	 */
 	public EdmFieldExtractor(Schema schema) {
 		super(schema);
 		if (!schema.getExtractableFields().containsKey(super.FIELD_NAME)) {
-			throw new IllegalArgumentException(String.format(ILLEGAL_ARGUMENT_TPL, super.FIELD_NAME));
+			throw new IllegalArgumentException(
+				String.format(ILLEGAL_ARGUMENT_TPL, super.FIELD_NAME)
+			);
 		}
 		if (!schema.getExtractableFields().containsKey(DATASET)) {
-			throw new IllegalArgumentException(String.format(ILLEGAL_ARGUMENT_TPL, DATASET));
+			throw new IllegalArgumentException(
+				String.format(ILLEGAL_ARGUMENT_TPL, DATASET)
+			);
 		}
 		if (!schema.getExtractableFields().containsKey(DATA_PROVIDER)) {
-			throw new IllegalArgumentException(String.format(ILLEGAL_ARGUMENT_TPL, DATA_PROVIDER));
+			throw new IllegalArgumentException(
+				String.format(ILLEGAL_ARGUMENT_TPL, DATA_PROVIDER)
+			);
 		}
 		abbreviationManagers = new HashMap<>();
 	}
@@ -91,7 +106,7 @@ public class EdmFieldExtractor extends FieldExtractor {
 		for (Map.Entry<String, String> entry : schema.getExtractableFields().entrySet()) {
 			String field = entry.getKey();
 			if (field.equals(super.FIELD_NAME)
-			   || field.equals(DATASET)
+				|| field.equals(DATASET)
 				|| field.equals(DATA_PROVIDER)) {
 				continue;
 			}
@@ -145,6 +160,11 @@ public class EdmFieldExtractor extends FieldExtractor {
 		return schema.getExtractableFields().get(super.FIELD_NAME);
 	}
 
+	/**
+	 * Gets the data provider abbreviation by its name.
+	 * @param dataProvider The data provider name
+	 * @return The abbreviation
+	 */
 	public String getDataProviderCode(String dataProvider) {
 		String dataProviderCode;
 		if (dataProvider == null) {
@@ -157,6 +177,11 @@ public class EdmFieldExtractor extends FieldExtractor {
 		return dataProviderCode;
 	}
 
+	/**
+	 * Gets the dataset abbreviation by its name.
+	 * @param dataset The dataset name
+	 * @return The abbreviation
+	 */
 	public String getDatasetCode(String dataset) {
 		String datasetCode;
 		if (dataset == null) {
@@ -169,22 +194,43 @@ public class EdmFieldExtractor extends FieldExtractor {
 		return datasetCode;
 	}
 
+	/**
+	 * Sets data provider manager.
+	 * @param dataProviderManager data provider manager
+	 */
 	public void setDataProviderManager(EdmDataProviderManager dataProviderManager) {
 		this.dataProviderManager = dataProviderManager;
 	}
 
+	/**
+	 * Sets dataset manager.
+	 * @param datasetsManager dataset manager
+	 */
 	public void setDatasetManager(EdmDatasetManager datasetsManager) {
 		this.datasetsManager = datasetsManager;
 	}
 
+	/**
+	 * Adds an abbreviation manager.
+	 * @param field The field to use the manager for
+	 * @param manager The abbreviation manager
+	 */
 	public void addAbbreviationManager(String field, AbbreviationManager manager) {
 		abbreviationManagers.put(field, manager);
 	}
 
+	/**
+	 * Is the abbrevation feature enabled?
+	 * @return The abbreviation flag
+	 */
 	public boolean abbreviate() {
 		return abbreviate;
 	}
 
+	/**
+	 * Enable abbreviation.
+	 * @param abbreviate The abbreviation flag
+	 */
 	public void abbreviate(boolean abbreviate) {
 		this.abbreviate = abbreviate;
 	}

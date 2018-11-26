@@ -62,6 +62,11 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 			this.name = name;
 		}
 
+		/**
+		 * Gets format by format code.
+		 * @param code Format code
+		 * @return The format
+		 */
 		public static Formats byCode(String code) {
 			for (Formats format : values()) {
 				if (format.name.equals(code)) {
@@ -82,23 +87,52 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 	private boolean extendedFieldExtraction = false;
 	private Formats format = Formats.OAI_PMH_XML;
 
+	/**
+	 * Creates an EdmCalculatorFacade object.
+	 */
 	public EdmCalculatorFacade() { }
 
+	/**
+	 * Creates an EdmCalculatorFacade object.
+	 *
+	 * @param enableFieldExistenceMeasurement Flag to enable field existence measurement
+	 * @param enableFieldCardinalityMeasurement Flag to enable field cardinality measurement
+	 * @param enableCompletenessMeasurement Flag to enable completeness measurement
+	 * @param enableTfIdfMeasurement  Flag to enable TF-IDF measurement
+	 * @param enableProblemCatalogMeasurement Flag to enable problem catalog measurement
+	 */
 	public EdmCalculatorFacade(boolean enableFieldExistenceMeasurement,
 			boolean enableFieldCardinalityMeasurement,
 			boolean enableCompletenessMeasurement,
 			boolean enableTfIdfMeasurement,
 			boolean enableProblemCatalogMeasurement) {
-		super(enableFieldExistenceMeasurement, enableFieldCardinalityMeasurement, enableCompletenessMeasurement, enableTfIdfMeasurement,
-			enableProblemCatalogMeasurement);
+		super(
+			enableFieldExistenceMeasurement, enableFieldCardinalityMeasurement,
+			enableCompletenessMeasurement, enableTfIdfMeasurement,
+			enableProblemCatalogMeasurement
+		);
 	}
 
+	/**
+	 * Creates an EdmCalculatorFacade object.
+	 *
+	 * @param enableFieldExistenceMeasurement Flag to enable field existence measurement
+	 * @param enableFieldCardinalityMeasurement Flag to enable field cardinality measurement
+	 * @param enableCompletenessMeasurement Flag to enable completeness measurement
+	 * @param enableTfIdfMeasurement  Flag to enable TF-IDF measurement
+	 * @param enableProblemCatalogMeasurement Flag to enable problem catalog measurement
+	 * @param abbreviate Flag to abbreviate extracted fields
+	 */
 	public EdmCalculatorFacade(boolean enableFieldExistenceMeasurement,
 			boolean enableFieldCardinalityMeasurement,
 			boolean enableCompletenessMeasurement, boolean enableTfIdfMeasurement,
 			boolean enableProblemCatalogMeasurement,
 			boolean abbreviate) {
-		super(enableFieldExistenceMeasurement, enableFieldCardinalityMeasurement, enableCompletenessMeasurement, enableTfIdfMeasurement, enableProblemCatalogMeasurement);
+		super(
+			enableFieldExistenceMeasurement, enableFieldCardinalityMeasurement,
+			enableCompletenessMeasurement, enableTfIdfMeasurement,
+			enableProblemCatalogMeasurement
+		);
 		this.abbreviate = abbreviate;
 		changed();
 	}
@@ -210,37 +244,72 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		return this.<EdmFieldInstance>measureWithGenerics(jsonRecord);
 	}
 
+	/**
+	 * Set abbreviation for extracted fields.
+	 * @param abbreviate Flag to enable abbreviation
+	 */
 	public void abbreviate(boolean abbreviate) {
 		this.abbreviate = abbreviate;
 	}
 
+	/**
+	 * Gets abbreviation setting.
+	 * @return The abbreviation flag
+	 */
 	public boolean abbreviate() {
 		return abbreviate;
 	}
 
+	/**
+	 * Is disconnected entity feature enabled?
+	 * @return disconnected entity flag.
+	 */
 	public boolean isDisconnectedEntityEnabled() {
 		return disconnectedEntityMeasurementEnabled;
 	}
 
+	/**
+	 * Flag to enable disconnected entity feature.
+	 * @param disconnectedEntityMeasurementEnabled disconnected entity flag
+	 */
 	public void enableDisconnectedEntityMeasurement(boolean disconnectedEntityMeasurementEnabled) {
 		this.disconnectedEntityMeasurementEnabled = disconnectedEntityMeasurementEnabled;
 	}
 
-
+	/**
+	 * Is uniqueness measurement enabled?
+	 * @return uniqueness measurement flag
+	 */
 	public boolean isUniquenessMeasurementEnabled() {
 		return uniquenessMeasurementEnabled;
 	}
 
+	/**
+	 * Flag to enable uniqueness measurement.
+	 * @param uniquenessMeasurementEnabled The flag
+	 */
 	public void enableUniquenessMeasurementEnabled(boolean uniquenessMeasurementEnabled) {
 		this.uniquenessMeasurementEnabled = uniquenessMeasurementEnabled;
 	}
 
+	/**
+	 * Saves data providers to a file.
+	 * @param fileName The target filename
+	 * @throws FileNotFoundException If file is not found
+	 * @throws UnsupportedEncodingException If encoding is unsupported
+	 */
 	public void saveDataProviders(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
 		if (dataProviderManager != null) {
 			dataProviderManager.save(fileName);
 		}
 	}
 
+	/**
+	 * Saves datasets to a file.
+	 * @param fileName Target file name.
+	 * @throws FileNotFoundException If file is not found
+	 * @throws UnsupportedEncodingException If encoding is unsupported
+	 */
 	public void saveDatasets(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
 		if (datasetManager != null) {
 			datasetManager.save(fileName);
