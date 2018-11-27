@@ -221,3 +221,4 @@ because the first Hamlet doesn't have any language code specified, and the secon
 
 [![Build Status](https://travis-ci.org/pkiraly/europeana-qa-api.svg?branch=master)](https://travis-ci.org/pkiraly/europeana-qa-api)
 [![Coverage Status](https://coveralls.io/repos/github/pkiraly/europeana-qa-api/badge.svg?branch=master)](https://coveralls.io/github/pkiraly/europeana-qa-api?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/986185e5d939601ba73f/maintainability)](https://codeclimate.com/github/pkiraly/europeana-qa-api/maintainability)
