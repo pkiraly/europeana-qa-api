@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.net.URISyntaxException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ProxyBasedIteratorTest {
 
@@ -31,42 +32,68 @@ public class ProxyBasedIteratorTest {
 	public void WhenCreateNewWithOAI_ThereAreTwoProxies() {
 		schema = new EdmOaiPmhXmlSchema();
 		ProxyBasedIterator iterator = new ProxyBasedIterator(schema);
-		assertEquals(2, iterator.getProxies().size());
+		assertNotNull(iterator.getProxies());
+		assertNotNull(iterator.getProxies().getProviderProxy());
+		assertNotNull(iterator.getProxies().getEuropeanaProxy());
 
-		JsonBranch providerProxyBranch = iterator.getProxies().get(0);
-		assertEquals("$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'false')]", providerProxyBranch.getJsonPath());
+		JsonBranch providerProxyBranch = iterator.getProxies().getProviderProxy();
+		assertEquals(
+			"$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'false')]",
+			providerProxyBranch.getJsonPath()
+		);
 		assertEquals(56, providerProxyBranch.getChildren().size());
-		assertEquals("$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'false')][*]['@about']",
-			providerProxyBranch.getChildren().get(0).getAbsoluteJsonPath());
+		assertEquals(
+			"$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'false')][*]['@about']",
+			providerProxyBranch.getChildren().get(0).getAbsoluteJsonPath()
+		);
 
-		JsonBranch europeanaProxyBranch = iterator.getProxies().get(1);
-		assertEquals("$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'true')]", europeanaProxyBranch.getJsonPath());
+		JsonBranch europeanaProxyBranch = iterator.getProxies().getEuropeanaProxy();
+		assertEquals(
+			"$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'true')]",
+			europeanaProxyBranch.getJsonPath()
+		);
 		assertEquals(56, europeanaProxyBranch.getChildren().size());
-		assertEquals("$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'true')]",
-			europeanaProxyBranch.getChildren().get(0).getParent().getJsonPath());
-		assertEquals("$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'true')][*]['@about']",
-			europeanaProxyBranch.getChildren().get(0).getAbsoluteJsonPath());
+		assertEquals(
+			"$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'true')]",
+			europeanaProxyBranch.getChildren().get(0).getParent().getJsonPath()
+		);
+		assertEquals(
+			"$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'true')][*]['@about']",
+			europeanaProxyBranch.getChildren().get(0).getAbsoluteJsonPath()
+		);
 	}
 
 	@Test
 	public void WhenCreateNewWithFullBean_ThereAreTwoProxies() {
 		schema = new EdmFullBeanSchema();
 		ProxyBasedIterator iterator = new ProxyBasedIterator(schema);
-		assertEquals(2, iterator.getProxies().size());
+		assertNotNull(iterator.getProxies());
+		assertNotNull(iterator.getProxies().getProviderProxy());
+		assertNotNull(iterator.getProxies().getEuropeanaProxy());
 
-		JsonBranch providerProxyBranch = iterator.getProxies().get(0);
-		assertEquals("$.['proxies'][?(@['europeanaProxy'] == false)]", providerProxyBranch.getJsonPath());
+		JsonBranch providerProxyBranch = iterator.getProxies().getProviderProxy();
+		assertEquals(
+			"$.['proxies'][?(@['europeanaProxy'] == false)]",
+			providerProxyBranch.getJsonPath());
 		assertEquals(56, providerProxyBranch.getChildren().size());
-		assertEquals("$.['proxies'][?(@['europeanaProxy'] == false)][*]['about']",
-			providerProxyBranch.getChildren().get(0).getAbsoluteJsonPath());
+		assertEquals(
+			"$.['proxies'][?(@['europeanaProxy'] == false)][*]['about']",
+			providerProxyBranch.getChildren().get(0).getAbsoluteJsonPath()
+		);
 
-		JsonBranch europeanaProxyBranch = iterator.getProxies().get(1);
-		assertEquals("$.['proxies'][?(@['europeanaProxy'] == true)]", europeanaProxyBranch.getJsonPath());
+		JsonBranch europeanaProxyBranch = iterator.getProxies().getEuropeanaProxy();
+		assertEquals(
+			"$.['proxies'][?(@['europeanaProxy'] == true)]",
+			europeanaProxyBranch.getJsonPath());
 		assertEquals(56, europeanaProxyBranch.getChildren().size());
-		assertEquals("$.['proxies'][?(@['europeanaProxy'] == true)]",
-			europeanaProxyBranch.getChildren().get(0).getParent().getJsonPath());
-		assertEquals("$.['proxies'][?(@['europeanaProxy'] == true)][*]['about']",
-			europeanaProxyBranch.getChildren().get(0).getAbsoluteJsonPath());
+		assertEquals(
+			"$.['proxies'][?(@['europeanaProxy'] == true)]",
+			europeanaProxyBranch.getChildren().get(0).getParent().getJsonPath()
+		);
+		assertEquals(
+			"$.['proxies'][?(@['europeanaProxy'] == true)][*]['about']",
+			europeanaProxyBranch.getChildren().get(0).getAbsoluteJsonPath()
+		);
 	}
 
 	@Test

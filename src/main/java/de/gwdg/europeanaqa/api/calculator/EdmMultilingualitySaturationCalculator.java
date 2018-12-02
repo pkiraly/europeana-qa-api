@@ -4,6 +4,7 @@ import com.jayway.jsonpath.InvalidJsonException;
 import de.gwdg.europeanaqa.api.model.EdmSaturationMap;
 import de.gwdg.europeanaqa.api.model.EdmSaturationProperty;
 import de.gwdg.europeanaqa.api.model.EntityType;
+import de.gwdg.europeanaqa.api.model.Proxies;
 import de.gwdg.metadataqa.api.calculator.SkippedEntryChecker;
 import de.gwdg.metadataqa.api.counter.BasicCounter;
 import de.gwdg.metadataqa.api.counter.FieldCounter;
@@ -108,16 +109,11 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 	public EdmMultilingualitySaturationCalculator(Schema schema) {
 		this.schema = schema;
 		isEdmFullBeanSchema = schema.getClass().getSimpleName().equals("EdmFullBeanSchema");
-		JsonBranch providerProxy = schema.getPathByLabel("Proxy");
-		JsonBranch europeanaProxy = null;
-		try {
-			europeanaProxy = (JsonBranch) providerProxy.clone();
-			europeanaProxy.setJsonPath(
-				providerProxy.getJsonPath().replace("false", "true"));
-		} catch (CloneNotSupportedException ex) {
-			LOGGER.severe(ex.getMessage());
-		}
-		providers = Arrays.asList(providerProxy, europeanaProxy);
+		Proxies proxies = new Proxies(schema);
+		providers = Arrays.asList(
+			proxies.getProviderProxy(),
+			proxies.getEuropeanaProxy()
+		);
 	}
 
 	@Override

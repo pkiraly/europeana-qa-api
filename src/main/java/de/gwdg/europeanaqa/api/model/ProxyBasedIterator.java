@@ -2,13 +2,11 @@ package de.gwdg.europeanaqa.api.model;
 
 import de.gwdg.europeanaqa.api.calculator.DisconnectedEntityCalculator;
 import de.gwdg.metadataqa.api.interfaces.Calculator;
-import de.gwdg.metadataqa.api.json.JsonBranch;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -25,7 +23,7 @@ public class ProxyBasedIterator implements Calculator, Serializable {
 	);
 
 	private final Schema schema;
-	private final List<JsonBranch> proxies;
+	private final Proxies proxies;
 
 	/**
 	 * Constructs a new ProxyBasedIterator.
@@ -34,20 +32,10 @@ public class ProxyBasedIterator implements Calculator, Serializable {
 	 */
 	public ProxyBasedIterator(Schema schema) {
 		this.schema = schema;
-
-		JsonBranch providerProxy = schema.getPathByLabel("Proxy");
-		JsonBranch europeanaProxy = null;
-		try {
-			europeanaProxy = (JsonBranch) providerProxy.clone();
-			europeanaProxy.setJsonPath(
-				providerProxy.getJsonPath().replace("false", "true"));
-		} catch (CloneNotSupportedException ex) {
-			LOGGER.severe(ex.getMessage());
-		}
-		proxies = Arrays.asList(providerProxy, europeanaProxy);
+		proxies = new Proxies(schema);
 	}
 
-	public List<JsonBranch> getProxies() {
+	public Proxies getProxies() {
 		return proxies;
 	}
 
