@@ -52,6 +52,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 	private boolean uniquenessMeasurementEnabled = false;
 	private boolean extendedFieldExtraction = false;
 	private Format format = Format.OAI_PMH_XML;
+	private EdmSchema schema = null;
 
 	/**
 	 * Creates an EdmCalculatorFacade object.
@@ -105,7 +106,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 	@Override
 	public void configure() {
-		EdmSchema schema = (EdmSchema) getSchema();
+		schema = createSchema();
 
 		calculators = new ArrayList<>();
 		buildEdmFieldExtractor(schema);
@@ -319,8 +320,11 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		this.extendedFieldExtraction = extendedFieldExtraction;
 	}
 
-	@Override
-	public Schema getSchema() {
+	/**
+	 * Create a schema based on the format.
+	 * @return The format dependant EDM schema.
+	 */
+	public EdmSchema createSchema() {
 		EdmSchema schema;
 		if (format == null) {
 			schema = new EdmOaiPmhXmlSchema();
@@ -332,6 +336,14 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 				default:
 					schema = new EdmOaiPmhXmlSchema(); break;
 			}
+		}
+		return schema;
+	}
+
+	@Override
+	public Schema getSchema() {
+		if (schema == null) {
+			schema = createSchema();
 		}
 		return schema;
 	}

@@ -6,6 +6,11 @@ import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -74,12 +79,55 @@ public class CalculatorFacadeTest {
 		assertEquals(Format.OAI_PMH_XML, calculator.getFormat());
 		assertEquals(EdmOaiPmhXmlSchema.class, calculator.getSchema().getClass());
 
+		calculator = new EdmCalculatorFacade(true, true, true, false, true);
 		calculator.setFormat(Format.FULLBEAN);
 		assertEquals(Format.FULLBEAN, calculator.getFormat());
 		assertEquals(EdmFullBeanSchema.class, calculator.getSchema().getClass());
 
+		calculator = new EdmCalculatorFacade(true, true, true, false, true);
 		calculator.setFormat(null);
 		assertEquals(null, calculator.getFormat());
 		assertEquals(EdmOaiPmhXmlSchema.class, calculator.getSchema().getClass());
+	}
+
+	@Test
+	public void testAbbreviate() throws URISyntaxException, IOException {
+		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
+		assertFalse(calculator.abbreviate());
+
+		calculator.abbreviate(false);
+		assertFalse(calculator.abbreviate());
+
+		calculator.abbreviate(true);
+		assertTrue(calculator.abbreviate());
+	}
+
+	@Test
+	public void testExtendedFieldExtraction() throws URISyntaxException, IOException {
+		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
+		calculator.setFormat(Format.FULLBEAN);
+		calculator.setExtendedFieldExtraction(true);
+		assertTrue(calculator.isExtendedFieldExtraction());
+		calculator.configure();
+
+		Map<String, String> extractableFields = calculator.getSchema().getExtractableFields();
+		assertEquals(6, extractableFields.size());
+		assertEquals(
+			"recordId, dataset, dataProvider, provider, country, language",
+			StringUtils.join(extractableFields.keySet(), ", ")
+		);
+
+		calculator = new EdmCalculatorFacade(true, true, true, false, true);
+		calculator.setFormat(Format.OAI_PMH_XML);
+		calculator.setExtendedFieldExtraction(true);
+		assertTrue(calculator.isExtendedFieldExtraction());
+		calculator.configure();
+
+		extractableFields = calculator.getSchema().getExtractableFields();
+		assertEquals(6, extractableFields.size());
+		assertEquals(
+			"recordId, dataset, dataProvider, provider, country, language",
+			StringUtils.join(extractableFields.keySet(), ", ")
+		);
 	}
 }
