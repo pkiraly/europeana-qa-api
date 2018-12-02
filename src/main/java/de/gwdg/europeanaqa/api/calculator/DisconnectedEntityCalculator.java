@@ -3,6 +3,7 @@ package de.gwdg.europeanaqa.api.calculator;
 import de.gwdg.europeanaqa.api.model.EdmStructure;
 import de.gwdg.europeanaqa.api.model.EntityType;
 import de.gwdg.europeanaqa.api.model.LinkRegister;
+import de.gwdg.europeanaqa.api.model.LinkType;
 import de.gwdg.europeanaqa.api.model.Proxies;
 import de.gwdg.europeanaqa.api.model.ProxyType;
 import de.gwdg.metadataqa.api.counter.FieldCounter;
@@ -76,38 +77,13 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
 	);
 
 	/**
-	 * Register the fields belong to the contextual entities.
-	 */
-	private static final Map<EntityType, List<String>> CONTEXTUAL_LINK_FIELDS =
-		new HashMap<>();
-	static {
-		CONTEXTUAL_LINK_FIELDS.put(EntityType.AGENT, Arrays.asList(
-			"Agent/edm:hasMet", "Agent/edm:isRelatedTo",
-			"Agent/owl:sameAs"
-		));
-		CONTEXTUAL_LINK_FIELDS.put(EntityType.CONCEPT, Arrays.asList(
-			"Concept/skos:broader", "Concept/skos:narrower",
-			"Concept/skos:related", "Concept/skos:broadMatch",
-			"Concept/skos:narrowMatch", "Concept/skos:relatedMatch",
-			"Concept/skos:exactMatch", "Concept/skos:closeMatch"
-		));
-		CONTEXTUAL_LINK_FIELDS.put(EntityType.PLACE, Arrays.asList(
-			"Place/dcterms:isPartOf", "Place/dcterms:hasPart",
-			"Place/owl:sameAs"
-		));
-		CONTEXTUAL_LINK_FIELDS.put(EntityType.TIMESPAN, Arrays.asList(
-			"Timespan/dcterms:isPartOf", "Timespan/dcterms:hasPart",
-			"Timespan/edm:isNextInSequence", "Timespan/owl:sameAs"
-		));
-	}
-
-	/**
 	 * The schema.
 	 */
 	private Schema schema;
 	private Proxies proxies;
 
 	private EdmStructure edmStructure;
+	private LinkRegister linkRegister;
 
 	/**
 	 * Contructor.
@@ -127,12 +103,12 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
 	public void measure(final JsonPathCache cache) {
 		resultMap = new FieldCounter<>();
 
-		LinkRegister register = new LinkRegister();
+		linkRegister = new LinkRegister();
 		Map<String, EntityType> contextualIds = getContextualIds(cache);
 		int contextualEntityCount = contextualIds.size();
-		register.putAll(
+		linkRegister.putAll(
 			new ArrayList(contextualIds.keySet()),
-			LinkRegister.LinkingType.NONE
+			LinkType.NONE
 		);
 
 		edmStructure = new EdmStructure();
@@ -152,7 +128,7 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
 		checkContextualIDsInProxies(contextualIds);
 		// europeanaProxyLinksCount -= edmStructure.getEuropeanaProxyLinks().size();
 		int contextualLinksCount = contextualIds.size();
-		checkContextualIDsInEntities(contextualIds, cache, register);
+		checkContextualIDsInEntities(contextualIds, cache);
 		contextualLinksCount -= contextualIds.size();
 
 		if (contextualIds.size() > 0) {
@@ -184,25 +160,22 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
 	/**
 	 * Checks the internal proxy links.
 	 * @param cache
-	 * @param register
 	 * @param uri
 	 * @param type
-	 * @return
+	 * @return Number of links found.
 	 */
-	private boolean checkInternalProxyLinks(JsonPathCache cache,
-														 LinkRegister register,
-														 final String uri,
-														 final EntityType type) {
+	private boolean checkInternalEntityLinks(JsonPathCache cache,
+	                                        final String uri,
+	                                        final EntityType type) {
 		boolean found = false;
-		List<String> paths = CONTEXTUAL_LINK_FIELDS.get(type);
-		for (String field : paths) {
-			JsonBranch branch = schema.getPathByLabel(field);
-			List<EdmFieldInstance> fieldInstances = cache.get(branch.getAbsoluteJsonPath());
+		for (String entityField : type.getLinkableFields()) {
+			JsonBranch entityBranch = schema.getPathByLabel(entityField);
+			List<EdmFieldInstance> fieldInstances = cache.get(entityBranch.getAbsoluteJsonPath());
 			if (fieldInstances != null) {
 				for (EdmFieldInstance fieldInstance : fieldInstances) {
 					if (fieldInstance.isUrl()) {
 						if (fieldInstance.getUrl().equals(uri)) {
-							register.put(uri, LinkRegister.LinkingType.CONTEXTUAL_ENTITY);
+							linkRegister.put(uri, LinkType.CONTEXTUAL_ENTITY);
 							found = true;
 							break;
 						}
@@ -320,19 +293,17 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
 	 * Check the the contextual IDs in the entities.
 	 * @param contextualIds
 	 * @param cache
-	 * @param register
 	 */
 	private void checkContextualIDsInEntities(Map<String, EntityType> contextualIds,
-															JsonPathCache cache,
-															LinkRegister register) {
+	                                          JsonPathCache cache) {
 		if (contextualIds.size() > 0) {
-			List<String> removableURIs = new ArrayList<>();
+			List<String> linkedURIs = new ArrayList<>();
 			for (String uri : contextualIds.keySet()) {
-				if (checkInternalProxyLinks(cache, register, uri, contextualIds.get(uri))) {
-					removableURIs.add(uri);
+				if (checkInternalEntityLinks(cache, uri, contextualIds.get(uri))) {
+					linkedURIs.add(uri);
 				}
 			}
-			for (String removable : removableURIs) {
+			for (String removable : linkedURIs) {
 				contextualIds.remove(removable);
 			}
 		}

@@ -9,6 +9,7 @@ import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -149,5 +150,18 @@ public class DisconnectedEntityCalculatorTest {
 		calculator.measure(cache);
 		assertEquals(0, calculator.getEdmStructure().getProviderProxyLinks().size());
 		assertEquals(1, calculator.getEdmStructure().getEuropeanaProxyLinks().size());
+		Map<String, ? extends Object> resultMap = calculator.getResultMap();
+		Map<String, ? extends Object> result = calculator
+			.getLabelledResultMap()
+			.get(calculator.getCalculatorName());
+		assertEquals(resultMap, result);
+		assertEquals(0, result.get("orphanedEntities"));
+		assertEquals(0, result.get("brokenProviderLinks"));
+		assertEquals(0, result.get("brokenEuropeanaLinks"));
+		assertEquals(4, result.get("contextualEntityCount"));
+		assertEquals(0, result.get("providerProxyLinksCount"));
+		assertEquals(0, result.get("providerProxyValuesCount"));
+		assertEquals(1, result.get("europeanaProxyLinksCount"));
+		assertEquals(3, result.get("contextualLinksCount"));
 	}
 }

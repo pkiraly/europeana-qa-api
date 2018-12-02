@@ -12,38 +12,16 @@ import java.util.Map;
 public class LinkRegister {
 
 	/**
-	 * Linking types enumeration.
-	 */
-	public enum LinkingType {
-		/**
-		 * None.
-		 */
-		NONE,
-		/**
-		 * Contextual entity.
-		 */
-		CONTEXTUAL_ENTITY,
-		/**
-		 * Provider proxy.
-		 */
-		PROVIDER_PROXY,
-		/**
-		 * Europeana proxy.
-		 */
-		EUROPEANA_PROXY
-	}
-
-	/**
 	 * The URI register. It contains pairs of URIs and its type.
 	 */
-	private Map<String, LinkingType> register = new HashMap<>();
+	private Map<String, LinkType> register = new HashMap<>();
 
 	/**
 	 * Put a URI and type pair to register.
 	 * @param uri String The URI
 	 * @param type LinkingType The type of the URI
 	 */
-	public final void put(final String uri, final LinkingType type) {
+	public final void put(final String uri, final LinkType type) {
 		register.put(uri, type);
 	}
 
@@ -53,7 +31,7 @@ public class LinkRegister {
 	 * @param type LinkingType The type of the URI
 	 */
 	public final void putAll(final List<String> uris,
-									 final LinkingType type) {
+									 final LinkType type) {
 		for (String uri : uris) {
 			put(uri, type);
 		}
@@ -73,7 +51,7 @@ public class LinkRegister {
 	 * @param uri String The URI
 	 * @return LinkingType The type of the URI
 	 */
-	public final LinkingType get(final String uri) {
+	public final LinkType get(final String uri) {
 		return register.get(uri);
 	}
 
@@ -84,7 +62,7 @@ public class LinkRegister {
 	public final List<String> getUnlinkedEntities() {
 		List<String> unlinkedEntities = new ArrayList<>();
 		for (String uri : register.keySet()) {
-			if (register.get(uri).equals(LinkingType.NONE)) {
+			if (register.get(uri).equals(LinkType.NONE)) {
 				unlinkedEntities.add(uri);
 			}
 		}
