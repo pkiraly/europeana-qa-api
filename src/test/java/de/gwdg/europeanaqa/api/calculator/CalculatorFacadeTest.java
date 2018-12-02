@@ -100,6 +100,12 @@ public class CalculatorFacadeTest {
 
 		calculator.abbreviate(true);
 		assertTrue(calculator.abbreviate());
+
+		calculator = new EdmCalculatorFacade(true, true, true, false, true, false);
+		assertFalse(calculator.abbreviate());
+
+		calculator = new EdmCalculatorFacade(true, true, true, false, true, true);
+		assertTrue(calculator.abbreviate());
 	}
 
 	@Test
