@@ -76,30 +76,6 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
 	);
 
 	/**
-	 * Maps of entity branch labels and entity types.
-	 */
-	private static final Map<String, EntityType> ENTITY_BRANCH_LABELS =
-		new HashMap<>();
-	static {
-		ENTITY_BRANCH_LABELS.put("Agent/rdf:about", EntityType.AGENT);
-		ENTITY_BRANCH_LABELS.put("Concept/rdf:about", EntityType.CONCEPT);
-		ENTITY_BRANCH_LABELS.put("Place/rdf:about", EntityType.PLACE);
-		ENTITY_BRANCH_LABELS.put("Timespan/rdf:about", EntityType.TIMESPAN);
-	}
-
-	/**
-	 * Maps of entity types to labels.
-	 */
-	public static final Map<EntityType, String> ENTITY_TYPE_TO_BRANCH_LABELS =
-		new HashMap<>();
-	static {
-		ENTITY_TYPE_TO_BRANCH_LABELS.put(EntityType.AGENT, "Agent");
-		ENTITY_TYPE_TO_BRANCH_LABELS.put(EntityType.CONCEPT, "Concept");
-		ENTITY_TYPE_TO_BRANCH_LABELS.put(EntityType.PLACE, "Place");
-		ENTITY_TYPE_TO_BRANCH_LABELS.put(EntityType.TIMESPAN, "Timespan");
-	}
-
-	/**
 	 * Register the fields belong to the contextual entities.
 	 */
 	private static final Map<EntityType, List<String>> CONTEXTUAL_LINK_FIELDS =
@@ -276,16 +252,15 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
 
 	/**
 	 * Get the contextual IDs from the cache.
+	 *
 	 * @param cache The cache object.
 	 * @return The map of contextual IDs, where the key are the IDs (URIs),
 	 *   values are entity types.
 	 */
 	public Map<String, EntityType> getContextualIds(JsonPathCache cache) {
 		Map<String, EntityType> contextualIds = new HashMap<>();
-		for (JsonBranch branch : schema.getPaths()) {
-			if (!ENTITY_BRANCH_LABELS.containsKey(branch.getLabel())) {
-				continue;
-			}
+		for (EntityType type : EntityType.values()) {
+			JsonBranch branch = schema.getPathByLabel(type.getBranchId());
 			Object rawJsonFragment = cache.getFragment(branch.getAbsoluteJsonPath());
 			List<Object> jsonFragments = Converter.jsonObjectToList(rawJsonFragment);
 			if (jsonFragments.size() <= 0) {
@@ -294,10 +269,7 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
 			for (Object jsonFragment : jsonFragments) {
 				if (jsonFragment != null) {
 					if (jsonFragment instanceof String) {
-						contextualIds.put(
-							(String) jsonFragment,
-							ENTITY_BRANCH_LABELS.get(branch.getLabel())
-						);
+						contextualIds.put((String) jsonFragment, type);
 					} else {
 						LOGGER.info("jsonFragment is not String, but "
 							+ jsonFragment.getClass().getCanonicalName());

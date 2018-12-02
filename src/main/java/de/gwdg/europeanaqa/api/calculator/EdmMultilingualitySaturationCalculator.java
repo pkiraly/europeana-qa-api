@@ -292,7 +292,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 		           ? fieldInstance.getResource()
 		           : fieldInstance.getValue();
 		EntityType type = contextualIds.get(url);
-		String label = DisconnectedEntityCalculator.ENTITY_TYPE_TO_BRANCH_LABELS.get(type);
+		String label = type.getName();
 		JsonBranch entityBranch = schema.getPathByLabel(label);
 		String jsonPath = selectEntityById(entityBranch.getJsonPath(), url);
 		List<EdmFieldInstance> values = cache.get(jsonPath);
