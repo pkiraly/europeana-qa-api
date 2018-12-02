@@ -26,6 +26,7 @@ import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.schema.EdmSchema;
 import de.gwdg.metadataqa.api.schema.Schema;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -107,97 +108,117 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		EdmSchema schema = (EdmSchema) getSchema();
 
 		calculators = new ArrayList<>();
+		buildEdmFieldExtractor(schema);
+		calculators.add(fieldExtractor);
+
+		if (completenessMeasurementEnabled
+				|| fieldExistenceMeasurementEnabled
+				|| fieldCardinalityMeasurementEnabled) {
+			buildCompletenessCalculator(schema);
+			calculators.add(completenessCalculator);
+		}
+
+		if (tfIdfMeasurementEnabled) {
+			buildTfIdfCalculator(schema);
+			calculators.add(tfidfCalculator);
+		}
+
+		if (problemCatalogMeasurementEnabled) {
+			calculators.add(buildProblemCatalog(schema));
+		}
+
+		if (languageMeasurementEnabled) {
+			calculators.add(new LanguageCalculator(schema));
+		}
+
+		if (multilingualSaturationMeasurementEnabled) {
+			buildMultilingualSaturationCalculator(schema);
+			calculators.add(multilingualSaturationCalculator);
+		}
+
+		if (disconnectedEntityMeasurementEnabled) {
+			calculators.add(new DisconnectedEntityCalculator(schema));
+		}
+
+		if (uniquenessMeasurementEnabled) {
+			calculators.add(new UniquenessCalculator(schema));
+		}
+	}
+
+	private void buildEdmFieldExtractor(EdmSchema schema) {
 		fieldExtractor = new EdmFieldExtractor(schema);
 		fieldExtractor.abbreviate(abbreviate);
 		if (extendedFieldExtraction) {
-			int index = (format == Format.FULLBEAN)
-				? -1
-				: 0;
-			schema.addExtractableField(
-				"provider",
-				getJsonPathForExtractor(schema, "Aggregation/edm:provider", index)
-			);
-			fieldExtractor.addAbbreviationManager("provider", new EdmProviderManager());
-			schema.addExtractableField(
-				"country",
-				getJsonPathForExtractor(schema, "EuropeanaAggregation/edm:country", index)
-			);
-			fieldExtractor.addAbbreviationManager("country", new EdmCountryManager());
-			schema.addExtractableField(
-				"language",
-				getJsonPathForExtractor(schema, "EuropeanaAggregation/edm:language", index)
-			);
-			fieldExtractor.addAbbreviationManager("language", new EdmLanguageManager());
+			extendsFieldExtraction(schema);
 		}
-
-		calculators.add(fieldExtractor);
-
 		if (abbreviate) {
 			this.dataProviderManager = new EdmDataProviderManager();
 			this.datasetManager = new EdmDatasetManager();
 			fieldExtractor.setDataProviderManager(dataProviderManager);
 			fieldExtractor.setDatasetManager(datasetManager);
 		}
+	}
 
-		if (completenessMeasurementEnabled
-				|| fieldExistenceMeasurementEnabled
-				|| fieldCardinalityMeasurementEnabled) {
-			completenessCalculator = new CompletenessCalculator(schema);
-			completenessCalculator.setCompleteness(completenessMeasurementEnabled);
-			completenessCalculator.setExistence(fieldExistenceMeasurementEnabled);
-			completenessCalculator.setCardinality(fieldCardinalityMeasurementEnabled);
-			completenessCalculator.collectFields(completenessCollectFields);
-			if (checkSkippableCollections) {
-				completenessCalculator.setSkippedEntryChecker(
-					new EdmSkippedEntryChecker()
-				);
-			}
-			calculators.add(completenessCalculator);
-		}
+	private void buildTfIdfCalculator(EdmSchema schema) {
+		tfidfCalculator = new TfIdfCalculator(schema);
+		tfidfCalculator.setDoCollectTerms(collectTfIdfTerms);
+	}
 
-		if (tfIdfMeasurementEnabled) {
-			tfidfCalculator = new TfIdfCalculator(schema);
-			tfidfCalculator.setDoCollectTerms(collectTfIdfTerms);
-			calculators.add(tfidfCalculator);
-		}
-
-		if (problemCatalogMeasurementEnabled) {
-			ProblemCatalog problemCatalog = new ProblemCatalog(schema);
-			LongSubject longSubject = new LongSubject(problemCatalog);
-			TitleAndDescriptionAreSame titleAndDescriptionAreSame = new TitleAndDescriptionAreSame(problemCatalog);
-			EmptyStrings emptyStrings = new EmptyStrings(problemCatalog);
-			calculators.add(problemCatalog);
-		}
-
-		if (languageMeasurementEnabled) {
-			languageCalculator = new LanguageCalculator(schema);
-			calculators.add(languageCalculator);
-		}
-
-		if (multilingualSaturationMeasurementEnabled) {
-			multilingualSaturationCalculator = new EdmMultilingualitySaturationCalculator(schema);
+	private void buildMultilingualSaturationCalculator(EdmSchema schema) {
+		multilingualSaturationCalculator = new EdmMultilingualitySaturationCalculator(schema);
 			/*
 			if (saturationExtendedResult) {
 				// multilingualSaturationCalculator.setResultType(MultilingualitySaturationCalculator.ResultTypes.EXTENDED);
 			}
 			*/
-			if (checkSkippableCollections) {
-				multilingualSaturationCalculator.setSkippedEntryChecker(
-					new EdmSkippedEntryChecker()
-				);
-			}
-			calculators.add(multilingualSaturationCalculator);
+		if (checkSkippableCollections) {
+			multilingualSaturationCalculator.setSkippedEntryChecker(
+				new EdmSkippedEntryChecker()
+			);
 		}
+	}
 
-		if (disconnectedEntityMeasurementEnabled) {
-			DisconnectedEntityCalculator disconnectedEntityCalculator = new DisconnectedEntityCalculator(schema);
-			calculators.add(disconnectedEntityCalculator);
-		}
+	@NotNull
+	private ProblemCatalog buildProblemCatalog(EdmSchema schema) {
+		ProblemCatalog problemCatalog = new ProblemCatalog(schema);
+		LongSubject longSubject = new LongSubject(problemCatalog);
+		TitleAndDescriptionAreSame titleAndDescriptionAreSame = new TitleAndDescriptionAreSame(problemCatalog);
+		EmptyStrings emptyStrings = new EmptyStrings(problemCatalog);
+		return problemCatalog;
+	}
 
-		if (uniquenessMeasurementEnabled) {
-			UniquenessCalculator uniquenessCalculator = new UniquenessCalculator(schema);
-			calculators.add(uniquenessCalculator);
+	private void buildCompletenessCalculator(EdmSchema schema) {
+		completenessCalculator = new CompletenessCalculator(schema);
+		completenessCalculator.setCompleteness(completenessMeasurementEnabled);
+		completenessCalculator.setExistence(fieldExistenceMeasurementEnabled);
+		completenessCalculator.setCardinality(fieldCardinalityMeasurementEnabled);
+		completenessCalculator.collectFields(completenessCollectFields);
+		if (checkSkippableCollections) {
+			completenessCalculator.setSkippedEntryChecker(
+				new EdmSkippedEntryChecker()
+			);
 		}
+	}
+
+	private void extendsFieldExtraction(EdmSchema schema) {
+		int index = (format == Format.FULLBEAN)
+			? -1
+			: 0;
+		schema.addExtractableField(
+			"provider",
+			getJsonPathForExtractor(schema, "Aggregation/edm:provider", index)
+		);
+		fieldExtractor.addAbbreviationManager("provider", new EdmProviderManager());
+		schema.addExtractableField(
+			"country",
+			getJsonPathForExtractor(schema, "EuropeanaAggregation/edm:country", index)
+		);
+		fieldExtractor.addAbbreviationManager("country", new EdmCountryManager());
+		schema.addExtractableField(
+			"language",
+			getJsonPathForExtractor(schema, "EuropeanaAggregation/edm:language", index)
+		);
+		fieldExtractor.addAbbreviationManager("language", new EdmLanguageManager());
 	}
 
 	private String getJsonPathForExtractor(EdmSchema schema, String label, int index) {
