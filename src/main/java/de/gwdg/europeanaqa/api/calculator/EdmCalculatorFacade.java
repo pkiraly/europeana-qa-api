@@ -8,6 +8,7 @@ import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmProviderManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmLanguageManager;
 
+import de.gwdg.europeanaqa.api.model.Format;
 import de.gwdg.metadataqa.api.calculator.CalculatorFacade;
 import de.gwdg.metadataqa.api.calculator.CompletenessCalculator;
 import de.gwdg.metadataqa.api.calculator.LanguageCalculator;
@@ -42,42 +43,6 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 	private EdmMultilingualitySaturationCalculator multilingualSaturationCalculator;
 
-	/**
-	 * Available input formats.
-	 */
-	public enum Formats {
-
-		/**
-		 * XML via OAI-PMH service.
-		 */
-		OAI_PMH_XML("xml"),
-		/**
-		 * FullBean JSON format via Record API and MongoDB export.
-		 */
-		FULLBEAN("fullbean");
-
-		private final String name;
-
-		Formats(String name) {
-			this.name = name;
-		}
-
-		/**
-		 * Gets format by format code.
-		 * @param code Format code
-		 * @return The format
-		 */
-		public static Formats byCode(String code) {
-			for (Formats format : values()) {
-				if (format.name.equals(code)) {
-					return format;
-				}
-			}
-			return null;
-		}
-
-	};
-
 	private EdmFieldExtractor fieldExtractor;
 	private EdmDataProviderManager dataProviderManager;
 	private EdmDatasetManager datasetManager;
@@ -85,7 +50,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 	private boolean disconnectedEntityMeasurementEnabled = false;
 	private boolean uniquenessMeasurementEnabled = false;
 	private boolean extendedFieldExtraction = false;
-	private Formats format = Formats.OAI_PMH_XML;
+	private Format format = Format.OAI_PMH_XML;
 
 	/**
 	 * Creates an EdmCalculatorFacade object.
@@ -145,7 +110,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		fieldExtractor = new EdmFieldExtractor(schema);
 		fieldExtractor.abbreviate(abbreviate);
 		if (extendedFieldExtraction) {
-			int index = (format == Formats.FULLBEAN)
+			int index = (format == Format.FULLBEAN)
 				? -1
 				: 0;
 			schema.addExtractableField(
@@ -316,11 +281,11 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 		}
 	}
 
-	public Formats getFormat() {
+	public Format getFormat() {
 		return format;
 	}
 
-	public void setFormat(Formats format) {
+	public void setFormat(Format format) {
 		this.format = format;
 	}
 
