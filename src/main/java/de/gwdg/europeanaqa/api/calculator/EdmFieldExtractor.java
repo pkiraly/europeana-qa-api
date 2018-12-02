@@ -161,20 +161,31 @@ public class EdmFieldExtractor extends FieldExtractor {
 	}
 
 	/**
+	 * Gets abbreviated code.
+	 * @param value The value to abbreviate.
+	 * @param <T> An abbreviation manager.
+	 * @param manager An abbreviation manager.
+	 * @return The abbreviated code.
+	 */
+	public <T extends AbbreviationManager> String getAbbreviatedCode(String value, T manager) {
+		String code;
+		if (value == null) {
+			code = "0";
+		} else if (manager != null) {
+			code = String.valueOf(manager.lookup(value));
+		} else {
+			code = value;
+		}
+		return code;
+	}
+
+	/**
 	 * Gets the data provider abbreviation by its name.
 	 * @param dataProvider The data provider name
 	 * @return The abbreviation
 	 */
 	public String getDataProviderCode(String dataProvider) {
-		String dataProviderCode;
-		if (dataProvider == null) {
-			dataProviderCode = "0";
-		} else if (dataProviderManager != null) {
-			dataProviderCode = String.valueOf(dataProviderManager.lookup(dataProvider));
-		} else {
-			dataProviderCode = dataProvider;
-		}
-		return dataProviderCode;
+		return getAbbreviatedCode(dataProvider, dataProviderManager);
 	}
 
 	/**
@@ -183,15 +194,7 @@ public class EdmFieldExtractor extends FieldExtractor {
 	 * @return The abbreviation
 	 */
 	public String getDatasetCode(String dataset) {
-		String datasetCode;
-		if (dataset == null) {
-			datasetCode = "0";
-		} else if (datasetsManager != null) {
-			datasetCode = String.valueOf(datasetsManager.lookup(dataset));
-		} else {
-			datasetCode = dataset;
-		}
-		return datasetCode;
+		return getAbbreviatedCode(dataset, datasetsManager);
 	}
 
 	/**
