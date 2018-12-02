@@ -8,6 +8,7 @@ import de.gwdg.metadataqa.api.util.CompressionLevel;
 import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -115,5 +116,38 @@ public class DisconnectedEntityCalculatorTest {
 		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
 		calculator.measure(cache);
 		assertEquals("0,0,0,10,0,0,7,3", calculator.getCsv(false, CompressionLevel.NORMAL));
+	}
+
+	@Test
+	public void testHeaders() throws IOException, URISyntaxException {
+		cache = new JsonPathCache<>(FileUtils.readFirstLine("disconnected-entities/E2DD942FC1F8519066C56D1136D99B8093A83727.json"));
+		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
+		assertEquals(
+			Arrays.asList(
+				"unlinkedEntities", "brokenProviderLinks", "brokenEuropeanaLinks",
+				"contextualEntityCount", "providerProxyLinksCount", "providerProxyValuesCount",
+				"europeanaProxyLinksCount", "contextualLinksCount"
+			),
+			calculator.getHeader()
+		);
+	}
+
+	@Test
+	public void testCalculatorName() throws IOException, URISyntaxException {
+		cache = new JsonPathCache<>(FileUtils.readFirstLine("disconnected-entities/E2DD942FC1F8519066C56D1136D99B8093A83727.json"));
+		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
+		assertEquals(
+			"disconnectedEntityCalculator",
+			calculator.getCalculatorName()
+		);
+	}
+
+	@Test
+	public void testEdmStructure() throws URISyntaxException, IOException {
+		cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/issue5-array-in-innerarray.json"));
+		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
+		calculator.measure(cache);
+		assertEquals(0, calculator.getEdmStructure().getProviderProxyLinks().size());
+		assertEquals(1, calculator.getEdmStructure().getEuropeanaProxyLinks().size());
 	}
 }

@@ -39,7 +39,7 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
 	/**
 	 * The name of this calculator.
 	 */
-	public static final String CALCULATOR_NAME = "orphanedEntityCalculator";
+	public static final String CALCULATOR_NAME = "disconnectedEntityCalculator";
 
 		/**
 	 * List of headers.
