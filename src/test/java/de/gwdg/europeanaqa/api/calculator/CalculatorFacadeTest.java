@@ -129,5 +129,20 @@ public class CalculatorFacadeTest {
 			"recordId, dataset, dataProvider, provider, country, language",
 			StringUtils.join(extractableFields.keySet(), ", ")
 		);
+
+		calculator = new EdmCalculatorFacade(true, true, true, false, true);
+		assertFalse(calculator.isExtendedFieldExtraction());
+
+		calculator = new EdmCalculatorFacade(true, true, true, false, true);
+		calculator.setExtendedFieldExtraction(false);
+		assertFalse(calculator.isExtendedFieldExtraction());
+		calculator.configure();
+
+		extractableFields = calculator.getSchema().getExtractableFields();
+		assertEquals(6, extractableFields.size());
+		assertEquals(
+			"recordId, dataset, dataProvider",
+			StringUtils.join(extractableFields.keySet(), ", ")
+		);
 	}
 }
