@@ -8,6 +8,7 @@ import de.gwdg.metadataqa.api.util.CompressionLevel;
 import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

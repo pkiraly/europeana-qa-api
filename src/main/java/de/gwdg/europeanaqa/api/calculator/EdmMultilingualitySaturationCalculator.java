@@ -3,6 +3,7 @@ package de.gwdg.europeanaqa.api.calculator;
 import com.jayway.jsonpath.InvalidJsonException;
 import de.gwdg.europeanaqa.api.model.EdmSaturationMap;
 import de.gwdg.europeanaqa.api.model.EdmSaturationProperty;
+import de.gwdg.europeanaqa.api.model.EntityType;
 import de.gwdg.metadataqa.api.calculator.SkippedEntryChecker;
 import de.gwdg.metadataqa.api.counter.BasicCounter;
 import de.gwdg.metadataqa.api.counter.FieldCounter;
@@ -89,7 +90,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 	private List<JsonBranch> providers;
 	private SkippedEntryChecker skippedEntryChecker = null;
 	private SkippedEntitySelector skippedEntitySelector = new SkippedEntitySelector();
-	private Map<String, DisconnectedEntityCalculator.EntityType> contextualIds;
+	private Map<String, EntityType> contextualIds;
 	private EdmSaturationMap edmSaturationMap;
 	private String recordId;
 
@@ -140,10 +141,12 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 	public void measure(JsonPathCache cache)
 			throws InvalidJsonException {
 
-		edmSaturationMap = new EdmSaturationMap();
-		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
 		recordId = cache.getRecordId();
+
+		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
 		contextualIds = calculator.getContextualIds(cache);
+
+		edmSaturationMap = new EdmSaturationMap();
 		rawLanguageSaturationMap = new LinkedHashMap<>();
 		measureHierarchicalSchema(cache);
 		// saturationMap = calculateScore(rawLanguageSaturationMap);
@@ -288,7 +291,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 		String url = fieldInstance.hasResource()
 		           ? fieldInstance.getResource()
 		           : fieldInstance.getValue();
-		DisconnectedEntityCalculator.EntityType type = contextualIds.get(url);
+		EntityType type = contextualIds.get(url);
 		String label = DisconnectedEntityCalculator.ENTITY_TYPE_TO_BRANCH_LABELS.get(type);
 		JsonBranch entityBranch = schema.getPathByLabel(label);
 		String jsonPath = selectEntityById(entityBranch.getJsonPath(), url);

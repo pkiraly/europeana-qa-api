@@ -1,7 +1,10 @@
 package de.gwdg.europeanaqa.api.calculator;
 
+import de.gwdg.europeanaqa.api.model.EdmStructure;
+import de.gwdg.europeanaqa.api.model.EntityType;
 import de.gwdg.europeanaqa.api.model.LinkRegister;
-import de.gwdg.metadataqa.api.calculator.edm.EnhancementIdExtractor;
+import de.gwdg.europeanaqa.api.model.Proxies;
+import de.gwdg.europeanaqa.api.model.ProxyType;
 import de.gwdg.metadataqa.api.counter.FieldCounter;
 import de.gwdg.metadataqa.api.interfaces.Calculator;
 import de.gwdg.metadataqa.api.json.JsonBranch;
@@ -24,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
-class DisconnectedEntityCalculator implements Calculator, Serializable {
+public class DisconnectedEntityCalculator implements Calculator, Serializable {
 
 	/**
 	 * Logger.
@@ -38,34 +41,13 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 	 */
 	public static final String CALCULATOR_NAME = "orphanedEntityCalculator";
 
-	/**
-	 * Entity types.
-	 */
-	public enum EntityType {
 		/**
-		 * Agent.
-		 */
-		AGENT,
-		/**
-		 * Concept.
-		 */
-		CONCEPT,
-		/**
-		 * Place.
-		 */
-		PLACE,
-		/**
-		 * Timespan.
-		 */
-		TIMESPAN
-	}
-
-	/**
 	 * List of headers.
 	 */
 	private List<String> headers = Arrays.asList(
-		"unlinkedEntities", "brokenProviderLinks",
-		"brokenEuropeanaLinks", "contextualEntityCount",
+		"unlinkedEntities",
+		"brokenProviderLinks", "brokenEuropeanaLinks",
+		"contextualEntityCount",
 		"providerProxyLinksCount", "providerProxyValuesCount",
 		"europeanaProxyLinksCount", "contextualLinksCount"
 	);
@@ -89,7 +71,8 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		"Proxy/dcterms:issued", "Proxy/dcterms:temporal",
 		"Proxy/edm:hasMet", "Proxy/dc:format",
 		"Proxy/dcterms:conformsTo", "Proxy/dcterms:medium",
-		"Proxy/edm:isRelatedTo"
+		"Proxy/edm:isRelatedTo",
+		"Proxy/edm:year"
 	);
 
 	/**
@@ -146,13 +129,17 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 	 * The schema.
 	 */
 	private Schema schema;
+	private Proxies proxies;
+
+	private EdmStructure edmStructure;
 
 	/**
 	 * Contructor.
 	 * @param schema Schema The schema to use by the functions.
 	 */
-	DisconnectedEntityCalculator(final Schema schema) {
+	public DisconnectedEntityCalculator(final Schema schema) {
 		this.schema = schema;
+		proxies = new Proxies(schema);
 	}
 
 	/**
@@ -172,30 +159,22 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 			LinkRegister.LinkingType.NONE
 		);
 
-		List<String> removables;
-		List<String> providerProxyLinks = new ArrayList<>();
-		List<String> providerProxyValues = new ArrayList<>();
+		edmStructure = new EdmStructure();
 
-		extractProviderProxyLinksAndValues(
-			cache,
-			providerProxyLinks,
-			providerProxyValues
-		);
-		int providerProxyLinksCount = providerProxyLinks.size();
-		int providerProxyValuesCount = providerProxyValues.size();
-		List<String> europeanaProxyLinks = EnhancementIdExtractor
-			.extractIds(cache);
-		int europeanaProxyLinksCount = europeanaProxyLinks.size();
+		// List<String> removables;
 
-		checkContextualIDsInProviderProxy(
-			contextualIds,
-			providerProxyLinks,
-			providerProxyValues
-		);
-		providerProxyLinksCount -= providerProxyLinks.size();
-		providerProxyValuesCount -= providerProxyValues.size();
-		checkContextualIDsInEuropeanaProxy(contextualIds, europeanaProxyLinks);
-		europeanaProxyLinksCount -= europeanaProxyLinks.size();
+		extractProxyLinksAndValues(cache, edmStructure, ProxyType.PROVIDER);
+		extractProxyLinksAndValues(cache, edmStructure, ProxyType.EUROPEANA);
+		int providerProxyLinksCount = edmStructure.getProviderProxyLinks().size();
+		int providerProxyValuesCount = edmStructure.getProviderProxyValues().size();
+		// List<String> europeanaProxyLinks = EnhancementIdExtractor.extractIds(cache);
+		int europeanaProxyLinksCount = edmStructure.getEuropeanaProxyLinks().size();
+
+		checkContextualIDsInProviderProxy(contextualIds, edmStructure);
+		// providerProxyLinksCount -= edmStructure.getProviderProxyLinks().size();
+		providerProxyValuesCount -= edmStructure.getProviderProxyValues().size();
+		checkContextualIDsInProxies(contextualIds);
+		// europeanaProxyLinksCount -= edmStructure.getEuropeanaProxyLinks().size();
 		int contextualLinksCount = contextualIds.size();
 		checkContextualIDsInEntities(contextualIds, cache, register);
 		contextualLinksCount -= contextualIds.size();
@@ -217,8 +196,8 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		}
 
 		resultMap.put("orphanedEntities", contextualIds.size());
-		resultMap.put("brokenProviderLinks", providerProxyLinks.size());
-		resultMap.put("brokenEuropeanaLinks", europeanaProxyLinks.size());
+		resultMap.put("brokenProviderLinks", edmStructure.getBrokenProviderProxyLinks().size());
+		resultMap.put("brokenEuropeanaLinks", edmStructure.getBrokenEuropeanaProxyLinks().size());
 		resultMap.put("contextualEntityCount", contextualEntityCount);
 		resultMap.put("providerProxyLinksCount", providerProxyLinksCount);
 		resultMap.put("providerProxyValuesCount", providerProxyValuesCount);
@@ -261,32 +240,31 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 	/**
 	 * Extracts Provider Proxy links and values.
 	 * @param cache
-	 * @param providerProxyLinks The container of provider proxy links
-	 * @param providerProxyValues The container of provider proxy values
+	 * @param edmStructure
 	 */
-	private void extractProviderProxyLinksAndValues(JsonPathCache cache,
-																	List<String> providerProxyLinks,
-																	List<String> providerProxyValues) {
-		for (JsonBranch branch : schema.getPaths()) {
-			if (branch.getLabel().equals("Proxy")) {
-				Object rawProxy = cache.getFragment(branch.getJsonPath());
-				List<Object> proxies = Converter.jsonObjectToList(rawProxy);
-				for (JsonBranch child : branch.getChildren()) {
-					if (!isEnrichableField(child)) {
-						continue;
-					}
-					List<EdmFieldInstance> fieldInstances =
-						cache.get(child.getJsonPath(), child.getJsonPath(), proxies.get(0));
-					if (fieldInstances == null) {
-						continue;
-					}
-					for (EdmFieldInstance fieldInstance : fieldInstances) {
-						if (fieldInstance.isUrl()) {
-							providerProxyLinks.add(fieldInstance.getUrl());
-						} else if (fieldInstance.hasValue()) {
-							providerProxyValues.add(fieldInstance.getValue());
-						}
-					}
+	private void extractProxyLinksAndValues(JsonPathCache cache,
+														 EdmStructure edmStructure,
+														 ProxyType type) {
+		JsonBranch branch = type.equals(ProxyType.PROVIDER)
+			? proxies.getProviderProxy()
+			: proxies.getEuropeanaProxy();
+		Object rawProxy = cache.getFragment(branch.getJsonPath());
+		List<Object> proxies = Converter.jsonObjectToList(rawProxy);
+		for (JsonBranch child : branch.getChildren()) {
+			if (!isEnrichableField(child)) {
+				continue;
+			}
+			String address = branch.getJsonPath() + "/" + child.getJsonPath();
+			List<EdmFieldInstance> fieldInstances =
+				cache.get(address, child.getJsonPath(), proxies.get(0));
+			if (fieldInstances == null) {
+				continue;
+			}
+			for (EdmFieldInstance fieldInstance : fieldInstances) {
+				if (fieldInstance.isUrl()) {
+					edmStructure.addProxyLink(type, fieldInstance.getUrl());
+				} else if (fieldInstance.hasValue()) {
+					edmStructure.addProxyValue(type, fieldInstance.getValue());
 				}
 			}
 		}
@@ -296,25 +274,33 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		return ENRICHABLE_FIELDS.contains(child.getLabel());
 	}
 
+	/**
+	 * Get the contextual IDs from the cache.
+	 * @param cache The cache object.
+	 * @return The map of contextual IDs, where the key are the IDs (URIs),
+	 *   values are entity types.
+	 */
 	public Map<String, EntityType> getContextualIds(JsonPathCache cache) {
 		Map<String, EntityType> contextualIds = new HashMap<>();
 		for (JsonBranch branch : schema.getPaths()) {
-			if (ENTITY_BRANCH_LABELS.containsKey(branch.getLabel())) {
-				Object rawJsonFragment = cache.getFragment(branch.getAbsoluteJsonPath());
-				List<Object> jsonFragments = Converter.jsonObjectToList(rawJsonFragment);
-				if (jsonFragments.size() > 0) {
-					for (Object jsonFragment : jsonFragments) {
-						if (jsonFragment != null) {
-							if (jsonFragment instanceof String) {
-								contextualIds.put(
-									(String) jsonFragment,
-									ENTITY_BRANCH_LABELS.get(branch.getLabel())
-								);
-							} else {
-								LOGGER.info("jsonFragment is not String, but "
-									+ jsonFragment.getClass().getCanonicalName());
-							}
-						}
+			if (!ENTITY_BRANCH_LABELS.containsKey(branch.getLabel())) {
+				continue;
+			}
+			Object rawJsonFragment = cache.getFragment(branch.getAbsoluteJsonPath());
+			List<Object> jsonFragments = Converter.jsonObjectToList(rawJsonFragment);
+			if (jsonFragments.size() <= 0) {
+				continue;
+			}
+			for (Object jsonFragment : jsonFragments) {
+				if (jsonFragment != null) {
+					if (jsonFragment instanceof String) {
+						contextualIds.put(
+							(String) jsonFragment,
+							ENTITY_BRANCH_LABELS.get(branch.getLabel())
+						);
+					} else {
+						LOGGER.info("jsonFragment is not String, but "
+							+ jsonFragment.getClass().getCanonicalName());
 					}
 				}
 			}
@@ -323,16 +309,15 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 	}
 
 	private void checkContextualIDsInProviderProxy(Map<String, EntityType> contextualIds,
-			List<String> providerProxyLinks,
-			List<String> providerProxyValues) {
+																  EdmStructure edmStructure) {
 		List<String> removable = new ArrayList<>();
 		for (String id : contextualIds.keySet()) {
-			if (providerProxyLinks.contains(id)) {
+			if (edmStructure.getProviderProxyLinks().contains(id)) {
 				removable.add(id);
-				providerProxyLinks.remove(id);
-			} else if (providerProxyValues.contains(id)) {
+				edmStructure.getProviderProxyLinks().remove(id);
+			} else if (edmStructure.getProviderProxyValues().contains(id)) {
 				removable.add(id);
-				providerProxyValues.remove(id);
+				edmStructure.getProviderProxyValues().remove(id);
 			}
 		}
 		for (String id : removable) {
@@ -340,17 +325,22 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 		}
 	}
 
-	private void checkContextualIDsInEuropeanaProxy(Map<String, EntityType> contextualIds,
-			List<String> europeanaProxyLinks) {
+	private void checkContextualIDsInProxies(Map<String, EntityType> contextualIds) {
 		List<String> removable = new ArrayList<>();
-		for (String id : contextualIds.keySet()) {
-			if (europeanaProxyLinks.contains(id)) {
-				removable.add(id);
-				europeanaProxyLinks.remove(id);
+		for (String url : contextualIds.keySet()) {
+			if (edmStructure.containsProviderLink(url)) {
+				removable.add(url);
+				edmStructure.setProviderLinkTarget(url, contextualIds.get(url));
+			}
+			if (edmStructure.containsEuropeanaLink(url)) {
+				removable.add(url);
+				edmStructure.setEuropeanaLinkTarget(url, contextualIds.get(url));
 			}
 		}
 		for (String id : removable) {
-			contextualIds.remove(id);
+			if (contextualIds.containsKey(id)) {
+				contextualIds.remove(id);
+			}
 		}
 	}
 
@@ -420,5 +410,9 @@ class DisconnectedEntityCalculator implements Calculator, Serializable {
 	@Override
 	public String getCalculatorName() {
 		return CALCULATOR_NAME;
+	}
+
+	public EdmStructure getEdmStructure() {
+		return edmStructure;
 	}
 }
