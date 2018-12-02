@@ -1,5 +1,8 @@
 package de.gwdg.europeanaqa.api.calculator;
 
+import de.gwdg.europeanaqa.api.model.Format;
+import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
+import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -63,5 +66,20 @@ public class CalculatorFacadeTest {
 		String expected = "92062/BibliographicResource_1000126015451,1725,2,0.184,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,12,0,0,0.0,0.0,0.0";
 		String csv = calculator.measure(FileUtils.readFirstLine("general/test.json"));
 		assertEquals(expected, csv);
+	}
+
+	@Test
+	public void testFormat() throws URISyntaxException, IOException {
+		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
+		assertEquals(Format.OAI_PMH_XML, calculator.getFormat());
+		assertEquals(EdmOaiPmhXmlSchema.class, calculator.getSchema().getClass());
+
+		calculator.setFormat(Format.FULLBEAN);
+		assertEquals(Format.FULLBEAN, calculator.getFormat());
+		assertEquals(EdmFullBeanSchema.class, calculator.getSchema().getClass());
+
+		calculator.setFormat(null);
+		assertEquals(null, calculator.getFormat());
+		assertEquals(EdmOaiPmhXmlSchema.class, calculator.getSchema().getClass());
 	}
 }

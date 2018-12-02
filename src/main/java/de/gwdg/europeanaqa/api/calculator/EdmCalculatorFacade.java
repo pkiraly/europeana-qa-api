@@ -182,7 +182,8 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 	private ProblemCatalog buildProblemCatalog(EdmSchema schema) {
 		ProblemCatalog problemCatalog = new ProblemCatalog(schema);
 		LongSubject longSubject = new LongSubject(problemCatalog);
-		TitleAndDescriptionAreSame titleAndDescriptionAreSame = new TitleAndDescriptionAreSame(problemCatalog);
+		TitleAndDescriptionAreSame titleAndDescriptionAreSame =
+			new TitleAndDescriptionAreSame(problemCatalog);
 		EmptyStrings emptyStrings = new EmptyStrings(problemCatalog);
 		return problemCatalog;
 	}
