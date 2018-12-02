@@ -125,8 +125,27 @@ public class EdmStructure {
 	 * @return True if the URL is registered, otherwise false.
 	 */
 	public boolean containsProviderLink(String url) {
+		return containsLink(url, providerProxyLinks);
+	}
+
+	/**
+	 * Checks if the object contains the URL among the Europeana proxy links.
+	 * @param url The URL to check.
+	 * @return True if the URL is registered, otherwise false.
+	 */
+	public boolean containsEuropeanaLink(String url) {
+		return containsLink(url, europeanaProxyLinks);
+	}
+
+	/**
+	 * Checks if the object contains the URL among the Europeana proxy links.
+	 * @param url The URL to check.
+	 * @param links The links to check against.
+	 * @return True if the URL is registered, otherwise false.
+	 */
+	private boolean containsLink(String url, List<ProxyLink> links) {
 		boolean found = false;
-		for (ProxyLink link : providerProxyLinks) {
+		for (ProxyLink link : links) {
 			if (link.getLink().equals(url)) {
 				found = true;
 				break;
@@ -148,21 +167,6 @@ public class EdmStructure {
 		}
 	}
 
-	/**
-	 * Checks if the object contains the URL among the Europeana proxy links.
-	 * @param url The URL to check.
-	 * @return True if the URL is registered, otherwise false.
-	 */
-	public boolean containsEuropeanaLink(String url) {
-		boolean found = false;
-		for (ProxyLink link : europeanaProxyLinks) {
-			if (link.getLink().equals(url)) {
-				found = true;
-				break;
-			}
-		}
-		return found;
-	}
 
 	/**
 	 * Set a URL link target.
