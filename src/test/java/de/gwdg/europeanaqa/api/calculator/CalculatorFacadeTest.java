@@ -1,6 +1,8 @@
 package de.gwdg.europeanaqa.api.calculator;
 
 import de.gwdg.europeanaqa.api.model.Format;
+import de.gwdg.metadataqa.api.calculator.LanguageCalculator;
+import de.gwdg.metadataqa.api.calculator.MultilingualitySaturationCalculator;
 import de.gwdg.metadataqa.api.calculator.TfIdfCalculator;
 import de.gwdg.metadataqa.api.interfaces.Calculator;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
@@ -193,14 +195,72 @@ public class CalculatorFacadeTest {
 		assertTrue(tfIdfCalculator.isTermCollectionEnabled());
 	}
 
+	@Test
+	public void testLanguageMeasurement() {
+		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+		calculatorFacade.enableLanguageMeasurement(true);
+		assertTrue(calculatorFacade.isLanguageMeasurementEnabled());
+
+		calculatorFacade.configure();
+
+		LanguageCalculator languageCalculator = getCalculator(calculatorFacade, LanguageCalculator.class);
+
+		assertNotNull(languageCalculator);
+		assertEquals("languages", languageCalculator.getCalculatorName());
+	}
+
+	@Test
+	public void testMultilingualSaturation() {
+		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+		calculatorFacade.enableMultilingualSaturationMeasurement(true);
+		assertTrue(calculatorFacade.isMultilingualSaturationMeasurementEnabled());
+
+		calculatorFacade.configure();
+
+		EdmMultilingualitySaturationCalculator languageCalculator = getCalculator(
+			calculatorFacade,
+			EdmMultilingualitySaturationCalculator.class
+		);
+
+		assertNotNull(languageCalculator);
+		assertEquals("edmMultilingualitySaturation", languageCalculator.getCalculatorName());
+		assertNull(languageCalculator.getSkippedEntryChecker());
+	}
+
+
+	@Test
+	public void testMultilingualSaturation_withSkippableCollections() {
+		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+		calculatorFacade.enableMultilingualSaturationMeasurement(true);
+		calculatorFacade.setCheckSkippableCollections(true);
+		assertTrue(calculatorFacade.isMultilingualSaturationMeasurementEnabled());
+		assertTrue(calculatorFacade.isCheckSkippableCollections());
+
+		calculatorFacade.configure();
+
+		EdmMultilingualitySaturationCalculator languageCalculator = getCalculator(
+			calculatorFacade,
+			EdmMultilingualitySaturationCalculator.class
+		);
+
+		assertNotNull(languageCalculator);
+		assertEquals("edmMultilingualitySaturation", languageCalculator.getCalculatorName());
+		assertNotNull(languageCalculator.getSkippedEntryChecker());
+	}
+
 	@Nullable
 	private TfIdfCalculator getTfIdfCalculator(EdmCalculatorFacade calculatorFacade) {
-		TfIdfCalculator tfIdfCalculator = null;
-		for (Calculator calculator : calculatorFacade.getCalculators()) {
-			if (calculator.getClass().equals(TfIdfCalculator.class)) {
-				tfIdfCalculator = (TfIdfCalculator) calculator;
+		return getCalculator(calculatorFacade, TfIdfCalculator.class);
+	}
+
+	@Nullable
+	private <T extends Calculator> T getCalculator(EdmCalculatorFacade calculatorFacade, Class<T> clazz) {
+		T calculator = null;
+		for (Calculator embeddedCalculator : calculatorFacade.getCalculators()) {
+			if (embeddedCalculator.getClass().equals(clazz)) {
+				calculator = (T) embeddedCalculator;
 			}
 		}
-		return tfIdfCalculator;
+		return calculator;
 	}
 }
