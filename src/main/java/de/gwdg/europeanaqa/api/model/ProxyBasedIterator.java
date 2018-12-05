@@ -41,7 +41,7 @@ public class ProxyBasedIterator implements Calculator, Serializable {
 
 	/**
 	 * Measure the object.
-	 * TODO this is non finished function.
+	 * TODO this is a not finished function.
 	 * @param cache The cache object.
 	 */
 	@Override

@@ -162,7 +162,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
 	private void buildTfIdfCalculator(EdmSchema schema) {
 		tfidfCalculator = new TfIdfCalculator(schema);
-		tfidfCalculator.setDoCollectTerms(collectTfIdfTerms);
+		tfidfCalculator.enableTermCollection(collectTfIdfTerms);
 	}
 
 	private void buildMultilingualSaturationCalculator(EdmSchema schema) {

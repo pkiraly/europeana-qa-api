@@ -1,16 +1,20 @@
 package de.gwdg.europeanaqa.api.calculator;
 
 import de.gwdg.europeanaqa.api.model.Format;
+import de.gwdg.metadataqa.api.calculator.TfIdfCalculator;
+import de.gwdg.metadataqa.api.interfaces.Calculator;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -109,7 +113,7 @@ public class CalculatorFacadeTest {
 	}
 
 	@Test
-	public void testExtendedFieldExtraction() throws URISyntaxException, IOException {
+	public void testExtendedFieldExtraction() {
 		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
 		calculator.setFormat(Format.FULLBEAN);
 		calculator.setExtendedFieldExtraction(true);
@@ -145,10 +149,58 @@ public class CalculatorFacadeTest {
 		calculator.configure();
 
 		extractableFields = calculator.getSchema().getExtractableFields();
-		assertEquals(6, extractableFields.size());
+		assertEquals(3, extractableFields.size());
 		assertEquals(
 			"recordId, dataset, dataProvider",
 			StringUtils.join(extractableFields.keySet(), ", ")
 		);
+	}
+
+	@Test
+	public void testEmptyConstructor() {
+		EdmCalculatorFacade calculator = new EdmCalculatorFacade();
+		assertNotNull(calculator);
+		assertEquals(Format.OAI_PMH_XML, calculator.getFormat());
+		assertFalse(calculator.isExtendedFieldExtraction());
+		assertTrue(calculator.isFieldExistenceMeasurementEnabled());
+		assertTrue(calculator.isFieldCardinalityMeasurementEnabled());
+		assertTrue(calculator.isCompletenessMeasurementEnabled());
+		assertFalse(calculator.isTfIdfMeasurementEnabled());
+		assertFalse(calculator.isProblemCatalogMeasurementEnabled());
+		assertFalse(calculator.abbreviate());
+	}
+
+	@Test
+	public void testTfIdfMeasurement_withoutTermCollection() {
+		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+		calculatorFacade.enableTfIdfMeasurement(true);
+		calculatorFacade.configure();
+		assertTrue(calculatorFacade.isTfIdfMeasurementEnabled());
+		TfIdfCalculator tfIdfCalculator = getTfIdfCalculator(calculatorFacade);
+		assertNotNull(tfIdfCalculator);
+		assertFalse(tfIdfCalculator.isTermCollectionEnabled());
+	}
+
+	@Test
+	public void testTfIdfMeasurement_withTermCollection() {
+		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+		calculatorFacade.enableTfIdfMeasurement(true);
+		calculatorFacade.collectTfIdfTerms(true);
+		calculatorFacade.configure();
+		assertTrue(calculatorFacade.isTfIdfMeasurementEnabled());
+		TfIdfCalculator tfIdfCalculator = getTfIdfCalculator(calculatorFacade);
+		assertNotNull(tfIdfCalculator);
+		assertTrue(tfIdfCalculator.isTermCollectionEnabled());
+	}
+
+	@Nullable
+	private TfIdfCalculator getTfIdfCalculator(EdmCalculatorFacade calculatorFacade) {
+		TfIdfCalculator tfIdfCalculator = null;
+		for (Calculator calculator : calculatorFacade.getCalculators()) {
+			if (calculator.getClass().equals(TfIdfCalculator.class)) {
+				tfIdfCalculator = (TfIdfCalculator) calculator;
+			}
+		}
+		return tfIdfCalculator;
 	}
 }
