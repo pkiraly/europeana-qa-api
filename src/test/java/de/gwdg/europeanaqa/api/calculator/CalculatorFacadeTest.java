@@ -188,11 +188,13 @@ public class CalculatorFacadeTest {
 		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
 		calculatorFacade.enableTfIdfMeasurement(true);
 		calculatorFacade.collectTfIdfTerms(true);
+
 		calculatorFacade.configure();
 		assertTrue(calculatorFacade.isTfIdfMeasurementEnabled());
-		TfIdfCalculator tfIdfCalculator = getTfIdfCalculator(calculatorFacade);
-		assertNotNull(tfIdfCalculator);
-		assertTrue(tfIdfCalculator.isTermCollectionEnabled());
+
+		TfIdfCalculator calculator = getTfIdfCalculator(calculatorFacade);
+		assertNotNull(calculator);
+		assertTrue(calculator.isTermCollectionEnabled());
 	}
 
 	@Test
@@ -203,10 +205,10 @@ public class CalculatorFacadeTest {
 
 		calculatorFacade.configure();
 
-		LanguageCalculator languageCalculator = getCalculator(calculatorFacade, LanguageCalculator.class);
+		LanguageCalculator calculator = getCalculator(calculatorFacade, LanguageCalculator.class);
 
-		assertNotNull(languageCalculator);
-		assertEquals("languages", languageCalculator.getCalculatorName());
+		assertNotNull(calculator);
+		assertEquals("languages", calculator.getCalculatorName());
 	}
 
 	@Test
@@ -217,14 +219,14 @@ public class CalculatorFacadeTest {
 
 		calculatorFacade.configure();
 
-		EdmMultilingualitySaturationCalculator languageCalculator = getCalculator(
+		EdmMultilingualitySaturationCalculator calculator = getCalculator(
 			calculatorFacade,
 			EdmMultilingualitySaturationCalculator.class
 		);
 
-		assertNotNull(languageCalculator);
-		assertEquals("edmMultilingualitySaturation", languageCalculator.getCalculatorName());
-		assertNull(languageCalculator.getSkippedEntryChecker());
+		assertNotNull(calculator);
+		assertEquals("edmMultilingualitySaturation", calculator.getCalculatorName());
+		assertNull(calculator.getSkippedEntryChecker());
 	}
 
 
@@ -238,14 +240,33 @@ public class CalculatorFacadeTest {
 
 		calculatorFacade.configure();
 
-		EdmMultilingualitySaturationCalculator languageCalculator = getCalculator(
+		EdmMultilingualitySaturationCalculator calculator = getCalculator(
 			calculatorFacade,
 			EdmMultilingualitySaturationCalculator.class
 		);
 
-		assertNotNull(languageCalculator);
-		assertEquals("edmMultilingualitySaturation", languageCalculator.getCalculatorName());
-		assertNotNull(languageCalculator.getSkippedEntryChecker());
+		assertNotNull(calculator);
+		assertEquals("edmMultilingualitySaturation", calculator.getCalculatorName());
+		assertNotNull(calculator.getSkippedEntryChecker());
+	}
+
+	@Test
+	public void testDisconnectedEntity() {
+		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+		calculatorFacade.enableDisconnectedEntityMeasurement(true);
+		assertTrue(calculatorFacade.isDisconnectedEntityEnabled());
+
+		calculatorFacade.configure();
+
+		assertEquals(3, calculatorFacade.getCalculators().size());
+
+		DisconnectedEntityCalculator calculator = getCalculator(
+			calculatorFacade,
+			DisconnectedEntityCalculator.class
+		);
+
+		assertNotNull(calculator);
+		assertEquals("disconnectedEntityCalculator", calculator.getCalculatorName());
 	}
 
 	@Nullable
