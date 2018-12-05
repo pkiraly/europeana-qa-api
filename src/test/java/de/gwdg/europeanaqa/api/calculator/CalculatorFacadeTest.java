@@ -4,6 +4,7 @@ import de.gwdg.europeanaqa.api.model.Format;
 import de.gwdg.metadataqa.api.calculator.LanguageCalculator;
 import de.gwdg.metadataqa.api.calculator.MultilingualitySaturationCalculator;
 import de.gwdg.metadataqa.api.calculator.TfIdfCalculator;
+import de.gwdg.metadataqa.api.calculator.UniquenessCalculator;
 import de.gwdg.metadataqa.api.interfaces.Calculator;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
@@ -267,6 +268,25 @@ public class CalculatorFacadeTest {
 
 		assertNotNull(calculator);
 		assertEquals("disconnectedEntityCalculator", calculator.getCalculatorName());
+	}
+
+	@Test
+	public void testUniquenessCalculator() {
+		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+		calculatorFacade.enableUniquenessMeasurementEnabled(true);
+		assertTrue(calculatorFacade.isUniquenessMeasurementEnabled());
+
+		calculatorFacade.configure();
+
+		assertEquals(3, calculatorFacade.getCalculators().size());
+
+		UniquenessCalculator calculator = getCalculator(
+			calculatorFacade,
+			UniquenessCalculator.class
+		);
+
+		assertNotNull(calculator);
+		assertEquals("uniqueness", calculator.getCalculatorName());
 	}
 
 	@Nullable
