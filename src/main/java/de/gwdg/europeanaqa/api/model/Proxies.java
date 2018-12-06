@@ -12,42 +12,42 @@ import java.util.logging.Logger;
  */
 public class Proxies {
 
-	private static final Logger LOGGER = Logger.getLogger(
-		Proxies.class.getCanonicalName()
-	);
+  private static final Logger LOGGER = Logger.getLogger(
+    Proxies.class.getCanonicalName()
+  );
 
-	private JsonBranch providerProxy;
-	private JsonBranch europeanaProxy = null;
+  private JsonBranch providerProxy;
+  private JsonBranch europeanaProxy = null;
 
-	/**
-	 * Creates a new object, and generates the two proxies as member variables.
-	 *
-	 * @param schema The metadata schema.
-	 */
-	public Proxies(Schema schema) {
-		providerProxy = schema.getPathByLabel("Proxy");
-		try {
-			europeanaProxy = (JsonBranch) providerProxy.clone();
-			europeanaProxy.setJsonPath(
-				providerProxy.getJsonPath().replace("false", "true"));
-		} catch (CloneNotSupportedException ex) {
-			LOGGER.severe(ex.getMessage());
-		}
-	}
+  /**
+   * Creates a new object, and generates the two proxies as member variables.
+   *
+   * @param schema The metadata schema.
+   */
+  public Proxies(Schema schema) {
+    providerProxy = schema.getPathByLabel("Proxy");
+    try {
+      europeanaProxy = (JsonBranch) providerProxy.clone();
+      europeanaProxy.setJsonPath(
+        providerProxy.getJsonPath().replace("false", "true"));
+    } catch (CloneNotSupportedException ex) {
+      LOGGER.severe(ex.getMessage());
+    }
+  }
 
-	/**
-	 * Retrieves the provider proxy.
-	 * @return The provider proxy
-	 */
-	public JsonBranch getProviderProxy() {
-		return providerProxy;
-	}
+  /**
+   * Retrieves the provider proxy.
+   * @return The provider proxy
+   */
+  public JsonBranch getProviderProxy() {
+    return providerProxy;
+  }
 
-	/**
-	 * Retrieves the Europeana proxy.
-	 * @return The Europeana proxy
-	 */
-	public JsonBranch getEuropeanaProxy() {
-		return europeanaProxy;
-	}
+  /**
+   * Retrieves the Europeana proxy.
+   * @return The Europeana proxy
+   */
+  public JsonBranch getEuropeanaProxy() {
+    return europeanaProxy;
+  }
 }

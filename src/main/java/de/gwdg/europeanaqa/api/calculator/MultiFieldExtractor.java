@@ -23,81 +23,81 @@ import java.util.logging.Logger;
  */
 public class MultiFieldExtractor implements Calculator, Serializable {
 
-	private static final Logger LOGGER = Logger.getLogger(
-		MultiFieldExtractor.class.getCanonicalName());
+  private static final Logger LOGGER = Logger.getLogger(
+    MultiFieldExtractor.class.getCanonicalName());
 
-	/**
-	 * Name of the calculator.
-	 */
-	public static final String CALCULATOR_NAME = "edmFieldExtractor";
+  /**
+   * Name of the calculator.
+   */
+  public static final String CALCULATOR_NAME = "edmFieldExtractor";
 
-	private static final String ILLEGAL_ARGUMENT_TPL =
-		"An EDM-based schema should define path for '%' in the extractable fields.";
+  private static final String ILLEGAL_ARGUMENT_TPL =
+    "An EDM-based schema should define path for '%' in the extractable fields.";
 
-	private static final String FIELD_NAME = "recordId";
-	private static final String DATA_PROVIDER = "dataProvider";
-	private static final String DATASET = "dataset";
+  private static final String FIELD_NAME = "recordId";
+  private static final String DATA_PROVIDER = "dataProvider";
+  private static final String DATASET = "dataset";
 
-	private EdmDataProviderManager dataProviderManager;
-	private EdmDatasetManager datasetsManager;
-	private boolean abbreviate;
-	private FieldCounter<List<String>> resultMap;
-	private Schema schema;
+  private EdmDataProviderManager dataProviderManager;
+  private EdmDatasetManager datasetsManager;
+  private boolean abbreviate;
+  private FieldCounter<List<String>> resultMap;
+  private Schema schema;
 
-	/**
-	 * Creates a new object.
-	 * @param schema The schema
-	 */
-	public MultiFieldExtractor(Schema schema) {
-		this.schema = schema;
-	}
+  /**
+   * Creates a new object.
+   * @param schema The schema
+   */
+  public MultiFieldExtractor(Schema schema) {
+    this.schema = schema;
+  }
 
-	@Override
-	public void measure(JsonPathCache cache) throws InvalidJsonException {
-		resultMap = new FieldCounter<>();
+  @Override
+  public void measure(JsonPathCache cache) throws InvalidJsonException {
+    resultMap = new FieldCounter<>();
 
-		for (Map.Entry<String, String> entry : schema.getExtractableFields().entrySet()) {
-			String key = entry.getKey();
-			String path = entry.getValue();
-			List<EdmFieldInstance> edmValues = cache.get(path);
-			List<String> values = new ArrayList<>();
-			if (edmValues != null) {
-				for (EdmFieldInstance edmValue : edmValues) {
-					values.add(edmValue.getValue());
-				}
-			}
-			resultMap.put(key, values);
-		}
-	}
+    for (Map.Entry<String, String> entry : schema.getExtractableFields().entrySet()) {
+      String key = entry.getKey();
+      String path = entry.getValue();
+      List<EdmFieldInstance> edmValues = cache.get(path);
+      List<String> values = new ArrayList<>();
+      if (edmValues != null) {
+        for (EdmFieldInstance edmValue : edmValues) {
+          values.add(edmValue.getValue());
+        }
+      }
+      resultMap.put(key, values);
+    }
+  }
 
-	@Override
-	public Map<String, ? extends Object> getResultMap() {
-		return resultMap.getMap();
-	}
+  @Override
+  public Map<String, ? extends Object> getResultMap() {
+    return resultMap.getMap();
+  }
 
-	@Override
-	public Map<String, Map<String, ? extends Object>> getLabelledResultMap() {
-		Map<String, Map<String, ? extends Object>> labelledResultMap = new LinkedHashMap<>();
-		labelledResultMap.put(getCalculatorName(), resultMap.getMap());
-		return labelledResultMap;
-	}
+  @Override
+  public Map<String, Map<String, ? extends Object>> getLabelledResultMap() {
+    Map<String, Map<String, ? extends Object>> labelledResultMap = new LinkedHashMap<>();
+    labelledResultMap.put(getCalculatorName(), resultMap.getMap());
+    return labelledResultMap;
+  }
 
-	@Override
-	public String getCsv(boolean withLabel, CompressionLevel compressionLevel) {
-		return resultMap.getList(withLabel, CompressionLevel.ZERO);  // the extracted fields should never be compressed!
-	}
+  @Override
+  public String getCsv(boolean withLabel, CompressionLevel compressionLevel) {
+    return resultMap.getList(withLabel, CompressionLevel.ZERO);  // the extracted fields should never be compressed!
+  }
 
-	@Override
-	public List<String> getHeader() {
-		List<String> headers = new ArrayList<>();
-		for (String field : schema.getExtractableFields().keySet()) {
-			headers.add(field);
-		}
-		return headers;
-	}
+  @Override
+  public List<String> getHeader() {
+    List<String> headers = new ArrayList<>();
+    for (String field : schema.getExtractableFields().keySet()) {
+      headers.add(field);
+    }
+    return headers;
+  }
 
-	@Override
-	public String getCalculatorName() {
-		return null;
-	}
+  @Override
+  public String getCalculatorName() {
+    return null;
+  }
 }

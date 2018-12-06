@@ -18,65 +18,70 @@ import java.util.logging.Logger;
  */
 public class ProxyBasedIterator implements Calculator, Serializable {
 
-	private static final Logger LOGGER = Logger.getLogger(
-		ProxyBasedIterator.class.getCanonicalName()
-	);
+  private static final Logger LOGGER = Logger.getLogger(
+    ProxyBasedIterator.class.getCanonicalName()
+  );
 
-	private final Schema schema;
-	private final Proxies proxies;
+  /**
+   * Name of the calculator.
+   */
+  public static final String CALCULATOR_NAME = "proxyBasedIterator";
 
-	/**
-	 * Constructs a new ProxyBasedIterator.
-	 *
-	 * @param schema The metadata schema.
-	 */
-	public ProxyBasedIterator(Schema schema) {
-		this.schema = schema;
-		proxies = new Proxies(schema);
-	}
+  private final Schema schema;
+  private final Proxies proxies;
 
-	public Proxies getProxies() {
-		return proxies;
-	}
+  /**
+   * Constructs a new ProxyBasedIterator.
+   *
+   * @param schema The metadata schema.
+   */
+  public ProxyBasedIterator(Schema schema) {
+    this.schema = schema;
+    proxies = new Proxies(schema);
+  }
 
-	/**
-	 * Measure the object.
-	 * TODO this is a not finished function.
-	 * @param cache The cache object.
-	 */
-	@Override
-	public void measure(JsonPathCache cache) {
-		DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
-		Map<String, EntityType> contextualIds = calculator.getContextualIds(cache);
-		/*
-		for (Map.Entry<String, EntityType> entry : contextualIds.entrySet()) {
-			//TODO this function is a trunk, it should write properly
-		}
-		*/
-	}
+  public Proxies getProxies() {
+    return proxies;
+  }
 
-	@Override
-	public Map<String, ? extends Object> getResultMap() {
-		return null;
-	}
+  /**
+   * Measure the object.
+   * TODO this is a not finished function.
+   * @param cache The cache object.
+   */
+  @Override
+  public void measure(JsonPathCache cache) {
+    DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
+    Map<String, EntityType> contextualIds = calculator.getContextualIds(cache);
+    /*
+    for (Map.Entry<String, EntityType> entry : contextualIds.entrySet()) {
+      //TODO this function is a trunk, it should write properly
+    }
+    */
+  }
 
-	@Override
-	public Map<String, Map<String, ? extends Object>> getLabelledResultMap() {
-		return null;
-	}
+  @Override
+  public Map<String, ? extends Object> getResultMap() {
+    return null;
+  }
 
-	@Override
-	public String getCsv(boolean withLabels, CompressionLevel compressionLevel) {
-		return null;
-	}
+  @Override
+  public Map<String, Map<String, ? extends Object>> getLabelledResultMap() {
+    return null;
+  }
 
-	@Override
-	public List<String> getHeader() {
-		return null;
-	}
+  @Override
+  public String getCsv(boolean withLabels, CompressionLevel compressionLevel) {
+    return null;
+  }
 
-	@Override
-	public String getCalculatorName() {
-		return null;
-	}
+  @Override
+  public List<String> getHeader() {
+    return null;
+  }
+
+  @Override
+  public String getCalculatorName() {
+    return CALCULATOR_NAME;
+  }
 }

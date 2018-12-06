@@ -8,11 +8,11 @@ import de.gwdg.metadataqa.api.abbreviation.AbbreviationManager;
  */
 public class EdmDatasetManager extends AbbreviationManager {
 
-	/**
-	 * Constructor.
-	 */
-	public EdmDatasetManager() {
-		super();
-		initialize("abbreviations/datasets-v3.txt", true);
-	}
+  /**
+   * Constructor.
+   */
+  public EdmDatasetManager() {
+    super();
+    initialize("abbreviations/datasets-v3.txt", true);
+  }
 }

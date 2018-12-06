@@ -5,34 +5,34 @@ package de.gwdg.europeanaqa.api.model;
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
 public class ProxyLink {
-	private String link;
-	private EntityType target = null;
+  private String link;
+  private EntityType target = null;
 
-	/**
-	 * Creates a new object.
-	 * @param link The link (URL).
-	 */
-	public ProxyLink(String link) {
-		this.link = link;
-	}
+  /**
+   * Creates a new object.
+   * @param link The link (URL).
+   */
+  public ProxyLink(String link) {
+    this.link = link;
+  }
 
-	public void setTarget(EntityType target) {
-		this.target = target;
-	}
+  public void setTarget(EntityType target) {
+    this.target = target;
+  }
 
-	public String getLink() {
-		return link;
-	}
+  public String getLink() {
+    return link;
+  }
 
-	public EntityType getTarget() {
-		return target;
-	}
+  public EntityType getTarget() {
+    return target;
+  }
 
-	@Override
-	public String toString() {
-		return "ProxyLink{"
-			+ "link='" + link + "'"
-			+ ", target=" + target
-			+ '}';
-	}
+  @Override
+  public String toString() {
+    return "ProxyLink{"
+      + "link='" + link + "'"
+      + ", target=" + target
+      + '}';
+  }
 }

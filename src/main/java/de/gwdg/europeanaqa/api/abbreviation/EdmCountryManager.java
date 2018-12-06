@@ -8,11 +8,11 @@ import de.gwdg.metadataqa.api.abbreviation.AbbreviationManager;
  */
 public class EdmCountryManager extends AbbreviationManager {
 
-	/**
-	 * Constructor.
-	 */
-	public EdmCountryManager() {
-		super();
-		initialize("abbreviations/countries-v1.csv", true);
-	}
+  /**
+   * Constructor.
+   */
+  public EdmCountryManager() {
+    super();
+    initialize("abbreviations/countries-v1.csv", true);
+  }
 }
