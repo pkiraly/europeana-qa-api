@@ -50,4 +50,18 @@ public class Proxies {
   public JsonBranch getEuropeanaProxy() {
     return europeanaProxy;
   }
+
+  /**
+   * Get proxy by its type.
+   * @param type The type of the proxy.
+   * @return The proxy object.
+   */
+  public JsonBranch getByType(ProxyType type) {
+    if (type.equals(ProxyType.PROVIDER)) {
+      return getProviderProxy();
+    } else{
+      return getEuropeanaProxy();
+    }
+  }
+
 }

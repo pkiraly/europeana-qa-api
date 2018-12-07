@@ -31,7 +31,7 @@ public class LinkRegister {
    * @param type LinkingType The type of the URI
    */
   public final void putAll(final List<String> uris,
-                   final LinkType type) {
+                           final LinkType type) {
     for (String uri : uris) {
       put(uri, type);
     }

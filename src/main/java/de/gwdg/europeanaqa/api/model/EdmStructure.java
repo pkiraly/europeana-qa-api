@@ -1,7 +1,11 @@
 package de.gwdg.europeanaqa.api.model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Structural information of an EDM record.
@@ -10,6 +14,7 @@ import java.util.List;
  */
 public class EdmStructure {
 
+  private final Map<String, ContextualId> contextualIds;
   private final List<ProxyLink> providerProxyLinks;
   private final List<String> providerProxyValues;
   private final List<ProxyLink> europeanaProxyLinks;
@@ -19,6 +24,7 @@ public class EdmStructure {
    * Creates an empty Edm record structure.
    */
   public EdmStructure() {
+    contextualIds = new HashMap<>();
     providerProxyLinks = new ArrayList<>();
     providerProxyValues = new ArrayList<>();
     europeanaProxyLinks = new ArrayList<>();
@@ -160,13 +166,8 @@ public class EdmStructure {
    * @param entityType The target's entity type.
    */
   public void setProviderLinkTarget(String url, EntityType entityType) {
-    for (ProxyLink link : providerProxyLinks) {
-      if (link.getLink().equals(url)) {
-        link.setTarget(entityType);
-      }
-    }
+    setLinkTarget(url, entityType, providerProxyLinks);
   }
-
 
   /**
    * Set a URL link target.
@@ -174,6 +175,10 @@ public class EdmStructure {
    * @param entityType The target's entity type.
    */
   public void setEuropeanaLinkTarget(String url, EntityType entityType) {
+    setLinkTarget(url, entityType, europeanaProxyLinks);
+  }
+
+  private void setLinkTarget(String url, EntityType entityType, List<ProxyLink> europeanaProxyLinks) {
     for (ProxyLink link : europeanaProxyLinks) {
       if (link.getLink().equals(url)) {
         link.setTarget(entityType);
@@ -187,6 +192,10 @@ public class EdmStructure {
    */
   public List<String> getEuropeanaProxyValues() {
     return europeanaProxyValues;
+  }
+
+  public void addContextualId(String url, EntityType type, LinkType linkType) {
+    contextualIds.put(url, new ContextualId(url, type, linkType));
   }
 
   /**
@@ -210,6 +219,10 @@ public class EdmStructure {
     return getBrokenLinks(ProxyType.EUROPEANA);
   }
 
+  public Map<String, ContextualId> getContextualIds() {
+    return contextualIds;
+  }
+
   /**
    * Get the broken links of a given proxy type. Broken links don't have target
    * contextual entities.
@@ -228,5 +241,28 @@ public class EdmStructure {
       }
     }
     return links;
+  }
+
+  public List<ContextualId> getOrphanedEntities() {
+    return getContextualIdsByType(LinkType.NONE);
+  }
+
+  public List<ContextualId> getSelfLinkedEntities() {
+    return getContextualIdsByType(LinkType.SELF);
+  }
+
+  public List<ContextualId> getInterLinkedEntities() {
+    return getContextualIdsByType(LinkType.CONTEXTUAL_ENTITY);
+  }
+
+  @NotNull
+  private List<ContextualId> getContextualIdsByType(LinkType linkType) {
+    List<ContextualId> selectedEntities = new ArrayList<>();
+    for (ContextualId contextualId : contextualIds.values()) {
+      if (contextualId.getSource().equals(linkType)) {
+        selectedEntities.add(contextualId);
+      }
+    }
+    return selectedEntities;
   }
 }

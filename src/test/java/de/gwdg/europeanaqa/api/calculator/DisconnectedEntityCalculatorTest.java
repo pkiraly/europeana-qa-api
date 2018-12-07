@@ -1,5 +1,6 @@
 package de.gwdg.europeanaqa.api.calculator;
 
+import de.gwdg.europeanaqa.api.model.EdmStructure;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
@@ -52,7 +53,7 @@ public class DisconnectedEntityCalculatorTest {
     cache = new JsonPathCache<>(FileUtils.readFirstLine("general/test.json"));
     DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
     calculator.measure(cache);
-    assertEquals("0,0,0,1,0,0,1,0", calculator.getCsv(false, CompressionLevel.NORMAL));
+    assertEquals("0,0,0,0,1,0,1,0", calculator.getCsv(false, CompressionLevel.NORMAL));
   }
 
   @Test
@@ -60,7 +61,7 @@ public class DisconnectedEntityCalculatorTest {
     cache = new JsonPathCache<>(FileUtils.readFirstLine("general/test-place.json"));
     DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
     calculator.measure(cache);
-    assertEquals("0,0,0,7,0,0,4,3", calculator.getCsv(false, CompressionLevel.NORMAL));
+    assertEquals("0,0,0,0,7,0,4,3", calculator.getCsv(false, CompressionLevel.NORMAL));
   }
 
   @Test
@@ -68,7 +69,7 @@ public class DisconnectedEntityCalculatorTest {
     cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/issue41-truncatedID.json"));
     DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
     calculator.measure(cache);
-    assertEquals("0,0,0,1,0,0,1,0", calculator.getCsv(false, CompressionLevel.NORMAL));
+    assertEquals("0,0,0,0,1,0,1,0", calculator.getCsv(false, CompressionLevel.NORMAL));
   }
 
   @Test
@@ -76,7 +77,7 @@ public class DisconnectedEntityCalculatorTest {
     cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/issue5-array-in-innerarray.json"));
     DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
     calculator.measure(cache);
-    assertEquals("0,0,0,4,0,0,1,3", calculator.getCsv(false, CompressionLevel.NORMAL));
+    assertEquals("0,1,0,0,4,0,1,2", calculator.getCsv(false, CompressionLevel.NORMAL));
   }
 
   @Test
@@ -92,7 +93,7 @@ public class DisconnectedEntityCalculatorTest {
     cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/issue8-multiple-same-languages.json"));
     DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
     calculator.measure(cache);
-    assertEquals("0,0,0,6,3,2,1,0", calculator.getCsv(false, CompressionLevel.NORMAL));
+    assertEquals("2,0,0,0,6,3,1,0", calculator.getCsv(false, CompressionLevel.NORMAL));
   }
 
   @Test
@@ -100,7 +101,7 @@ public class DisconnectedEntityCalculatorTest {
     cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/orphaned-entities.json"));
     DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
     calculator.measure(cache);
-    assertEquals("2,0,0,6,0,0,1,3", calculator.getCsv(false, CompressionLevel.NORMAL));
+    assertEquals("2,1,0,0,6,0,1,2", calculator.getCsv(false, CompressionLevel.NORMAL));
   }
 
   @Test
@@ -108,7 +109,7 @@ public class DisconnectedEntityCalculatorTest {
     cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/orphaned-entities-2.json"));
     DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
     calculator.measure(cache);
-    assertEquals("3,0,0,7,0,0,2,2", calculator.getCsv(false, CompressionLevel.NORMAL));
+    assertEquals("3,0,0,0,7,0,2,2", calculator.getCsv(false, CompressionLevel.NORMAL));
   }
 
   @Test
@@ -116,7 +117,7 @@ public class DisconnectedEntityCalculatorTest {
     cache = new JsonPathCache<>(FileUtils.readFirstLine("disconnected-entities/E2DD942FC1F8519066C56D1136D99B8093A83727.json"));
     DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
     calculator.measure(cache);
-    assertEquals("0,0,0,10,0,0,7,3", calculator.getCsv(false, CompressionLevel.NORMAL));
+    assertEquals("0,1,0,0,10,0,7,2", calculator.getCsv(false, CompressionLevel.NORMAL));
   }
 
   @Test
@@ -124,12 +125,13 @@ public class DisconnectedEntityCalculatorTest {
     cache = new JsonPathCache<>(FileUtils.readFirstLine("disconnected-entities/E2DD942FC1F8519066C56D1136D99B8093A83727.json"));
     DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
     assertEquals(
-        Arrays.asList(
-            "unlinkedEntities", "brokenProviderLinks", "brokenEuropeanaLinks",
-            "contextualEntityCount", "providerProxyLinksCount", "providerProxyValuesCount",
-            "europeanaProxyLinksCount", "contextualLinksCount"
-        ),
-        calculator.getHeader()
+      Arrays.asList(
+        "orphanedEntities", "selfLinkedEntities", "brokenProviderLinks",
+        "brokenEuropeanaLinks", "contextualEntityCount",
+        "providerProxyLinksCount", "europeanaProxyLinksCount",
+        "contextualLinksCount"
+      ),
+      calculator.getHeader()
     );
   }
 
@@ -160,9 +162,9 @@ public class DisconnectedEntityCalculatorTest {
     assertEquals(0, result.get("brokenEuropeanaLinks"));
     assertEquals(4, result.get("contextualEntityCount"));
     assertEquals(0, result.get("providerProxyLinksCount"));
-    assertEquals(0, result.get("providerProxyValuesCount"));
+    assertEquals(1, result.get("selfLinkedEntities"));
     assertEquals(1, result.get("europeanaProxyLinksCount"));
-    assertEquals(3, result.get("contextualLinksCount"));
+    assertEquals(2, result.get("contextualLinksCount"));
   }
 
   @Test
@@ -184,7 +186,7 @@ public class DisconnectedEntityCalculatorTest {
     assertEquals(0, result.get("brokenEuropeanaLinks"));
     assertEquals(7, result.get("contextualEntityCount"));
     assertEquals(0, result.get("providerProxyLinksCount"));
-    assertEquals(0, result.get("providerProxyValuesCount"));
+    assertEquals(0, result.get("selfLinkedEntities"));
     assertEquals(4, result.get("europeanaProxyLinksCount"));
     assertEquals(3, result.get("contextualLinksCount"));
   }
