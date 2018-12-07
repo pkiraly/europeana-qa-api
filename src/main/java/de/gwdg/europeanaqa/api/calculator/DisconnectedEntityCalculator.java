@@ -192,8 +192,8 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
    * @param edmStructure
    */
   private void extractProxyLinksAndValues(JsonPathCache cache,
-                             EdmStructure edmStructure,
-                             ProxyType type) {
+                                          EdmStructure edmStructure,
+                                          ProxyType type) {
     JsonBranch branch = type.equals(ProxyType.PROVIDER)
       ? proxies.getProviderProxy()
       : proxies.getEuropeanaProxy();
@@ -236,17 +236,15 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
       JsonBranch branch = schema.getPathByLabel(type.getBranchId());
       Object rawJsonFragment = cache.getFragment(branch.getAbsoluteJsonPath());
       List<Object> jsonFragments = Converter.jsonObjectToList(rawJsonFragment);
-      if (jsonFragments.size() <= 0) {
+      if (jsonFragments.isEmpty()) {
         continue;
       }
       for (Object jsonFragment : jsonFragments) {
-        if (jsonFragment != null) {
-          if (jsonFragment instanceof String) {
-            contextualIds.put((String) jsonFragment, type);
-          } else {
-            LOGGER.info("jsonFragment is not String, but "
+        if (jsonFragment instanceof String) {
+          contextualIds.put((String) jsonFragment, type);
+        } else {
+          LOGGER.info("jsonFragment is not String, but "
               + jsonFragment.getClass().getCanonicalName());
-          }
         }
       }
     }
@@ -254,7 +252,7 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
   }
 
   private void checkContextualIDsInProviderProxy(Map<String, EntityType> contextualIds,
-                                  EdmStructure edmStructure) {
+                                                 EdmStructure edmStructure) {
     List<String> removable = new ArrayList<>();
     for (String id : contextualIds.keySet()) {
       if (edmStructure.getProviderProxyLinks().contains(id)) {
@@ -341,7 +339,7 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
 
   @Override
   public String getCsv(final boolean withLabels,
-                final CompressionLevel compressionLevel) {
+                       final CompressionLevel compressionLevel) {
     return resultMap.getList(withLabels, compressionLevel);
   }
 

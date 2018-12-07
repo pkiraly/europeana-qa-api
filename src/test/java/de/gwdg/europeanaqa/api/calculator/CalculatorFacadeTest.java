@@ -31,277 +31,277 @@ import org.junit.Test;
  */
 public class CalculatorFacadeTest {
 
-	public CalculatorFacadeTest() {
-	}
+  public CalculatorFacadeTest() {
+  }
 
-	@BeforeClass
-	public static void setUpClass() {
-	}
+  @BeforeClass
+  public static void setUpClass() {
+  }
 
-	@AfterClass
-	public static void tearDownClass() {
-	}
+  @AfterClass
+  public static void tearDownClass() {
+  }
 
-	@Before
-	public void setUp() {
-	}
+  @Before
+  public void setUp() {
+  }
 
-	@After
-	public void tearDown() {
-	}
+  @After
+  public void tearDown() {
+  }
 
-	@Test
-	public void testNoAbbreviate() throws URISyntaxException, IOException {
-		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
-		calculator.abbreviate(false);
-		calculator.configure();
-		String expected = "92062/BibliographicResource_1000126015451,92062_Ag_EU_TEL_a0480_Austria,Österreichische Nationalbibliothek - Austrian National Library,0.184,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,12,0,0,0.0,0.0,0.0";
-		String csv = calculator.measure(FileUtils.readFirstLine("general/test.json"));
-		assertEquals(expected, csv);
-	}
+  @Test
+  public void testNoAbbreviate() throws URISyntaxException, IOException {
+    EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
+    calculator.abbreviate(false);
+    calculator.configure();
+    String expected = "92062/BibliographicResource_1000126015451,92062_Ag_EU_TEL_a0480_Austria,Österreichische Nationalbibliothek - Austrian National Library,0.184,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,12,0,0,0.0,0.0,0.0";
+    String csv = calculator.measure(FileUtils.readFirstLine("general/test.json"));
+    assertEquals(expected, csv);
+  }
 
-	@Test
-	public void testWithAbbreviate() throws URISyntaxException, IOException {
-		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
-		calculator.abbreviate(true);
-		calculator.configure();
-		String expected = "92062/BibliographicResource_1000126015451,1725,2,0.184,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,12,0,0,0.0,0.0,0.0";
-		String csv = calculator.measure(FileUtils.readFirstLine("general/test.json"));
-		assertEquals(expected, csv);
-	}
+  @Test
+  public void testWithAbbreviate() throws URISyntaxException, IOException {
+    EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
+    calculator.abbreviate(true);
+    calculator.configure();
+    String expected = "92062/BibliographicResource_1000126015451,1725,2,0.184,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,12,0,0,0.0,0.0,0.0";
+    String csv = calculator.measure(FileUtils.readFirstLine("general/test.json"));
+    assertEquals(expected, csv);
+  }
 
-	@Test
-	public void testCalculate() throws URISyntaxException, IOException {
-		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
-		calculator.abbreviate(true);
-		calculator.configure();
-		String expected = "92062/BibliographicResource_1000126015451,1725,2,0.184,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,12,0,0,0.0,0.0,0.0";
-		String csv = calculator.measure(FileUtils.readFirstLine("general/test.json"));
-		assertEquals(expected, csv);
-	}
+  @Test
+  public void testCalculate() throws URISyntaxException, IOException {
+    EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
+    calculator.abbreviate(true);
+    calculator.configure();
+    String expected = "92062/BibliographicResource_1000126015451,1725,2,0.184,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,12,0,0,0.0,0.0,0.0";
+    String csv = calculator.measure(FileUtils.readFirstLine("general/test.json"));
+    assertEquals(expected, csv);
+  }
 
-	@Test
-	public void testFormat() throws URISyntaxException, IOException {
-		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
-		assertEquals(Format.OAI_PMH_XML, calculator.getFormat());
-		assertEquals(EdmOaiPmhXmlSchema.class, calculator.getSchema().getClass());
+  @Test
+  public void testFormat() throws URISyntaxException, IOException {
+    EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
+    assertEquals(Format.OAI_PMH_XML, calculator.getFormat());
+    assertEquals(EdmOaiPmhXmlSchema.class, calculator.getSchema().getClass());
 
-		calculator = new EdmCalculatorFacade(true, true, true, false, true);
-		calculator.setFormat(Format.FULLBEAN);
-		assertEquals(Format.FULLBEAN, calculator.getFormat());
-		assertEquals(EdmFullBeanSchema.class, calculator.getSchema().getClass());
+    calculator = new EdmCalculatorFacade(true, true, true, false, true);
+    calculator.setFormat(Format.FULLBEAN);
+    assertEquals(Format.FULLBEAN, calculator.getFormat());
+    assertEquals(EdmFullBeanSchema.class, calculator.getSchema().getClass());
 
-		calculator = new EdmCalculatorFacade(true, true, true, false, true);
-		calculator.setFormat(null);
-		assertEquals(null, calculator.getFormat());
-		assertEquals(EdmOaiPmhXmlSchema.class, calculator.getSchema().getClass());
-	}
+    calculator = new EdmCalculatorFacade(true, true, true, false, true);
+    calculator.setFormat(null);
+    assertEquals(null, calculator.getFormat());
+    assertEquals(EdmOaiPmhXmlSchema.class, calculator.getSchema().getClass());
+  }
 
-	@Test
-	public void testAbbreviate() throws URISyntaxException, IOException {
-		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
-		assertFalse(calculator.abbreviate());
+  @Test
+  public void testAbbreviate() throws URISyntaxException, IOException {
+    EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
+    assertFalse(calculator.abbreviate());
 
-		calculator.abbreviate(false);
-		assertFalse(calculator.abbreviate());
+    calculator.abbreviate(false);
+    assertFalse(calculator.abbreviate());
 
-		calculator.abbreviate(true);
-		assertTrue(calculator.abbreviate());
+    calculator.abbreviate(true);
+    assertTrue(calculator.abbreviate());
 
-		calculator = new EdmCalculatorFacade(true, true, true, false, true, false);
-		assertFalse(calculator.abbreviate());
+    calculator = new EdmCalculatorFacade(true, true, true, false, true, false);
+    assertFalse(calculator.abbreviate());
 
-		calculator = new EdmCalculatorFacade(true, true, true, false, true, true);
-		assertTrue(calculator.abbreviate());
-	}
+    calculator = new EdmCalculatorFacade(true, true, true, false, true, true);
+    assertTrue(calculator.abbreviate());
+  }
 
-	@Test
-	public void testExtendedFieldExtraction() {
-		EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
-		calculator.setFormat(Format.FULLBEAN);
-		calculator.setExtendedFieldExtraction(true);
-		assertTrue(calculator.isExtendedFieldExtraction());
-		calculator.configure();
+  @Test
+  public void testExtendedFieldExtraction() {
+    EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
+    calculator.setFormat(Format.FULLBEAN);
+    calculator.setExtendedFieldExtraction(true);
+    assertTrue(calculator.isExtendedFieldExtraction());
+    calculator.configure();
 
-		Map<String, String> extractableFields = calculator.getSchema().getExtractableFields();
-		assertEquals(6, extractableFields.size());
-		assertEquals(
-			"recordId, dataset, dataProvider, provider, country, language",
-			StringUtils.join(extractableFields.keySet(), ", ")
-		);
+    Map<String, String> extractableFields = calculator.getSchema().getExtractableFields();
+    assertEquals(6, extractableFields.size());
+    assertEquals(
+        "recordId, dataset, dataProvider, provider, country, language",
+        StringUtils.join(extractableFields.keySet(), ", ")
+    );
 
-		calculator = new EdmCalculatorFacade(true, true, true, false, true);
-		calculator.setFormat(Format.OAI_PMH_XML);
-		calculator.setExtendedFieldExtraction(true);
-		assertTrue(calculator.isExtendedFieldExtraction());
-		calculator.configure();
+    calculator = new EdmCalculatorFacade(true, true, true, false, true);
+    calculator.setFormat(Format.OAI_PMH_XML);
+    calculator.setExtendedFieldExtraction(true);
+    assertTrue(calculator.isExtendedFieldExtraction());
+    calculator.configure();
 
-		extractableFields = calculator.getSchema().getExtractableFields();
-		assertEquals(6, extractableFields.size());
-		assertEquals(
-			"recordId, dataset, dataProvider, provider, country, language",
-			StringUtils.join(extractableFields.keySet(), ", ")
-		);
+    extractableFields = calculator.getSchema().getExtractableFields();
+    assertEquals(6, extractableFields.size());
+    assertEquals(
+        "recordId, dataset, dataProvider, provider, country, language",
+        StringUtils.join(extractableFields.keySet(), ", ")
+    );
 
-		calculator = new EdmCalculatorFacade(true, true, true, false, true);
-		assertFalse(calculator.isExtendedFieldExtraction());
+    calculator = new EdmCalculatorFacade(true, true, true, false, true);
+    assertFalse(calculator.isExtendedFieldExtraction());
 
-		calculator = new EdmCalculatorFacade(true, true, true, false, true);
-		calculator.setExtendedFieldExtraction(false);
-		assertFalse(calculator.isExtendedFieldExtraction());
-		calculator.configure();
+    calculator = new EdmCalculatorFacade(true, true, true, false, true);
+    calculator.setExtendedFieldExtraction(false);
+    assertFalse(calculator.isExtendedFieldExtraction());
+    calculator.configure();
 
-		extractableFields = calculator.getSchema().getExtractableFields();
-		assertEquals(3, extractableFields.size());
-		assertEquals(
-			"recordId, dataset, dataProvider",
-			StringUtils.join(extractableFields.keySet(), ", ")
-		);
-	}
+    extractableFields = calculator.getSchema().getExtractableFields();
+    assertEquals(3, extractableFields.size());
+    assertEquals(
+        "recordId, dataset, dataProvider",
+        StringUtils.join(extractableFields.keySet(), ", ")
+    );
+  }
 
-	@Test
-	public void testEmptyConstructor() {
-		EdmCalculatorFacade calculator = new EdmCalculatorFacade();
-		assertNotNull(calculator);
-		assertEquals(Format.OAI_PMH_XML, calculator.getFormat());
-		assertFalse(calculator.isExtendedFieldExtraction());
-		assertTrue(calculator.isFieldExistenceMeasurementEnabled());
-		assertTrue(calculator.isFieldCardinalityMeasurementEnabled());
-		assertTrue(calculator.isCompletenessMeasurementEnabled());
-		assertFalse(calculator.isTfIdfMeasurementEnabled());
-		assertFalse(calculator.isProblemCatalogMeasurementEnabled());
-		assertFalse(calculator.abbreviate());
-	}
+  @Test
+  public void testEmptyConstructor() {
+    EdmCalculatorFacade calculator = new EdmCalculatorFacade();
+    assertNotNull(calculator);
+    assertEquals(Format.OAI_PMH_XML, calculator.getFormat());
+    assertFalse(calculator.isExtendedFieldExtraction());
+    assertTrue(calculator.isFieldExistenceMeasurementEnabled());
+    assertTrue(calculator.isFieldCardinalityMeasurementEnabled());
+    assertTrue(calculator.isCompletenessMeasurementEnabled());
+    assertFalse(calculator.isTfIdfMeasurementEnabled());
+    assertFalse(calculator.isProblemCatalogMeasurementEnabled());
+    assertFalse(calculator.abbreviate());
+  }
 
-	@Test
-	public void testTfIdfMeasurement_withoutTermCollection() {
-		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-		calculatorFacade.enableTfIdfMeasurement(true);
-		calculatorFacade.configure();
-		assertTrue(calculatorFacade.isTfIdfMeasurementEnabled());
-		TfIdfCalculator tfIdfCalculator = getTfIdfCalculator(calculatorFacade);
-		assertNotNull(tfIdfCalculator);
-		assertFalse(tfIdfCalculator.isTermCollectionEnabled());
-	}
+  @Test
+  public void testTfIdfMeasurement_withoutTermCollection() {
+    EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+    calculatorFacade.enableTfIdfMeasurement(true);
+    calculatorFacade.configure();
+    assertTrue(calculatorFacade.isTfIdfMeasurementEnabled());
+    TfIdfCalculator tfIdfCalculator = getTfIdfCalculator(calculatorFacade);
+    assertNotNull(tfIdfCalculator);
+    assertFalse(tfIdfCalculator.isTermCollectionEnabled());
+  }
 
-	@Test
-	public void testTfIdfMeasurement_withTermCollection() {
-		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-		calculatorFacade.enableTfIdfMeasurement(true);
-		calculatorFacade.collectTfIdfTerms(true);
+  @Test
+  public void testTfIdfMeasurement_withTermCollection() {
+    EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+    calculatorFacade.enableTfIdfMeasurement(true);
+    calculatorFacade.collectTfIdfTerms(true);
 
-		calculatorFacade.configure();
-		assertTrue(calculatorFacade.isTfIdfMeasurementEnabled());
+    calculatorFacade.configure();
+    assertTrue(calculatorFacade.isTfIdfMeasurementEnabled());
 
-		TfIdfCalculator calculator = getTfIdfCalculator(calculatorFacade);
-		assertNotNull(calculator);
-		assertTrue(calculator.isTermCollectionEnabled());
-	}
+    TfIdfCalculator calculator = getTfIdfCalculator(calculatorFacade);
+    assertNotNull(calculator);
+    assertTrue(calculator.isTermCollectionEnabled());
+  }
 
-	@Test
-	public void testLanguageMeasurement() {
-		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-		calculatorFacade.enableLanguageMeasurement(true);
-		assertTrue(calculatorFacade.isLanguageMeasurementEnabled());
+  @Test
+  public void testLanguageMeasurement() {
+    EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+    calculatorFacade.enableLanguageMeasurement(true);
+    assertTrue(calculatorFacade.isLanguageMeasurementEnabled());
 
-		calculatorFacade.configure();
+    calculatorFacade.configure();
 
-		LanguageCalculator calculator = getCalculator(calculatorFacade, LanguageCalculator.class);
+    LanguageCalculator calculator = getCalculator(calculatorFacade, LanguageCalculator.class);
 
-		assertNotNull(calculator);
-		assertEquals("languages", calculator.getCalculatorName());
-	}
+    assertNotNull(calculator);
+    assertEquals("languages", calculator.getCalculatorName());
+  }
 
-	@Test
-	public void testMultilingualSaturation() {
-		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-		calculatorFacade.enableMultilingualSaturationMeasurement(true);
-		assertTrue(calculatorFacade.isMultilingualSaturationMeasurementEnabled());
+  @Test
+  public void testMultilingualSaturation() {
+    EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+    calculatorFacade.enableMultilingualSaturationMeasurement(true);
+    assertTrue(calculatorFacade.isMultilingualSaturationMeasurementEnabled());
 
-		calculatorFacade.configure();
+    calculatorFacade.configure();
 
-		EdmMultilingualitySaturationCalculator calculator = getCalculator(
-			calculatorFacade,
-			EdmMultilingualitySaturationCalculator.class
-		);
+    EdmMultilingualitySaturationCalculator calculator = getCalculator(
+        calculatorFacade,
+        EdmMultilingualitySaturationCalculator.class
+    );
 
-		assertNotNull(calculator);
-		assertEquals("edmMultilingualitySaturation", calculator.getCalculatorName());
-		assertNull(calculator.getSkippedEntryChecker());
-	}
+    assertNotNull(calculator);
+    assertEquals("edmMultilingualitySaturation", calculator.getCalculatorName());
+    assertNull(calculator.getSkippedEntryChecker());
+  }
 
 
-	@Test
-	public void testMultilingualSaturation_withSkippableCollections() {
-		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-		calculatorFacade.enableMultilingualSaturationMeasurement(true);
-		calculatorFacade.setCheckSkippableCollections(true);
-		assertTrue(calculatorFacade.isMultilingualSaturationMeasurementEnabled());
-		assertTrue(calculatorFacade.isCheckSkippableCollections());
+  @Test
+  public void testMultilingualSaturation_withSkippableCollections() {
+    EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+    calculatorFacade.enableMultilingualSaturationMeasurement(true);
+    calculatorFacade.setCheckSkippableCollections(true);
+    assertTrue(calculatorFacade.isMultilingualSaturationMeasurementEnabled());
+    assertTrue(calculatorFacade.isCheckSkippableCollections());
 
-		calculatorFacade.configure();
+    calculatorFacade.configure();
 
-		EdmMultilingualitySaturationCalculator calculator = getCalculator(
-			calculatorFacade,
-			EdmMultilingualitySaturationCalculator.class
-		);
+    EdmMultilingualitySaturationCalculator calculator = getCalculator(
+        calculatorFacade,
+        EdmMultilingualitySaturationCalculator.class
+    );
 
-		assertNotNull(calculator);
-		assertEquals("edmMultilingualitySaturation", calculator.getCalculatorName());
-		assertNotNull(calculator.getSkippedEntryChecker());
-	}
+    assertNotNull(calculator);
+    assertEquals("edmMultilingualitySaturation", calculator.getCalculatorName());
+    assertNotNull(calculator.getSkippedEntryChecker());
+  }
 
-	@Test
-	public void testDisconnectedEntity() {
-		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-		calculatorFacade.enableDisconnectedEntityMeasurement(true);
-		assertTrue(calculatorFacade.isDisconnectedEntityEnabled());
+  @Test
+  public void testDisconnectedEntity() {
+    EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+    calculatorFacade.enableDisconnectedEntityMeasurement(true);
+    assertTrue(calculatorFacade.isDisconnectedEntityEnabled());
 
-		calculatorFacade.configure();
+    calculatorFacade.configure();
 
-		assertEquals(3, calculatorFacade.getCalculators().size());
+    assertEquals(3, calculatorFacade.getCalculators().size());
 
-		DisconnectedEntityCalculator calculator = getCalculator(
-			calculatorFacade,
-			DisconnectedEntityCalculator.class
-		);
+    DisconnectedEntityCalculator calculator = getCalculator(
+        calculatorFacade,
+        DisconnectedEntityCalculator.class
+    );
 
-		assertNotNull(calculator);
-		assertEquals("disconnectedEntityCalculator", calculator.getCalculatorName());
-	}
+    assertNotNull(calculator);
+    assertEquals("disconnectedEntityCalculator", calculator.getCalculatorName());
+  }
 
-	@Test
-	public void testUniquenessCalculator() {
-		EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-		calculatorFacade.enableUniquenessMeasurementEnabled(true);
-		assertTrue(calculatorFacade.isUniquenessMeasurementEnabled());
+  @Test
+  public void testUniquenessCalculator() {
+    EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+    calculatorFacade.enableUniquenessMeasurementEnabled(true);
+    assertTrue(calculatorFacade.isUniquenessMeasurementEnabled());
 
-		calculatorFacade.configure();
+    calculatorFacade.configure();
 
-		assertEquals(3, calculatorFacade.getCalculators().size());
+    assertEquals(3, calculatorFacade.getCalculators().size());
 
-		UniquenessCalculator calculator = getCalculator(
-			calculatorFacade,
-			UniquenessCalculator.class
-		);
+    UniquenessCalculator calculator = getCalculator(
+        calculatorFacade,
+        UniquenessCalculator.class
+    );
 
-		assertNotNull(calculator);
-		assertEquals("uniqueness", calculator.getCalculatorName());
-	}
+    assertNotNull(calculator);
+    assertEquals("uniqueness", calculator.getCalculatorName());
+  }
 
-	@Nullable
-	private TfIdfCalculator getTfIdfCalculator(EdmCalculatorFacade calculatorFacade) {
-		return getCalculator(calculatorFacade, TfIdfCalculator.class);
-	}
+  @Nullable
+  private TfIdfCalculator getTfIdfCalculator(EdmCalculatorFacade calculatorFacade) {
+    return getCalculator(calculatorFacade, TfIdfCalculator.class);
+  }
 
-	@Nullable
-	private <T extends Calculator> T getCalculator(EdmCalculatorFacade calculatorFacade, Class<T> clazz) {
-		T calculator = null;
-		for (Calculator embeddedCalculator : calculatorFacade.getCalculators()) {
-			if (embeddedCalculator.getClass().equals(clazz)) {
-				calculator = (T) embeddedCalculator;
-			}
-		}
-		return calculator;
-	}
+  @Nullable
+  private <T extends Calculator> T getCalculator(EdmCalculatorFacade calculatorFacade, Class<T> clazz) {
+    T calculator = null;
+    for (Calculator embeddedCalculator : calculatorFacade.getCalculators()) {
+      if (embeddedCalculator.getClass().equals(clazz)) {
+        calculator = (T) embeddedCalculator;
+      }
+    }
+    return calculator;
+  }
 }

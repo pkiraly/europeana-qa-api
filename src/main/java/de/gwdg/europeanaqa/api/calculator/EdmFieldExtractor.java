@@ -33,7 +33,7 @@ public class EdmFieldExtractor extends FieldExtractor {
   public static final String CALCULATOR_NAME = "edmFieldExtractor";
 
   private static final String ILLEGAL_ARGUMENT_TPL =
-    "An EDM-based schema should define path for '%' in the extractable fields.";
+    "An EDM-based schema should define path for '%s' in the extractable fields.";
 
   private static final String DATA_PROVIDER = "dataProvider";
   private static final String DATASET = "dataset";
@@ -54,11 +54,6 @@ public class EdmFieldExtractor extends FieldExtractor {
    */
   public EdmFieldExtractor(Schema schema) {
     super(schema);
-    if (!schema.getExtractableFields().containsKey(super.FIELD_NAME)) {
-      throw new IllegalArgumentException(
-        String.format(ILLEGAL_ARGUMENT_TPL, super.FIELD_NAME)
-      );
-    }
     if (!schema.getExtractableFields().containsKey(DATASET)) {
       throw new IllegalArgumentException(
         String.format(ILLEGAL_ARGUMENT_TPL, DATASET)

@@ -29,7 +29,7 @@ public class MultiFieldExtractor implements Calculator, Serializable {
   /**
    * Name of the calculator.
    */
-  public static final String CALCULATOR_NAME = "edmFieldExtractor";
+  public static final String CALCULATOR_NAME = "multiFieldExtractor";
 
   private static final String ILLEGAL_ARGUMENT_TPL =
     "An EDM-based schema should define path for '%' in the extractable fields.";
@@ -84,7 +84,7 @@ public class MultiFieldExtractor implements Calculator, Serializable {
 
   @Override
   public String getCsv(boolean withLabel, CompressionLevel compressionLevel) {
-    return resultMap.getList(withLabel, CompressionLevel.ZERO);  // the extracted fields should never be compressed!
+    return resultMap.getList(withLabel, CompressionLevel.ZERO); // the extracted fields should never be compressed!
   }
 
   @Override
@@ -98,6 +98,6 @@ public class MultiFieldExtractor implements Calculator, Serializable {
 
   @Override
   public String getCalculatorName() {
-    return null;
+    return CALCULATOR_NAME;
   }
 }
