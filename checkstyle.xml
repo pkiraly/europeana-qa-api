@@ -87,7 +87,7 @@
 		<!-- Checks correct indentation of Java Code. -->
 		<module name="Indentation">
 			<!-- how many spaces to use for new indentation level -->
-			<property name="basicOffset" value="4" />
+			<property name="basicOffset" value="2" />
 			<!-- how far brace should be indented when on next line -->
 			<property name="braceAdjustment" value="0" />
 			<!-- how much to indent a case label -->
