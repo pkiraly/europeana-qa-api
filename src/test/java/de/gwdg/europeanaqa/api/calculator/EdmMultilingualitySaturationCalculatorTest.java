@@ -1614,4 +1614,28 @@ public class EdmMultilingualitySaturationCalculatorTest {
     assertEquals(3.000000, (double)languages.get("DistinctLanguagesInObject"), 0.001);
     assertEquals(1.333333, (double)languages.get("TaggedLiteralsPerLanguageInObject"), 0.001);
   }
+
+  @Test
+  public void emptyConstructor() {
+    EdmMultilingualitySaturationCalculator calculator =
+        new EdmMultilingualitySaturationCalculator();
+    assertNotNull(calculator);
+    assertEquals(MultilingualityResultType.NORMAL, calculator.getResultType());
+  }
+
+  @Test
+  public void testResultMap() throws IOException, URISyntaxException {
+    EdmMultilingualitySaturationCalculator calculator =
+        new EdmMultilingualitySaturationCalculator(new EdmOaiPmhXmlSchema());
+    JsonPathCache cache = new JsonPathCache(FileUtils.readFirstLine("issue-examples/met-359-tagged-litterals-count.json"));
+    calculator.measure(cache);
+    Map<String, ? extends Object> result = calculator.getResultMap();
+    assertEquals(312, result.size());
+    assertEquals(0.0, result.get("providerProxy/dc:title/taggedLiterals"));
+    assertEquals(0.0, result.get("providerProxy/dc:title/languages"));
+    assertEquals(0.0, result.get("providerProxy/dc:title/literalsPerLanguage"));
+    assertEquals(-1.0, result.get("europeanaProxy/dc:title/taggedLiterals"));
+    assertEquals(0.0, result.get("europeanaProxy/dc:title/languages"));
+    assertEquals(0.0, result.get("europeanaProxy/dc:title/literalsPerLanguage"));
+  }
 }
