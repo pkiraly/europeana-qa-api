@@ -87,16 +87,16 @@ public class EdmSaturationMap {
 
   /**
    * Gets the number of languages per property by a proxy.
-   * @param proxyId The ID of the proxy
+   * @param proxyType The ID of the proxy
    * @return number of languages per property
    */
-  public double getNumberOfLanguagesPerPropertyPerProxy(int proxyId) {
-    if (proxyId == EdmSaturationPropertyContainer.PROVIDER_PROXY) {
+  public double getNumberOfLanguagesPerPropertyPerProxy(ProxyType proxyType) {
+    if (proxyType.equals(ProxyType.PROVIDER)) {
       return (double) languagesInProviderProxy
         / (double) taggedPropertiesInProviderProxy;
     }
     return (double) languagesInEuropeanaProxy
-           / (double) taggedPropertiesInEuropeanaProxy;
+      / (double) taggedPropertiesInEuropeanaProxy;
   }
 
   private double getNumberOfLanguagesPerPropertyInProviderProxy() {
@@ -132,11 +132,11 @@ public class EdmSaturationMap {
   /**
    * Gets a property.
    * @param fieldName The field name
-   * @param providerNr The provider
+   * @param proxyType The provider
    * @return The property
    */
   public EdmSaturationProperty createOrGetProperty(String fieldName,
-                                   int providerNr) {
+                                                   ProxyType proxyType) {
     EdmSaturationPropertyContainer container;
     if (index.containsKey(fieldName)) {
       container = properties.get(index.get(fieldName));
@@ -145,7 +145,7 @@ public class EdmSaturationMap {
       properties.add(container);
       index.put(fieldName, properties.size() - 1);
     }
-    if (providerNr == EdmSaturationPropertyContainer.PROVIDER_PROXY) {
+    if (proxyType == ProxyType.PROVIDER) {
       return container.getProviderProxy();
     } else {
       return container.getEuropeanaProxy();

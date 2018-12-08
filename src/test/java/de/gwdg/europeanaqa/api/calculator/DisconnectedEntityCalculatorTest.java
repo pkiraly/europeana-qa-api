@@ -170,7 +170,6 @@ public class DisconnectedEntityCalculatorTest {
   @Test
   public void testEdmStructure1() throws URISyntaxException, IOException {
     String fileName = "general/test-place.json";
-    System.err.println(fileName);
     cache = new JsonPathCache<>(FileUtils.readFirstLine(fileName));
     DisconnectedEntityCalculator calculator = new DisconnectedEntityCalculator(schema);
     calculator.measure(cache);

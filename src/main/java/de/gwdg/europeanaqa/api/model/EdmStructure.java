@@ -114,18 +114,6 @@ public class EdmStructure {
   }
 
   /**
-   * Get Europeana proxy links as list of strings.
-   * @return The proxy values.
-   */
-  public List<String> getEuropeanaProxyLinksAsString() {
-    List<String> urls = new ArrayList<>();
-    for (ProxyLink link : europeanaProxyLinks) {
-      urls.add(link.getLink());
-    }
-    return urls;
-  }
-
-  /**
    * Check if the object contains a provider proxy link.
    * @param url The URL to check.
    * @return True if the URL is registered, otherwise false.

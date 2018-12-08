@@ -56,7 +56,6 @@ public class MultiFieldExtractorTest {
   public void testId() throws URISyntaxException, IOException {
     calculator.measure(cache);
     assertEquals(3, calculator.getResultMap().size());
-    System.err.println(calculator.getResultMap().get("recordId").getClass());
 
     assertEquals("92062/BibliographicResource_1000126015451",
         ((ArrayList) calculator.getResultMap().get("recordId")).get(0));

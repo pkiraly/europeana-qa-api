@@ -6,9 +6,6 @@ package de.gwdg.europeanaqa.api.model;
  */
 class EdmSaturationPropertyContainer {
 
-  public static final int PROVIDER_PROXY = 0;
-  public static final int EUROPEANA_PROXY = 1;
-
   private String propertyName;
   private EdmSaturationProperty providerProxy;
   private EdmSaturationProperty europeanaProxy;

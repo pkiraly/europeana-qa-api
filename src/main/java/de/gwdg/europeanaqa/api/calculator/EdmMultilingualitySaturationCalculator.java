@@ -6,6 +6,7 @@ import de.gwdg.europeanaqa.api.model.EdmSaturationProperty;
 import de.gwdg.europeanaqa.api.model.EntityType;
 import de.gwdg.europeanaqa.api.model.MultilingualityResultType;
 import de.gwdg.europeanaqa.api.model.Proxies;
+import de.gwdg.europeanaqa.api.model.ProxyType;
 import de.gwdg.metadataqa.api.calculator.SkippedEntryChecker;
 import de.gwdg.metadataqa.api.counter.BasicCounter;
 import de.gwdg.metadataqa.api.counter.FieldCounter;
@@ -20,7 +21,6 @@ import de.gwdg.metadataqa.api.util.Converter;
 import de.gwdg.metadataqa.api.util.SkippedEntitySelector;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -60,7 +60,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
   private Map<String, List<SortedMap<LanguageSaturationType, Double>>> rawLanguageSaturationMap;
 
   private Schema schema;
-  private List<JsonBranch> providers;
+  private Proxies proxies;
   private SkippedEntryChecker skippedEntryChecker = null;
   private SkippedEntitySelector skippedEntitySelector = new SkippedEntitySelector();
   private Map<String, EntityType> contextualIds;
@@ -81,11 +81,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
   public EdmMultilingualitySaturationCalculator(Schema schema) {
     this.schema = schema;
     isEdmFullBeanSchema = schema.getClass().getSimpleName().equals("EdmFullBeanSchema");
-    Proxies proxies = new Proxies(schema);
-    providers = Arrays.asList(
-      proxies.getProviderProxy(),
-      proxies.getEuropeanaProxy()
-    );
+    proxies = new Proxies(schema);
   }
 
   @Override
@@ -97,7 +93,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
   public List<String> getHeader() {
 
     List<String> properties = new ArrayList<>();
-    for (JsonBranch jsonBranch : providers.get(0).getChildren()) {
+    for (JsonBranch jsonBranch : proxies.getProviderProxy().getChildren()) {
       if (!schema.getNoLanguageFields().contains(jsonBranch.getLabel())) {
         properties.add(jsonBranch.getLabel());
       }
@@ -122,14 +118,25 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 
   private void measureHierarchicalSchema(JsonPathCache cache) {
     List<String> skippableIds = getSkippableIds(cache);
-    for (int i = 0; i < providers.size(); i++) {
-      JsonBranch collection = providers.get(i);
-      Object rawJsonFragment = cache.getFragment(collection.getJsonPath());
-      if (rawJsonFragment == null) {
-        measureMissingCollection(collection);
-      } else {
-        measureExistingCollection(rawJsonFragment, collection, cache, skippableIds, i);
-      }
+    measureProxy(cache, proxies.getProviderProxy(), skippableIds, ProxyType.PROVIDER);
+    measureProxy(cache, proxies.getEuropeanaProxy(), skippableIds, ProxyType.EUROPEANA);
+  }
+
+  private void measureProxy(JsonPathCache cache,
+                            JsonBranch proxyPath,
+                            List<String> skippableIds,
+                            ProxyType proxyType) {
+    Object jsonFragment = cache.getFragment(proxyPath.getJsonPath());
+    if (jsonFragment == null) {
+      measureMissingCollection(proxyPath);
+    } else {
+      measureExistingCollection(
+          jsonFragment,
+          proxyPath,
+          cache,
+          skippableIds,
+          proxyType
+      );
     }
   }
 
@@ -153,7 +160,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
       JsonBranch collection,
       JsonPathCache cache,
       List<String> skippableIds,
-      int providerNr) {
+      ProxyType proxyType) {
     List<Object> jsonFragments = Converter.jsonObjectToList(rawJsonFragment);
     if (jsonFragments.isEmpty()) {
       measureMissingCollection(collection);
@@ -176,7 +183,14 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
                 "%s/%d/%s",
                  collection.getJsonPath(), i, child.getJsonPath()
               );
-              extractLanguageTags(jsonFragment, child, address, cache, rawLanguageSaturationMap, providerNr);
+              extractLanguageTags(
+                  jsonFragment,
+                  child,
+                  address,
+                  cache,
+                  rawLanguageSaturationMap,
+                  proxyType
+              );
             }
           }
         }
@@ -190,7 +204,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
       String address,
       JsonPathCache cache,
       Map<String, List<SortedMap<LanguageSaturationType, Double>>> rawLanguageMap,
-      int providerNr
+      ProxyType proxyType
   ) {
     List<EdmFieldInstance> values = cache.get(address, field.getJsonPath(), jsonFragment);
     Map<LanguageSaturationType, BasicCounter> languages = new TreeMap<>();
@@ -208,7 +222,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
     }
 
     EdmSaturationProperty property = edmSaturationMap.createOrGetProperty(
-      field.getLabel(), providerNr
+      field.getLabel(), proxyType
     );
     property.setDistinctLanguages(individualLanguages);
     SortedMap<LanguageSaturationType, Double> best = transformLanguages(
@@ -230,7 +244,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
     }
 
     updateMaps(
-      field.getLabel() + "#" + providerNr,
+      field.getLabel() + "#" + proxyType,
       transformLanguages(languages, individualLanguages.size())
     );
   }

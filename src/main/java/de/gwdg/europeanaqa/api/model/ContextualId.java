@@ -1,5 +1,13 @@
 package de.gwdg.europeanaqa.api.model;
 
+/**
+ * Value object for a contextual id.
+ *
+ * A container for an uri, the type of contextual entity it belongs to
+ * the source of the link (which points to it) and the source field.
+ *
+ * @author Péter Király <peter.kiraly at gwdg.de>
+ */
 public class ContextualId {
   private String uri;
   private EntityType entity;
