@@ -13,6 +13,7 @@ import de.gwdg.metadataqa.api.uniqueness.SolrConfiguration;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URISyntaxException;
 import java.util.Map;
 
@@ -277,6 +278,32 @@ public class CalculatorFacadeTest {
     assertTrue(calculatorFacade.isUniquenessMeasurementEnabled());
 
     calculatorFacade.configure();
+  }
+
+  @Test
+  public void testUniquenessCalculatorWitSolrConfiguration() throws IOException, URISyntaxException {
+    EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+    calculatorFacade.enableFieldExistenceMeasurement(false);
+    calculatorFacade.enableCompletenessMeasurement(false);
+    calculatorFacade.enableFieldCardinalityMeasurement(false);
+    calculatorFacade.enableUniquenessMeasurement(true);
+    calculatorFacade.abbreviate(true);
+    calculatorFacade.configureSolr("localhost", "8983", "solr");
+
+    calculatorFacade.configure();
+
+    assertEquals(2, calculatorFacade.getCalculators().size());
+
+    UniquenessCalculator calculator = getCalculator(
+        calculatorFacade,
+        UniquenessCalculator.class
+    );
+
+    assertNotNull(calculator);
+    assertEquals("uniqueness", calculator.getCalculatorName());
+    assertEquals(1, calculator.getSolrFields().get(0).getTotal());
+    assertEquals(1, calculator.getSolrFields().get(1).getTotal());
+    assertEquals(1, calculator.getSolrFields().get(2).getTotal());
   }
 
   @Test
