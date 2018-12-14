@@ -1,15 +1,18 @@
 package de.gwdg.europeanaqa.api.calculator;
 
 import de.gwdg.europeanaqa.api.model.Format;
+import de.gwdg.europeanaqa.api.model.SolrClientMock;
 import de.gwdg.metadataqa.api.calculator.LanguageCalculator;
 import de.gwdg.metadataqa.api.calculator.MultilingualitySaturationCalculator;
 import de.gwdg.metadataqa.api.calculator.TfIdfCalculator;
 import de.gwdg.metadataqa.api.calculator.UniquenessCalculator;
 import de.gwdg.metadataqa.api.interfaces.Calculator;
+import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.uniqueness.DefaultSolrClient;
 import de.gwdg.metadataqa.api.uniqueness.SolrConfiguration;
+import de.gwdg.metadataqa.api.util.CompressionLevel;
 import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -282,17 +285,22 @@ public class CalculatorFacadeTest {
   }
 
   @Test
-  public void testUniquenessCalculator() {
+  public void testUniquenessCalculator() throws IOException, URISyntaxException {
     EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+    calculatorFacade.enableFieldExistenceMeasurement(false);
+    calculatorFacade.enableCompletenessMeasurement(false);
+    calculatorFacade.enableFieldCardinalityMeasurement(false);
     calculatorFacade.enableUniquenessMeasurementEnabled(true);
+    calculatorFacade.abbreviate(true);
+
     calculatorFacade.setSolrClient(
-        new DefaultSolrClient(
+        new SolrClientMock(
             new SolrConfiguration("localhost", "8983", "solr")));
     assertTrue(calculatorFacade.isUniquenessMeasurementEnabled());
 
     calculatorFacade.configure();
 
-    assertEquals(3, calculatorFacade.getCalculators().size());
+    assertEquals(2, calculatorFacade.getCalculators().size());
 
     UniquenessCalculator calculator = getCalculator(
         calculatorFacade,
@@ -301,6 +309,17 @@ public class CalculatorFacadeTest {
 
     assertNotNull(calculator);
     assertEquals("uniqueness", calculator.getCalculatorName());
+    assertEquals(4000, calculator.getSolrFields().get(0).getTotal());
+    assertEquals(1000, calculator.getSolrFields().get(1).getTotal());
+    assertEquals(2000, calculator.getSolrFields().get(2).getTotal());
+
+    JsonPathCache cache = new JsonPathCache(FileUtils.readFirstLine("general/test.json"));
+    calculator.measure(cache);
+    assertEquals(
+      "\"dc_title_ss/count\":3.000000,\"dc_title_ss/score\":0.711154,"
+      + "\"dcterms_alternative_ss/count\":0.000000,\"dcterms_alternative_ss/score\":0.000000,"
+      + "\"dc_description_ss/count\":0.000000,\"dc_description_ss/score\":0.000000",
+      calculator.getCsv(true, CompressionLevel.ZERO));
   }
 
   @Nullable
