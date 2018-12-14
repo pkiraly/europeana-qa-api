@@ -3,23 +3,18 @@ package de.gwdg.europeanaqa.api.calculator;
 import de.gwdg.europeanaqa.api.model.Format;
 import de.gwdg.europeanaqa.api.model.SolrClientMock;
 import de.gwdg.metadataqa.api.calculator.LanguageCalculator;
-import de.gwdg.metadataqa.api.calculator.MultilingualitySaturationCalculator;
 import de.gwdg.metadataqa.api.calculator.TfIdfCalculator;
 import de.gwdg.metadataqa.api.calculator.UniquenessCalculator;
 import de.gwdg.metadataqa.api.interfaces.Calculator;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
-import de.gwdg.metadataqa.api.uniqueness.DefaultSolrClient;
 import de.gwdg.metadataqa.api.uniqueness.SolrConfiguration;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -278,7 +273,7 @@ public class CalculatorFacadeTest {
   @Test(expected = IllegalArgumentException.class)
   public void testUniquenessCalculatorWithoutSolrConfiguration() {
     EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-    calculatorFacade.enableUniquenessMeasurementEnabled(true);
+    calculatorFacade.enableUniquenessMeasurement(true);
     assertTrue(calculatorFacade.isUniquenessMeasurementEnabled());
 
     calculatorFacade.configure();
@@ -290,7 +285,7 @@ public class CalculatorFacadeTest {
     calculatorFacade.enableFieldExistenceMeasurement(false);
     calculatorFacade.enableCompletenessMeasurement(false);
     calculatorFacade.enableFieldCardinalityMeasurement(false);
-    calculatorFacade.enableUniquenessMeasurementEnabled(true);
+    calculatorFacade.enableUniquenessMeasurement(true);
     calculatorFacade.abbreviate(true);
 
     calculatorFacade.setSolrClient(

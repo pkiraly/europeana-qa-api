@@ -49,10 +49,8 @@ public class EdmCalculatorFacade extends CalculatorFacade {
   private EdmFieldExtractor fieldExtractor;
   private EdmDataProviderManager dataProviderManager;
   private EdmDatasetManager datasetManager;
-  private SolrClient solrClient;
   private boolean abbreviate = false;
   private boolean disconnectedEntityMeasurementEnabled = false;
-  private boolean uniquenessMeasurementEnabled = false;
   private boolean extendedFieldExtraction = false;
   private Format format = Format.OAI_PMH_XML;
   private EdmSchema schema = null;
@@ -277,22 +275,6 @@ public class EdmCalculatorFacade extends CalculatorFacade {
   }
 
   /**
-   * Is uniqueness measurement enabled?
-   * @return uniqueness measurement flag
-   */
-  public boolean isUniquenessMeasurementEnabled() {
-    return uniquenessMeasurementEnabled;
-  }
-
-  /**
-   * Flag to enable uniqueness measurement.
-   * @param uniquenessMeasurementEnabled The flag
-   */
-  public void enableUniquenessMeasurementEnabled(boolean uniquenessMeasurementEnabled) {
-    this.uniquenessMeasurementEnabled = uniquenessMeasurementEnabled;
-  }
-
-  /**
    * Saves data providers to a file.
    * @param fileName The target filename
    * @throws FileNotFoundException If file is not found
@@ -360,9 +342,5 @@ public class EdmCalculatorFacade extends CalculatorFacade {
       schema = createSchema();
     }
     return schema;
-  }
-
-  public void setSolrClient(SolrClient solrClient) {
-    this.solrClient = solrClient;
   }
 }
