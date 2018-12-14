@@ -64,7 +64,7 @@ public class EdmMultilingualitySaturationCalculatorTest {
   }
 
   @Test
-  public void selectEntityById() throws URISyntaxException, IOException {
+  public void selectEntityById() {
     String path = calculator.selectEntityById(
         "$.['skos:Concept']", "http://dbpedia.org/resource/Pierre-Paul_Prud'hon");
 
@@ -1597,22 +1597,22 @@ public class EdmMultilingualitySaturationCalculatorTest {
     calculator.measure(cache);
     Map<String, Double> languages = calculator.getSaturationMap();
 
-    assertEquals(4.000000, (double)languages.get("providerProxy/dc:type/taggedLiterals"), 0.001);
-    assertEquals(3.000000, (double)languages.get("providerProxy/dc:type/languages"), 0.001);
-    assertEquals(1.333333, (double)languages.get("providerProxy/dc:type/literalsPerLanguage"), 0.001);
+    assertEquals(4.000000, languages.get("providerProxy/dc:type/taggedLiterals"), 0.001);
+    assertEquals(3.000000, languages.get("providerProxy/dc:type/languages"), 0.001);
+    assertEquals(1.333333, languages.get("providerProxy/dc:type/literalsPerLanguage"), 0.001);
 
-    assertEquals(3.000000, (double)languages.get("NumberOfLanguagesPerPropertyInProviderProxy"), 0.001);
-    assertEquals(4.000000, (double)languages.get("TaggedLiteralsInProviderProxy"), 0.001);
-    assertEquals(3.000000, (double)languages.get("DistinctLanguageCountInProviderProxy"), 0.001);
-    assertEquals(1.333333, (double)languages.get("TaggedLiteralsPerLanguageInProviderProxy"), 0.001);
-    assertEquals(0.000000, (double)languages.get("NumberOfLanguagesPerPropertyInEuropeanaProxy"), 0.001);
-    assertEquals(0.000000, (double)languages.get("TaggedLiteralsInEuropeanaProxy"), 0.001);
-    assertEquals(0.000000, (double)languages.get("DistinctLanguageCountInEuropeanaProxy"), 0.001);
-    assertEquals(0.000000, (double)languages.get("TaggedLiteralsPerLanguageInEuropeanaProxy"), 0.001);
-    assertEquals(3.000000, (double)languages.get("NumberOfLanguagesPerPropertyInObject"), 0.001);
-    assertEquals(4.000000, (double)languages.get("TaggedLiteralsInObject"), 0.001);
-    assertEquals(3.000000, (double)languages.get("DistinctLanguagesInObject"), 0.001);
-    assertEquals(1.333333, (double)languages.get("TaggedLiteralsPerLanguageInObject"), 0.001);
+    assertEquals(3.000000, languages.get("NumberOfLanguagesPerPropertyInProviderProxy"), 0.001);
+    assertEquals(4.000000, languages.get("TaggedLiteralsInProviderProxy"), 0.001);
+    assertEquals(3.000000, languages.get("DistinctLanguageCountInProviderProxy"), 0.001);
+    assertEquals(1.333333, languages.get("TaggedLiteralsPerLanguageInProviderProxy"), 0.001);
+    assertEquals(0.000000, languages.get("NumberOfLanguagesPerPropertyInEuropeanaProxy"), 0.001);
+    assertEquals(0.000000, languages.get("TaggedLiteralsInEuropeanaProxy"), 0.001);
+    assertEquals(0.000000, languages.get("DistinctLanguageCountInEuropeanaProxy"), 0.001);
+    assertEquals(0.000000, languages.get("TaggedLiteralsPerLanguageInEuropeanaProxy"), 0.001);
+    assertEquals(3.000000, languages.get("NumberOfLanguagesPerPropertyInObject"), 0.001);
+    assertEquals(4.000000, languages.get("TaggedLiteralsInObject"), 0.001);
+    assertEquals(3.000000, languages.get("DistinctLanguagesInObject"), 0.001);
+    assertEquals(1.333333, languages.get("TaggedLiteralsPerLanguageInObject"), 0.001);
   }
 
   @Test
@@ -1629,7 +1629,7 @@ public class EdmMultilingualitySaturationCalculatorTest {
         new EdmMultilingualitySaturationCalculator(new EdmOaiPmhXmlSchema());
     JsonPathCache cache = new JsonPathCache(FileUtils.readFirstLine("issue-examples/met-359-tagged-litterals-count.json"));
     calculator.measure(cache);
-    Map<String, ? extends Object> result = calculator.getResultMap();
+    Map<String, ?> result = calculator.getResultMap();
     assertEquals(312, result.size());
     assertEquals(0.0, result.get("providerProxy/dc:title/taggedLiterals"));
     assertEquals(0.0, result.get("providerProxy/dc:title/languages"));

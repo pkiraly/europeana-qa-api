@@ -26,6 +26,8 @@ import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.schema.EdmSchema;
 import de.gwdg.metadataqa.api.schema.Schema;
+import de.gwdg.metadataqa.api.uniqueness.DefaultSolrClient;
+import de.gwdg.metadataqa.api.uniqueness.SolrClient;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
@@ -47,6 +49,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
   private EdmFieldExtractor fieldExtractor;
   private EdmDataProviderManager dataProviderManager;
   private EdmDatasetManager datasetManager;
+  private SolrClient solrClient;
   private boolean abbreviate = false;
   private boolean disconnectedEntityMeasurementEnabled = false;
   private boolean uniquenessMeasurementEnabled = false;
@@ -143,7 +146,15 @@ public class EdmCalculatorFacade extends CalculatorFacade {
     }
 
     if (uniquenessMeasurementEnabled) {
-      calculators.add(new UniquenessCalculator(schema));
+      if (solrClient == null && solrConfiguration == null) {
+        throw new IllegalArgumentException(
+          "If Uniqueness measurement is enabled, Solr configuration should not be null."
+        );
+      }
+      if (solrClient == null) {
+        solrClient = new DefaultSolrClient(solrConfiguration);
+      }
+      calculators.add(new UniquenessCalculator(solrClient, schema));
     }
   }
 
@@ -349,5 +360,9 @@ public class EdmCalculatorFacade extends CalculatorFacade {
       schema = createSchema();
     }
     return schema;
+  }
+
+  public void setSolrClient(SolrClient solrClient) {
+    this.solrClient = solrClient;
   }
 }

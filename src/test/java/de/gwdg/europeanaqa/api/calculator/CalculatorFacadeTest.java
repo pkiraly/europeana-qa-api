@@ -8,6 +8,8 @@ import de.gwdg.metadataqa.api.calculator.UniquenessCalculator;
 import de.gwdg.metadataqa.api.interfaces.Calculator;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
+import de.gwdg.metadataqa.api.uniqueness.DefaultSolrClient;
+import de.gwdg.metadataqa.api.uniqueness.SolrConfiguration;
 import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -270,10 +272,22 @@ public class CalculatorFacadeTest {
     assertEquals("disconnectedEntityCalculator", calculator.getCalculatorName());
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void testUniquenessCalculatorWithoutSolrConfiguration() {
+    EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
+    calculatorFacade.enableUniquenessMeasurementEnabled(true);
+    assertTrue(calculatorFacade.isUniquenessMeasurementEnabled());
+
+    calculatorFacade.configure();
+  }
+
   @Test
   public void testUniquenessCalculator() {
     EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
     calculatorFacade.enableUniquenessMeasurementEnabled(true);
+    calculatorFacade.setSolrClient(
+        new DefaultSolrClient(
+            new SolrConfiguration("localhost", "8983", "solr")));
     assertTrue(calculatorFacade.isUniquenessMeasurementEnabled());
 
     calculatorFacade.configure();
