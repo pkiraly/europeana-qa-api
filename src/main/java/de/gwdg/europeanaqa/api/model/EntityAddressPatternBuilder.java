@@ -3,10 +3,11 @@ package de.gwdg.europeanaqa.api.model;
 import de.gwdg.metadataqa.api.json.JsonBranch;
 import de.gwdg.metadataqa.api.schema.Schema;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EntityAddressPatternBuilder {
+public class EntityAddressPatternBuilder implements Serializable {
   private Schema schema;
   private final static Map<EntityType, String> cache = new HashMap<>();
 
