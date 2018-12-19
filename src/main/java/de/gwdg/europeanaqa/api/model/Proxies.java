@@ -3,6 +3,7 @@ package de.gwdg.europeanaqa.api.model;
 import de.gwdg.metadataqa.api.json.JsonBranch;
 import de.gwdg.metadataqa.api.schema.Schema;
 
+import java.io.Serializable;
 import java.util.logging.Logger;
 
 /**
@@ -10,7 +11,7 @@ import java.util.logging.Logger;
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
-public class Proxies {
+public class Proxies implements Serializable {
 
   private static final Logger LOGGER = Logger.getLogger(
     Proxies.class.getCanonicalName()
