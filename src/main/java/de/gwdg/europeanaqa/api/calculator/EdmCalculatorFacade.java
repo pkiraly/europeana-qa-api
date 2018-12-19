@@ -213,27 +213,29 @@ public class EdmCalculatorFacade extends CalculatorFacade {
   }
 
   private void extendsFieldExtraction(EdmSchema schema) {
-    int index = (format == Format.FULLBEAN)
-      ? -1
-      : 0;
     schema.addExtractableField(
       "provider",
-      getJsonPathForExtractor(schema, "Aggregation/edm:provider", index)
+      getJsonPathForExtractor(schema, "Aggregation/edm:provider")
     );
     fieldExtractor.addAbbreviationManager("provider", new EdmProviderManager());
+
     schema.addExtractableField(
       "country",
-      getJsonPathForExtractor(schema, "EuropeanaAggregation/edm:country", index)
+      getJsonPathForExtractor(schema, "EuropeanaAggregation/edm:country")
     );
     fieldExtractor.addAbbreviationManager("country", new EdmCountryManager());
+
     schema.addExtractableField(
       "language",
-      getJsonPathForExtractor(schema, "EuropeanaAggregation/edm:language", index)
+      getJsonPathForExtractor(schema, "EuropeanaAggregation/edm:language")
     );
     fieldExtractor.addAbbreviationManager("language", new EdmLanguageManager());
   }
 
-  private String getJsonPathForExtractor(EdmSchema schema, String label, int index) {
+  private String getJsonPathForExtractor(EdmSchema schema, String label) {
+    int index = (format == Format.FULLBEAN)
+        ? -1
+        : 0;
     return schema.getPathByLabel(label).getAbsoluteJsonPath(index) + "[0]";
   }
 
