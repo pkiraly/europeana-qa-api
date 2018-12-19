@@ -43,6 +43,7 @@ public class ProxyBasedCompletenessCalculator implements Calculator, Serializabl
   private final Proxies proxies;
   private final EntityAddressPatternBuilder entityAddressPatternBuilder;
   private FieldCounter<Integer> cardinalityCounter;
+  private String recordId;
 
   /**
    * Constructs a new ProxyBasedIterator.
@@ -66,6 +67,7 @@ public class ProxyBasedCompletenessCalculator implements Calculator, Serializabl
    */
   @Override
   public void measure(JsonPathCache cache) {
+    recordId = cache.getRecordId();
     cardinalityCounter = new FieldCounter<>();
     EdmStructureBuilder edmStructureBuilder = new EdmStructureBuilder(schema, proxies);
 
@@ -152,7 +154,11 @@ public class ProxyBasedCompletenessCalculator implements Calculator, Serializabl
       orderedLinks.put(entityType, new ArrayList<>());
     }
     for (ProxyLink proxyLink : proxyLinks) {
-      orderedLinks.get(proxyLink.getTarget()).add(proxyLink);
+      if (proxyLink.getTarget() != null) {
+        orderedLinks.get(proxyLink.getTarget()).add(proxyLink);
+      } else {
+        LOGGER.severe(recordId + ") no target in proxy link: " + proxyLink.toString());
+      }
     }
     return orderedLinks;
   }
