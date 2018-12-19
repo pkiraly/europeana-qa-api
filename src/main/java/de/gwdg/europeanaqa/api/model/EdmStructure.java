@@ -113,6 +113,10 @@ public class EdmStructure {
     return europeanaProxyLinks;
   }
 
+  public List<ProxyLink> getProxyLinks(ProxyType proxyType) {
+    return proxyType.equals(ProxyType.PROVIDER) ? providerProxyLinks : europeanaProxyLinks;
+  }
+
   /**
    * Check if the object contains a provider proxy link.
    * @param url The URL to check.

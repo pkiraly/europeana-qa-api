@@ -58,21 +58,24 @@ public class EdmStructureBuilder {
                                           ProxyType type) {
     JsonBranch proxySchema = proxies.getByType(type);
     Object rawProxy = cache.getFragment(proxySchema.getJsonPath());
-    Object jsonFragment = Converter.jsonObjectToList(rawProxy).get(0);
-    for (JsonBranch child : proxySchema.getChildren()) {
-      if (!isEnrichableField(child)) {
-        continue;
-      }
-      String address = proxySchema.getJsonPath() + "/" + child.getJsonPath();
-      List<EdmFieldInstance> fieldInstances = cache.get(address, child.getJsonPath(), jsonFragment);
-      if (fieldInstances == null) {
-        continue;
-      }
-      for (EdmFieldInstance fieldInstance : fieldInstances) {
-        if (fieldInstance.isUrl()) {
-          edmStructure.addProxyLink(type, fieldInstance.getUrl());
-        } else if (fieldInstance.hasValue()) {
-          edmStructure.addProxyValue(type, fieldInstance.getValue());
+    List<Object> fragments = Converter.jsonObjectToList(rawProxy);
+    if (!fragments.isEmpty()) {
+      Object jsonFragment = fragments.get(0);
+      for (JsonBranch child : proxySchema.getChildren()) {
+        if (!isEnrichableField(child)) {
+          continue;
+        }
+        String address = proxySchema.getJsonPath() + "/" + child.getJsonPath();
+        List<EdmFieldInstance> fieldInstances = cache.get(address, child.getJsonPath(), jsonFragment);
+        if (fieldInstances == null) {
+          continue;
+        }
+        for (EdmFieldInstance fieldInstance : fieldInstances) {
+          if (fieldInstance.isUrl()) {
+            edmStructure.addProxyLink(type, fieldInstance.getUrl());
+          } else if (fieldInstance.hasValue()) {
+            edmStructure.addProxyValue(type, fieldInstance.getValue());
+          }
         }
       }
     }

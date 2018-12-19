@@ -27,8 +27,6 @@ import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.schema.EdmSchema;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.uniqueness.DefaultSolrClient;
-import de.gwdg.metadataqa.api.uniqueness.SolrClient;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -51,6 +49,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
   private EdmDatasetManager datasetManager;
   private boolean abbreviate = false;
   private boolean disconnectedEntityMeasurementEnabled = false;
+  private boolean proxyBasedCompletenessEnabled = false;
   private boolean extendedFieldExtraction = false;
   private Format format = Format.OAI_PMH_XML;
   private EdmSchema schema = null;
@@ -114,7 +113,9 @@ public class EdmCalculatorFacade extends CalculatorFacade {
     buildEdmFieldExtractor(schema);
     calculators.add(fieldExtractor);
 
-    if (completenessMeasurementEnabled
+    if (proxyBasedCompletenessEnabled) {
+      calculators.add(new ProxyBasedCompletenessCalculator(schema));
+    } else if (completenessMeasurementEnabled
         || fieldExistenceMeasurementEnabled
         || fieldCardinalityMeasurementEnabled) {
       buildCompletenessCalculator(schema);
@@ -189,7 +190,6 @@ public class EdmCalculatorFacade extends CalculatorFacade {
     }
   }
 
-  @NotNull
   private ProblemCatalog buildProblemCatalog(EdmSchema schema) {
     ProblemCatalog problemCatalog = new ProblemCatalog(schema);
     LongSubject longSubject = new LongSubject(problemCatalog);
@@ -272,6 +272,23 @@ public class EdmCalculatorFacade extends CalculatorFacade {
    */
   public void enableDisconnectedEntityMeasurement(boolean disconnectedEntityMeasurementEnabled) {
     this.disconnectedEntityMeasurementEnabled = disconnectedEntityMeasurementEnabled;
+  }
+
+
+  /**
+   * Is disconnected entity feature enabled?
+   * @return disconnected entity flag.
+   */
+  public boolean isProxyBasedCompletenessEnabled() {
+    return proxyBasedCompletenessEnabled;
+  }
+
+  /**
+   * Flag to enable disconnected entity feature.
+   * @param proxyBasedCompletenessEnabled disconnected entity flag
+   */
+  public void enableProxyBasedCompleteness(boolean proxyBasedCompletenessEnabled) {
+    this.proxyBasedCompletenessEnabled = proxyBasedCompletenessEnabled;
   }
 
   /**
