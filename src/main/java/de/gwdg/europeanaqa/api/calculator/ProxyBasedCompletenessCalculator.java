@@ -76,7 +76,9 @@ public class ProxyBasedCompletenessCalculator implements Calculator, Serializabl
     iterateOverProxyAndLinks(cache, edmStructure, ProxyType.EUROPEANA);
   }
 
-  private void iterateOverProxyAndLinks(JsonPathCache cache, EdmStructure edmStructure, ProxyType proxyType) {
+  private void iterateOverProxyAndLinks(JsonPathCache cache,
+                                        EdmStructure edmStructure,
+                                        ProxyType proxyType) {
     iterateOverProxy(cache, proxyType);
     iterateOverLinkedContextualEntities(cache, edmStructure, proxyType);
   }
@@ -93,7 +95,9 @@ public class ProxyBasedCompletenessCalculator implements Calculator, Serializabl
     }
   }
 
-  private void iterateOverLinkedContextualEntities(JsonPathCache cache, EdmStructure edmStructure, ProxyType proxyType) {
+  private void iterateOverLinkedContextualEntities(JsonPathCache cache,
+                                                   EdmStructure edmStructure,
+                                                   ProxyType proxyType) {
     List<ProxyLink> proxyLinks = edmStructure.getProxyLinks(proxyType);
     Map<EntityType, List<ProxyLink>> orderedProxyLinks = orderLinks(proxyLinks);
     int i = 0;
@@ -156,8 +160,6 @@ public class ProxyBasedCompletenessCalculator implements Calculator, Serializabl
     for (ProxyLink proxyLink : proxyLinks) {
       if (proxyLink.getTarget() != null) {
         orderedLinks.get(proxyLink.getTarget()).add(proxyLink);
-      } else {
-        LOGGER.severe(recordId + ") no target in proxy link: " + proxyLink.toString());
       }
     }
     return orderedLinks;
