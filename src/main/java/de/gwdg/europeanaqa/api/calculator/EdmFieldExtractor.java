@@ -108,7 +108,8 @@ public class EdmFieldExtractor extends FieldExtractor {
       String jsonPath = entry.getValue();
       String value = extractValueByPath(cache, jsonPath, "na");
       if (value.equals("na")) {
-        LOGGER.info(cache.getJsonString());
+        LOGGER.info(String.format("no result for %s", entry.getKey()));
+        // LOGGER.info(cache.getJsonString());
       }
       if (abbreviate) {
         value = abbreviationManagers.get(field).lookup(value).toString();
