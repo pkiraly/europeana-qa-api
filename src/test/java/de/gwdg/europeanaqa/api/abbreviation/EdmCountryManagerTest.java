@@ -39,7 +39,7 @@ public class EdmCountryManagerTest {
 
   @Test
   public void testSize() {
-    assertEquals(46, manager.getData().keySet().size());
+    assertEquals(91, manager.getData().keySet().size());
   }
 
   @Test
