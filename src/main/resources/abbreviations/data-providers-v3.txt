@@ -5493,3 +5493,36 @@
 5493;Επιτροπή Ποντιακών Μελετών (Ε.Π.Μ.)
 5494;Εφορεία Αρχαιοτήτων Ευβοίας
 5495;Державний політехнічний музей
+5495;Archivo del Ayuntamiento de Tinajo
+5496;B. Grincevičiūtės memorialinis butas-muziejus "Beatričės namai" / B. Grincevičiūtė Memorial Apartment-Museum "Beatričės namai"
+5497;Egységes Magyarországi Izraelita Hitközség - Budapest
+5498;Együd Árpád Kulturális Központ - Kaposvár
+5499;Evangélikus Országos Gyűjtemény - Budapest
+5500;Istituto Luce - Cinecittà
+5501;Katasztrófavédelem Központi Múzeuma - Budapest
+5502;KIM.bl
+5503;Knjižnica Ivana Potrča
+5504;Knjižnica Mirana Jarca
+5505;Kraljeva knjižnica, Danska nacionalna knjižnica in univerzitetna knjižnica v Kopenhagnu
+5506;Magyar Karszt- és Barlangkutató Társulat - Budapest
+5507;Magyar Természettudományi Múzeum - Budapest
+5508;Magyar Tudományos Akadémia Nyelvtudományi Intézet - Budapest
+5509;Meise Botanic Garden
+5510;National Technical Museum "prof.ing. Dimitrie Leonida", Bucharest
+5511;Neringos muziejai / Neringa museums
+5512;Okupacijų ir laisvės kovų muziejus / Museum of Occupations and Freedom Fights
+5513;Országos Rabbiképző - Zsidó Egyetem Egyetemi Könyvtára - Budapest
+5514;Piarista Múzeum - Budapest
+5515;Real Academia Galega
+5516;Šiaulių "Aušros" muziejus / Šiauliai Aušros Museum
+5517;Splošna knjižnica Ljutomer
+5518;Vilkaviškio krašto muziejus / Vilkaviškis Regional Museum
+5519;Villányi Borvidék
+5520;Visagino "Gerosios vilties" progimnazijos Švietimo muziejus / Visaginas "Good hope" progymnasium Education Museum
+5521;V. Krėvės-Mickevičiaus memorialinis butas-muziejus  / Vincas Krėvė-Mickevičius Memorial Room-Museum
+5522;V. Mykolaičio-Putino memorialinis butas-muziejus / Vincas Mykolaitis-Putinas Memorial Museum
+5523;Zoological Research Museum Koenig - Leibniz Institute for Animal Biodiversity
+5524;Ίδρυμα Κωνσταντίνος Κ. Μητσοτάκης
+5525;Ίδρυμα Μουσείου Νίκου Καζαντζάκη
+5526;Ίδρυμα Ωνάση
+5527;Ινστιτούτο Ιστορικών Ερευνών (ΙΙΕ/ΕΙΕ)

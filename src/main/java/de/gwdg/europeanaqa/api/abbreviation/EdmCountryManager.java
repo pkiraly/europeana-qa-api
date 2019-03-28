@@ -13,6 +13,6 @@ public class EdmCountryManager extends AbbreviationManager {
    */
   public EdmCountryManager() {
     super();
-    initialize("abbreviations/countries-v1.csv", true);
+    initialize("abbreviations/countries-v2.csv", true);
   }
 }

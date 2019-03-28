@@ -2312,3 +2312,16 @@
 2559;9200579_Ag_UK_WellcomeCollection_IIIF
 2560;92023_Ag_DK_kb.billeder
 2560;92064_NL_ONB_Contemporary_History
+2561;11608_OpenUp_NBGB
+2562;11618_Ag_OpenUp_ZFMK
+2563;11627_Ag_EU_OpenUp_ALGATERRA
+2564;11631_Ag_EU_OpenUp_MOOSATLAS
+2565;12_EKT_Pandektis
+2566;13_EKT_Onassis
+2567;2020127_Ag_SI_NatEContentAgg_Books
+2568;2055737_EKT_Thessaloniki_Film_Festival
+2569;2064949_GR_Palaiofaliro
+2570;3_EKT_Kazantzakis
+2571;42_Culturalia_LeonidaZamfirescu
+2572;51_Ag_EU_EUscreenXLCore_1059
+2573;5_RoL_NULSlovenia_manuscripts
