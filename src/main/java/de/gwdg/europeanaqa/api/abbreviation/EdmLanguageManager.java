@@ -13,6 +13,6 @@ public class EdmLanguageManager extends AbbreviationManager {
    */
   public EdmLanguageManager() {
     super();
-    initialize("abbreviations/languages-v1.csv", true);
+    initialize("abbreviations/languages-v2.csv", true);
   }
 }

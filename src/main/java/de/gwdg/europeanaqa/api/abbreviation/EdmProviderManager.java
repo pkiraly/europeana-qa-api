@@ -13,6 +13,6 @@ public class EdmProviderManager extends AbbreviationManager {
    */
   public EdmProviderManager() {
     super();
-    initialize("abbreviations/providers-v1.csv", true);
+    initialize("abbreviations/providers-v2.csv", true);
   }
 }

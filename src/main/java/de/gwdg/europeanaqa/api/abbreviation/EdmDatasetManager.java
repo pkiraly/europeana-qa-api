@@ -13,6 +13,6 @@ public class EdmDatasetManager extends AbbreviationManager {
    */
   public EdmDatasetManager() {
     super();
-    initialize("abbreviations/datasets-v3.txt", true);
+    initialize("abbreviations/datasets-v4.csv", true);
   }
 }
