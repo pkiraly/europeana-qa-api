@@ -39,7 +39,7 @@ public class EdmLanguageManagerTest {
 
   @Test
   public void testSize() {
-    assertEquals(38, manager.getData().keySet().size());
+    assertEquals(39, manager.getData().keySet().size());
   }
 
   @Test
