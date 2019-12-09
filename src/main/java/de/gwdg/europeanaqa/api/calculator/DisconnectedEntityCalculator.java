@@ -137,9 +137,7 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
     for (EntityType type : EntityType.values()) {
       JsonBranch branch = schema.getPathByLabel(type.getBranchId());
       Object rawJsonFragment = cache.getFragment(branch.getAbsoluteJsonPath(schema.getFormat()));
-      List<Object> jsonFragments = schema.getFormat().equals(Format.JSON)
-        ? Converter.jsonObjectToList(rawJsonFragment)
-        : (List<Object>) rawJsonFragment;
+      List<Object> jsonFragments = Converter.jsonObjectToList(rawJsonFragment, schema);
       if (jsonFragments.isEmpty()) {
         continue;
       }

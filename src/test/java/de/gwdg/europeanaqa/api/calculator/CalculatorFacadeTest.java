@@ -1,6 +1,7 @@
 package de.gwdg.europeanaqa.api.calculator;
 
 import de.gwdg.europeanaqa.api.model.Format;
+import de.gwdg.europeanaqa.api.model.OaiPmhUtil;
 import de.gwdg.europeanaqa.api.model.SolrClientMock;
 import de.gwdg.metadataqa.api.calculator.LanguageCalculator;
 import de.gwdg.metadataqa.api.calculator.TfIdfCalculator;
@@ -375,6 +376,86 @@ public class CalculatorFacadeTest {
         assertEquals(header.get(i) + " should be equal", json[i], xml[i]);
       }
     }
+  }
+
+  @Test
+  public void testOaiPmhXml_completeness() throws URISyntaxException, IOException {
+    String id = "/2048081/_O_532";
+
+    EdmCalculatorFacade calculatorXml = new EdmCalculatorFacade(true, true, true, false, true);
+    calculatorXml.setFormat(Format.OAI_PMH_XML);
+    assertEquals(Format.OAI_PMH_XML, calculatorXml.getFormat());
+    assertEquals(EdmOaiPmhXmlSchema.class, calculatorXml.getSchema().getClass());
+    calculatorXml.configure();
+    String csvFromXml = calculatorXml.measure(FileUtils.readFromUrl(OaiPmhUtil.getRecordUrl(id)));
+    System.err.println(csvFromXml);
+    System.err.println(calculatorXml.getResults());
+  }
+
+  @Test
+  public void testOaiPmhXml_multilinguality_nonMultilingual() throws IOException, URISyntaxException {
+    String id = "/2048081/_O_532";
+    // String id = "/92064/bildarchivaustria_Preview_305640";
+
+    EdmCalculatorFacade calculator = new EdmCalculatorFacade();
+    calculator.abbreviate(true);
+    calculator.enableCompletenessMeasurement(false);
+    calculator.enableFieldCardinalityMeasurement(false);
+    calculator.enableFieldExistenceMeasurement(false);
+    calculator.enableProblemCatalogMeasurement(false);
+    calculator.enableTfIdfMeasurement(false);
+    calculator.enableLanguageMeasurement(false);
+    calculator.enableMultilingualSaturationMeasurement(true);
+    calculator.setCompressionLevel(CompressionLevel.WITHOUT_TRAILING_ZEROS);
+    calculator.setSaturationExtendedResult(true);
+    calculator.setCheckSkippableCollections(true);
+    calculator.setFormat(Format.OAI_PMH_XML);
+
+    calculator.configure();
+    assertEquals(EdmOaiPmhXmlSchema.class, calculator.getSchema().getClass());
+
+    String csvFromXml = calculator.measure(FileUtils.readFromUrl(OaiPmhUtil.getRecordUrl(id)));
+    assertEquals(
+      "/2048081/_O_532,989,206,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,0,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+      csvFromXml
+    );
+    //System.err.println(calculator.getResults());
+
+    csvFromXml = calculator.measure(FileUtils.readContent("general/2048081-_O_532.xml"));
+    assertEquals(
+        "/2048081/_O_532,989,206,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,0,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+        csvFromXml
+    );
+  }
+
+  @Test
+  public void testOaiPmhXml_multilinguality_multilingual() throws IOException, URISyntaxException {
+    String id = "/92064/bildarchivaustria_Preview_305640";
+
+    EdmCalculatorFacade calculator = new EdmCalculatorFacade();
+    calculator.abbreviate(true);
+    calculator.enableCompletenessMeasurement(false);
+    calculator.enableFieldCardinalityMeasurement(false);
+    calculator.enableFieldExistenceMeasurement(false);
+    calculator.enableProblemCatalogMeasurement(false);
+    calculator.enableTfIdfMeasurement(false);
+    calculator.enableLanguageMeasurement(false);
+    calculator.enableMultilingualSaturationMeasurement(true);
+    calculator.setCompressionLevel(CompressionLevel.WITHOUT_TRAILING_ZEROS);
+    calculator.setSaturationExtendedResult(true);
+    calculator.setCheckSkippableCollections(true);
+    calculator.setFormat(Format.OAI_PMH_XML);
+
+    calculator.configure();
+    assertEquals(EdmOaiPmhXmlSchema.class, calculator.getSchema().getClass());
+
+    String expectation = "/92064/bildarchivaustria_Preview_305640,2560,2,1,1,1,-1,0,0,-1,0,0,-1,0,0,1,1,1,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,0,0,0,0,0,0,8,2,4,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,1,1,1,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,1.25,0,1.25,11,0,2,0,11,2,5.5,0,5.5";
+    String csvFromXml = calculator.measure(FileUtils.readFromUrl(OaiPmhUtil.getRecordUrl(id)));
+    assertEquals(expectation, csvFromXml);
+    //System.err.println(calculator.getResults());
+
+    csvFromXml = calculator.measure(FileUtils.readContent("general/92064-bildarchivaustria_Preview_305640.xml"));
+    assertEquals(expectation, csvFromXml);
   }
 
   @Nullable

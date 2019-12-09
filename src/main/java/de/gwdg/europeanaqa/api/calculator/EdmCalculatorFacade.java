@@ -108,7 +108,9 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
   @Override
   public void configure() {
-    this.schema = createSchema();
+    if (schema == null) {
+      this.schema = createSchema();
+    }
     setSchema(schema);
 
     calculators = new ArrayList<>();
@@ -187,7 +189,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
       */
     if (checkSkippableCollections) {
       multilingualSaturationCalculator.setSkippedEntryChecker(
-        new EdmSkippedEntryChecker()
+        new EdmSkippedEntryChecker(schema)
       );
     }
   }
@@ -209,7 +211,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
     completenessCalculator.collectFields(completenessCollectFields);
     if (checkSkippableCollections) {
       completenessCalculator.setSkippedEntryChecker(
-        new EdmSkippedEntryChecker()
+        new EdmSkippedEntryChecker(schema)
       );
     }
   }

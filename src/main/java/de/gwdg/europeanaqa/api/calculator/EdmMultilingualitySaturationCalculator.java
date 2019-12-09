@@ -162,9 +162,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
       PathCache cache,
       List<String> skippableIds,
       ProxyType proxyType) {
-    List<Object> jsonFragments = schema.getFormat().equals(Format.JSON)
-        ? Converter.jsonObjectToList(rawJsonFragment)
-        : (List<Object>) rawJsonFragment;
+    List<Object> jsonFragments = Converter.jsonObjectToList(rawJsonFragment, schema);
     if (jsonFragments.isEmpty()) {
       measureMissingCollection(collection);
     } else {

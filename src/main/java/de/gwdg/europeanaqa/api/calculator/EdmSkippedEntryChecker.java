@@ -5,6 +5,8 @@ import de.gwdg.metadataqa.api.calculator.edm.EnhancementIdExtractor;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.PathCache;
 import de.gwdg.metadataqa.api.model.XmlFieldInstance;
+import de.gwdg.metadataqa.api.schema.Schema;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -12,12 +14,17 @@ import java.util.List;
  *
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
-public class EdmSkippedEntryChecker
-  implements SkippedEntryChecker, Serializable {
+public class EdmSkippedEntryChecker implements SkippedEntryChecker, Serializable {
+
+  private Schema schema;
+
+  public EdmSkippedEntryChecker(Schema schema) {
+    this.schema = schema;
+  }
 
   @Override
   public List<String> getSkippableCollectionIds(PathCache pathCache) {
-    return EnhancementIdExtractor.extractIds(pathCache);
+    return EnhancementIdExtractor.extractIds(pathCache, schema);
   }
 
   @Override

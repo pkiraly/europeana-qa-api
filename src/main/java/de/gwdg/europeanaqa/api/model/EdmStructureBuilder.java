@@ -59,9 +59,7 @@ public class EdmStructureBuilder {
                                           ProxyType type) {
     JsonBranch proxySchema = proxies.getByType(type);
     Object rawProxy = cache.getFragment(proxySchema.getJsonPath());
-    List<Object> fragments = schema.getFormat().equals(Format.JSON)
-      ? Converter.jsonObjectToList(rawProxy)
-      : (List<Object>) rawProxy;
+    List<Object> fragments = Converter.jsonObjectToList(rawProxy, schema);
     if (!fragments.isEmpty()) {
       Object jsonFragment = fragments.get(0);
       for (JsonBranch child : proxySchema.getChildren()) {
@@ -100,9 +98,7 @@ public class EdmStructureBuilder {
     for (EntityType type : EntityType.values()) {
       JsonBranch branch = schema.getPathByLabel(type.getBranchId());
       Object rawJsonFragment = cache.getFragment(branch.getAbsoluteJsonPath(schema.getFormat()));
-      List<Object> jsonFragments = schema.getFormat().equals(Format.JSON)
-        ? Converter.jsonObjectToList(rawJsonFragment)
-        : (List<Object>) rawJsonFragment;
+      List<Object> jsonFragments = Converter.jsonObjectToList(rawJsonFragment, schema);
       if (jsonFragments.isEmpty()) {
         continue;
       }
@@ -157,9 +153,7 @@ public class EdmStructureBuilder {
     EntityType entityType = contextualId.getEntity();
     JsonBranch entityPath = schema.getPathByLabel(entityType.getName());
     Object rawJsonFragment = cache.getFragment(entityPath.getJsonPath());
-    List<Object> jsonFragments = schema.getFormat().equals(Format.JSON)
-      ? Converter.jsonObjectToList(rawJsonFragment)
-      : (List<Object>) rawJsonFragment;
+    List<Object> jsonFragments = Converter.jsonObjectToList(rawJsonFragment, schema);
     if (!jsonFragments.isEmpty()) {
       JsonBranch idPath = schema.getPathByLabel(entityType.getBranchId());
       int i = 0;

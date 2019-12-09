@@ -87,9 +87,7 @@ public class ProxyBasedCompletenessCalculator implements Calculator, Serializabl
   private void iterateOverProxy(PathCache cache, ProxyType proxyType) {
     JsonBranch proxy = proxies.getByType(proxyType);
     Object rawJsonFragment = cache.getFragment(proxy.getJsonPath());
-    List<Object> entityFragments = schema.getFormat().equals(Format.JSON)
-      ? Converter.jsonObjectToList(rawJsonFragment)
-      : (List<Object>) rawJsonFragment;
+    List<Object> entityFragments = Converter.jsonObjectToList(rawJsonFragment, schema);
     if (!entityFragments.isEmpty()) {
       Object entityFragment = entityFragments.get(0);
       for (JsonBranch entityElement : proxy.getChildren()) {
@@ -115,9 +113,7 @@ public class ProxyBasedCompletenessCalculator implements Calculator, Serializabl
         for (ProxyLink proxyLink : entityLinks) {
           String link = proxyLink.getLink();
           Object rawJsonFragment = cache.getFragment(getPath(entityType, link));
-          List<Object> entityFragments = schema.getFormat().equals(Format.JSON)
-            ? Converter.jsonObjectToList(rawJsonFragment)
-            : (List<Object>) rawJsonFragment;
+          List<Object> entityFragments = Converter.jsonObjectToList(rawJsonFragment, schema);
           if (entityFragments.isEmpty()) {
             continue;
           }
