@@ -25,7 +25,7 @@ public class EntityAddressPatternBuilder implements Serializable {
   private String createPattern(EntityType entityType) {
     String label = entityType.getBranchId();
     JsonBranch aboutPath = schema.getPathByLabel(label);
-    String pattern = aboutPath.getAbsoluteJsonPath().replace("[*]", "[?(@") + " == '%s')]";
+    String pattern = aboutPath.getAbsoluteJsonPath(schema.getFormat()).replace("[*]", "[?(@") + " == '%s')]";
     return pattern;
   }
 

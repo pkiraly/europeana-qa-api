@@ -9,12 +9,12 @@ import de.gwdg.metadataqa.api.json.JsonBranch;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
-import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
+import de.gwdg.metadataqa.api.schema.EdmOaiPmhJsonSchema;
+import de.gwdg.metadataqa.api.schema.Format;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +50,7 @@ public class EdmFieldExtractorTest {
 
   @Before
   public void setUp() throws URISyntaxException, IOException {
-    schema = new EdmOaiPmhXmlSchema();
+    schema = new EdmOaiPmhJsonSchema();
     calculator = new EdmFieldExtractor(schema);
     calculator.setDataProviderManager(new EdmDataProviderManager());
     calculator.setDatasetManager(new EdmDatasetManager());
@@ -240,6 +240,11 @@ public class EdmFieldExtractorTest {
   private class DummySchema implements Schema {
 
     private Map<String, String> extractableFields = null;
+
+    @Override
+    public Format getFormat() {
+      return Format.JSON;
+    }
 
     @Override
     public List<JsonBranch> getCollectionPaths() {

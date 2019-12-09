@@ -8,13 +8,14 @@ import de.gwdg.metadataqa.api.calculator.UniquenessCalculator;
 import de.gwdg.metadataqa.api.interfaces.Calculator;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
+import de.gwdg.metadataqa.api.schema.EdmOaiPmhJsonSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.uniqueness.SolrConfiguration;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -84,8 +85,8 @@ public class CalculatorFacadeTest {
   @Test
   public void testFormat() throws URISyntaxException, IOException {
     EdmCalculatorFacade calculator = new EdmCalculatorFacade(true, true, true, false, true);
-    assertEquals(Format.OAI_PMH_XML, calculator.getFormat());
-    assertEquals(EdmOaiPmhXmlSchema.class, calculator.getSchema().getClass());
+    assertEquals(Format.OAI_PMH_JSON, calculator.getFormat());
+    assertEquals(EdmOaiPmhJsonSchema.class, calculator.getSchema().getClass());
 
     calculator = new EdmCalculatorFacade(true, true, true, false, true);
     calculator.setFormat(Format.FULLBEAN);
@@ -95,7 +96,7 @@ public class CalculatorFacadeTest {
     calculator = new EdmCalculatorFacade(true, true, true, false, true);
     calculator.setFormat(null);
     assertEquals(null, calculator.getFormat());
-    assertEquals(EdmOaiPmhXmlSchema.class, calculator.getSchema().getClass());
+    assertEquals(EdmOaiPmhJsonSchema.class, calculator.getSchema().getClass());
   }
 
   @Test
@@ -164,7 +165,7 @@ public class CalculatorFacadeTest {
   public void testEmptyConstructor() {
     EdmCalculatorFacade calculator = new EdmCalculatorFacade();
     assertNotNull(calculator);
-    assertEquals(Format.OAI_PMH_XML, calculator.getFormat());
+    assertEquals(Format.OAI_PMH_JSON, calculator.getFormat());
     assertFalse(calculator.isExtendedFieldExtraction());
     assertTrue(calculator.isFieldExistenceMeasurementEnabled());
     assertTrue(calculator.isFieldCardinalityMeasurementEnabled());
@@ -342,6 +343,38 @@ public class CalculatorFacadeTest {
       + "\"dcterms_alternative_ss/count\":0.000000,\"dcterms_alternative_ss/score\":0.000000,"
       + "\"dc_description_ss/count\":0.000000,\"dc_description_ss/score\":0.000000",
       calculator.getCsv(true, CompressionLevel.ZERO));
+  }
+
+  @Test
+  public void testJsonAndXml() throws URISyntaxException, IOException {
+    EdmCalculatorFacade calculatorJson = new EdmCalculatorFacade(true, true, true, false, true);
+    calculatorJson.setFormat(Format.FULLBEAN);
+    assertEquals(Format.FULLBEAN, calculatorJson.getFormat());
+    assertEquals(EdmFullBeanSchema.class, calculatorJson.getSchema().getClass());
+    calculatorJson.configure();
+    String csvFromJson = calculatorJson.measure(FileUtils.readFirstLine("general/2048081-_O_532.json"));
+
+    EdmCalculatorFacade calculatorXml = new EdmCalculatorFacade(true, true, true, false, true);
+    calculatorXml.setFormat(Format.OAI_PMH_XML);
+    assertEquals(Format.OAI_PMH_XML, calculatorXml.getFormat());
+    assertEquals(EdmOaiPmhXmlSchema.class, calculatorXml.getSchema().getClass());
+    calculatorXml.configure();
+    String csvFromXml = calculatorXml.measure(FileUtils.readContent("general/2048081-_O_532.xml"));
+
+    List<String> header = calculatorJson.getHeader();
+    String[] json = csvFromJson.split(",");
+    String[] xml = csvFromXml.split(",");
+
+    assertEquals(header, calculatorXml.getHeader());
+    assertEquals(json.length, xml.length);
+    assertEquals(header.size(), json.length);
+    for (int i = 0; i < json.length; i++) {
+      if (!header.get(i).equals("completeness:TOTAL")
+          && !header.get(i).equals("existence:Aggregation/edm:ugc")
+          && !header.get(i).equals("cardinality:Aggregation/edm:ugc")) {
+        assertEquals(header.get(i) + " should be equal", json[i], xml[i]);
+      }
+    }
   }
 
   @Nullable

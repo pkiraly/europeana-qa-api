@@ -2,7 +2,8 @@ package de.gwdg.europeanaqa.api.model;
 
 import de.gwdg.metadataqa.api.json.JsonBranch;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
-import de.gwdg.metadataqa.api.model.JsonPathCache;
+import de.gwdg.metadataqa.api.model.PathCache;
+import de.gwdg.metadataqa.api.schema.Format;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.Converter;
 
@@ -43,7 +44,7 @@ public class EdmStructureBuilder {
     this.proxies = proxies;
   }
 
-  public EdmStructure build(JsonPathCache cache) {
+  public EdmStructure build(PathCache cache) {
     EdmStructure edmStructure = new EdmStructure();
     extractProxyLinksAndValues(cache, edmStructure, ProxyType.PROVIDER);
     extractProxyLinksAndValues(cache, edmStructure, ProxyType.EUROPEANA);
@@ -53,12 +54,14 @@ public class EdmStructureBuilder {
     return edmStructure;
   }
 
-  private void extractProxyLinksAndValues(JsonPathCache cache,
+  private void extractProxyLinksAndValues(PathCache cache,
                                           EdmStructure edmStructure,
                                           ProxyType type) {
     JsonBranch proxySchema = proxies.getByType(type);
     Object rawProxy = cache.getFragment(proxySchema.getJsonPath());
-    List<Object> fragments = Converter.jsonObjectToList(rawProxy);
+    List<Object> fragments = schema.getFormat().equals(Format.JSON)
+      ? Converter.jsonObjectToList(rawProxy)
+      : (List<Object>) rawProxy;
     if (!fragments.isEmpty()) {
       Object jsonFragment = fragments.get(0);
       for (JsonBranch child : proxySchema.getChildren()) {
@@ -92,12 +95,14 @@ public class EdmStructureBuilder {
    * @return The map of contextual IDs, where the key are the IDs (URIs),
    *   values are entity types.
    */
-  public void extractsContextualIds(JsonPathCache cache,
+  public void extractsContextualIds(PathCache cache,
                                     EdmStructure edmStructure) {
     for (EntityType type : EntityType.values()) {
       JsonBranch branch = schema.getPathByLabel(type.getBranchId());
-      Object rawJsonFragment = cache.getFragment(branch.getAbsoluteJsonPath());
-      List<Object> jsonFragments = Converter.jsonObjectToList(rawJsonFragment);
+      Object rawJsonFragment = cache.getFragment(branch.getAbsoluteJsonPath(schema.getFormat()));
+      List<Object> jsonFragments = schema.getFormat().equals(Format.JSON)
+        ? Converter.jsonObjectToList(rawJsonFragment)
+        : (List<Object>) rawJsonFragment;
       if (jsonFragments.isEmpty()) {
         continue;
       }
@@ -130,7 +135,7 @@ public class EdmStructureBuilder {
    * Check the the contextual IDs in the entities.
    * @param cache
    */
-  private void checkContextualIDsInEntities(JsonPathCache cache,
+  private void checkContextualIDsInEntities(PathCache cache,
                                             EdmStructure edmStructure) {
     if (edmStructure.getContextualIds().size() > 0) {
       for (String uri : edmStructure.getContextualIds().keySet()) {
@@ -147,12 +152,14 @@ public class EdmStructureBuilder {
    * @param cache The JSON cache.
    * @param contextualId The contextual id object.
    */
-  private void checkInternalEntityLinks(JsonPathCache cache,
+  private void checkInternalEntityLinks(PathCache cache,
                                         ContextualId contextualId) {
     EntityType entityType = contextualId.getEntity();
     JsonBranch entityPath = schema.getPathByLabel(entityType.getName());
     Object rawJsonFragment = cache.getFragment(entityPath.getJsonPath());
-    List<Object> jsonFragments = Converter.jsonObjectToList(rawJsonFragment);
+    List<Object> jsonFragments = schema.getFormat().equals(Format.JSON)
+      ? Converter.jsonObjectToList(rawJsonFragment)
+      : (List<Object>) rawJsonFragment;
     if (!jsonFragments.isEmpty()) {
       JsonBranch idPath = schema.getPathByLabel(entityType.getBranchId());
       int i = 0;

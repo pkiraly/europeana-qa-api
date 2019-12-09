@@ -3,7 +3,7 @@ package de.gwdg.europeanaqa.api;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.spi.json.JsonProvider;
 import de.gwdg.metadataqa.api.counter.FieldCounter;
-import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
+import de.gwdg.metadataqa.api.schema.EdmOaiPmhJsonSchema;
 import de.gwdg.metadataqa.api.uniqueness.TfIdfExtractor;
 import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class TfIdfExtractorTest {
     String jsonString = FileUtils.readContent("general/td-idf-response.json");
     assertEquals("{", jsonString.substring(0,1));
 
-    TfIdfExtractor extractor = new TfIdfExtractor(new EdmOaiPmhXmlSchema());
+    TfIdfExtractor extractor = new TfIdfExtractor(new EdmOaiPmhJsonSchema());
     FieldCounter<Double> results = extractor.extract(jsonString, recordId);
     assertEquals(6, results.size());
     assertEquals(new Double(0.0017653998874690505), results.get("Proxy/dc:title:avg"));

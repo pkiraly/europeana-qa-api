@@ -3,8 +3,13 @@ package de.gwdg.europeanaqa.api.calculator;
 import de.gwdg.metadataqa.api.json.JsonBranch;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
+import de.gwdg.metadataqa.api.model.PathCache;
+import de.gwdg.metadataqa.api.model.PathCacheFactory;
+import de.gwdg.metadataqa.api.model.XmlPathCache;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
+import de.gwdg.metadataqa.api.schema.EdmOaiPmhJsonSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
+import de.gwdg.metadataqa.api.schema.Format;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 import de.gwdg.metadataqa.api.util.FileUtils;
@@ -34,7 +39,7 @@ public class ProxyBasedCompletenessCalculatorTest {
 
   @Test
   public void WhenCreateNewWithOAI_ThereAreTwoProxies() {
-    schema = new EdmOaiPmhXmlSchema();
+    schema = new EdmOaiPmhJsonSchema();
     ProxyBasedCompletenessCalculator iterator = new ProxyBasedCompletenessCalculator(schema);
     assertNotNull(iterator.getProxies());
     assertNotNull(iterator.getProxies().getProviderProxy());
@@ -48,7 +53,7 @@ public class ProxyBasedCompletenessCalculatorTest {
     assertEquals(56, providerProxyBranch.getChildren().size());
     assertEquals(
       "$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'false')][*]['@about']",
-      providerProxyBranch.getChildren().get(0).getAbsoluteJsonPath()
+      providerProxyBranch.getChildren().get(0).getAbsoluteJsonPath(schema.getFormat())
     );
 
     JsonBranch europeanaProxyBranch = iterator.getProxies().getEuropeanaProxy();
@@ -63,7 +68,7 @@ public class ProxyBasedCompletenessCalculatorTest {
     );
     assertEquals(
       "$.['ore:Proxy'][?(@['edm:europeanaProxy'][0] == 'true')][*]['@about']",
-      europeanaProxyBranch.getChildren().get(0).getAbsoluteJsonPath()
+      europeanaProxyBranch.getChildren().get(0).getAbsoluteJsonPath(schema.getFormat())
     );
   }
 
@@ -82,7 +87,7 @@ public class ProxyBasedCompletenessCalculatorTest {
     assertEquals(56, providerProxyBranch.getChildren().size());
     assertEquals(
       "$.['proxies'][?(@['europeanaProxy'] == false)][*]['about']",
-      providerProxyBranch.getChildren().get(0).getAbsoluteJsonPath()
+      providerProxyBranch.getChildren().get(0).getAbsoluteJsonPath(schema.getFormat())
     );
 
     JsonBranch europeanaProxyBranch = iterator.getProxies().getEuropeanaProxy();
@@ -96,13 +101,13 @@ public class ProxyBasedCompletenessCalculatorTest {
     );
     assertEquals(
       "$.['proxies'][?(@['europeanaProxy'] == true)][*]['about']",
-      europeanaProxyBranch.getChildren().get(0).getAbsoluteJsonPath()
+      europeanaProxyBranch.getChildren().get(0).getAbsoluteJsonPath(schema.getFormat())
     );
   }
 
   @Test
   public void testMeasure() {
-    schema = new EdmOaiPmhXmlSchema();
+    schema = new EdmOaiPmhJsonSchema();
     JsonPathCache<EdmFieldInstance> cache = new JsonPathCache<>(jsonString);
     ProxyBasedCompletenessCalculator iterator = new ProxyBasedCompletenessCalculator(schema);
     iterator.measure(cache);
@@ -161,7 +166,7 @@ public class ProxyBasedCompletenessCalculatorTest {
 
   @Test
   public void testLabelledResult() {
-    schema = new EdmOaiPmhXmlSchema();
+    schema = new EdmOaiPmhJsonSchema();
     JsonPathCache<EdmFieldInstance> cache = new JsonPathCache<>(jsonString);
     ProxyBasedCompletenessCalculator iterator = new ProxyBasedCompletenessCalculator(schema);
     iterator.measure(cache);
@@ -180,7 +185,7 @@ public class ProxyBasedCompletenessCalculatorTest {
 
   @Test
   public void testHeader() {
-    schema = new EdmOaiPmhXmlSchema();
+    schema = new EdmOaiPmhJsonSchema();
     ProxyBasedCompletenessCalculator iterator = new ProxyBasedCompletenessCalculator(schema);
     List<String> header = iterator.getHeader();
     assertEquals(
@@ -254,6 +259,26 @@ public class ProxyBasedCompletenessCalculatorTest {
       "EUROPEANA:Timespan/skos:prefLabel, EUROPEANA:Timespan/skos:altLabel, EUROPEANA:Timespan/skos:note",
       StringUtils.join(header, ", ")
     );
+  }
+
+  @Test
+  public void testJsonAndXml() throws IOException, URISyntaxException {
+    ProxyBasedCompletenessCalculator calculatorJson = new ProxyBasedCompletenessCalculator(new EdmFullBeanSchema());
+    PathCache<EdmFieldInstance> cacheJson = (PathCache<EdmFieldInstance>) PathCacheFactory.getInstance(Format.JSON,
+        FileUtils.readFirstLine("general/2048081-_O_532.json"));
+    calculatorJson.measure(cacheJson);
+    String csvFromJson = calculatorJson.getCsv(false, CompressionLevel.NORMAL);
+
+    ProxyBasedCompletenessCalculator calculatorXml = new ProxyBasedCompletenessCalculator(new EdmOaiPmhXmlSchema());
+    PathCache<EdmFieldInstance> cacheXml = (PathCache<EdmFieldInstance>) PathCacheFactory.getInstance(Format.XML,
+        FileUtils.readContent("general/2048081-_O_532.xml"));
+    assertEquals(XmlPathCache.class, cacheXml.getClass());
+    calculatorXml.measure(cacheXml);
+    String csvFromXml = calculatorXml.getCsv(false, CompressionLevel.NORMAL);
+
+    assertEquals(calculatorXml.getHeader().size(), calculatorXml.getHeader().size());
+
+    assertEquals(csvFromJson, csvFromXml);
   }
 
 }

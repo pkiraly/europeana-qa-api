@@ -23,6 +23,7 @@ import de.gwdg.metadataqa.api.problemcatalog.ProblemCatalog;
 import de.gwdg.metadataqa.api.problemcatalog.TitleAndDescriptionAreSame;
 
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
+import de.gwdg.metadataqa.api.schema.EdmOaiPmhJsonSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
 import de.gwdg.metadataqa.api.schema.EdmSchema;
 import de.gwdg.metadataqa.api.schema.Schema;
@@ -51,7 +52,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
   private boolean disconnectedEntityMeasurementEnabled = false;
   private boolean proxyBasedCompletenessEnabled = false;
   private boolean extendedFieldExtraction = false;
-  private Format format = Format.OAI_PMH_XML;
+  private Format format = Format.OAI_PMH_JSON;
   private EdmSchema schema = null;
 
   /**
@@ -107,7 +108,8 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
   @Override
   public void configure() {
-    schema = createSchema();
+    this.schema = createSchema();
+    setSchema(schema);
 
     calculators = new ArrayList<>();
     buildEdmFieldExtractor(schema);
@@ -342,14 +344,16 @@ public class EdmCalculatorFacade extends CalculatorFacade {
   public EdmSchema createSchema() {
     EdmSchema schema;
     if (format == null) {
-      schema = new EdmOaiPmhXmlSchema();
+      schema = new EdmOaiPmhJsonSchema();
     } else {
       switch (format) {
         case FULLBEAN:
           schema = new EdmFullBeanSchema(); break;
         case OAI_PMH_XML:
-        default:
           schema = new EdmOaiPmhXmlSchema(); break;
+        case OAI_PMH_JSON:
+        default:
+          schema = new EdmOaiPmhJsonSchema(); break;
       }
     }
     return schema;

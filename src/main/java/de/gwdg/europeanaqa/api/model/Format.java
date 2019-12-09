@@ -10,6 +10,11 @@ public enum Format {
   OAI_PMH_XML("xml"),
 
   /**
+   * XML via OAI-PMH service.
+   */
+  OAI_PMH_JSON("oai-pmh-json"),
+
+  /**
    * FullBean JSON format via Record API and MongoDB export.
    */
   FULLBEAN("fullbean");

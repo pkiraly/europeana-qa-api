@@ -5,7 +5,8 @@ import de.gwdg.metadataqa.api.counter.FieldCounter;
 import de.gwdg.metadataqa.api.interfaces.Calculator;
 import de.gwdg.metadataqa.api.json.JsonBranch;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
-import de.gwdg.metadataqa.api.model.JsonPathCache;
+import de.gwdg.metadataqa.api.model.PathCache;
+import de.gwdg.metadataqa.api.schema.Format;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 import de.gwdg.metadataqa.api.util.Converter;
@@ -83,7 +84,7 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
   private FieldCounter resultMap;
 
   @Override
-  public void measure(final JsonPathCache cache) {
+  public void measure(final PathCache cache) {
 
     edmStructure = edmStructureBuilder.build(cache);
 
@@ -108,7 +109,7 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
     resultMap.put("contextualLinksCount", edmStructure.getInterLinkedEntities().size());
   }
 
-  private void reportStrangeEntities(JsonPathCache cache,
+  private void reportStrangeEntities(PathCache cache,
                                      List<ContextualId> contextualIds,
                                      String type) {
     List<String> entitiesList = new ArrayList<>();
@@ -131,12 +132,14 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
    * @return The map of contextual IDs, where the key are the IDs (URIs),
    *   values are entity types.
    */
-  public Map<String, EntityType> getContextualIds(JsonPathCache cache) {
+  public Map<String, EntityType> getContextualIds(PathCache cache) {
     Map<String, EntityType> contextualIds = new HashMap<>();
     for (EntityType type : EntityType.values()) {
       JsonBranch branch = schema.getPathByLabel(type.getBranchId());
-      Object rawJsonFragment = cache.getFragment(branch.getAbsoluteJsonPath());
-      List<Object> jsonFragments = Converter.jsonObjectToList(rawJsonFragment);
+      Object rawJsonFragment = cache.getFragment(branch.getAbsoluteJsonPath(schema.getFormat()));
+      List<Object> jsonFragments = schema.getFormat().equals(Format.JSON)
+        ? Converter.jsonObjectToList(rawJsonFragment)
+        : (List<Object>) rawJsonFragment;
       if (jsonFragments.isEmpty()) {
         continue;
       }
@@ -157,10 +160,10 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
    * @param cache The JSON path cache
    * @return The ID of the record
    */
-  private String getId(JsonPathCache cache) {
+  private String getId(PathCache cache) {
     String path = schema
       .getPathByLabel("ProvidedCHO/rdf:about")
-      .getAbsoluteJsonPath()
+      .getAbsoluteJsonPath(schema.getFormat())
       .replace("[*]", "");
     List<EdmFieldInstance> fieldInstances = cache.get(path);
     return fieldInstances

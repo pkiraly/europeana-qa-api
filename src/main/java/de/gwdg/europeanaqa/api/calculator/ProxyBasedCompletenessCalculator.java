@@ -10,7 +10,8 @@ import de.gwdg.europeanaqa.api.model.ProxyType;
 import de.gwdg.metadataqa.api.counter.FieldCounter;
 import de.gwdg.metadataqa.api.interfaces.Calculator;
 import de.gwdg.metadataqa.api.json.JsonBranch;
-import de.gwdg.metadataqa.api.model.JsonPathCache;
+import de.gwdg.metadataqa.api.model.PathCache;
+import de.gwdg.metadataqa.api.schema.Format;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 import de.gwdg.metadataqa.api.util.Converter;
@@ -66,7 +67,7 @@ public class ProxyBasedCompletenessCalculator implements Calculator, Serializabl
    * @param cache The cache object.
    */
   @Override
-  public void measure(JsonPathCache cache) {
+  public void measure(PathCache cache) {
     recordId = cache.getRecordId();
     cardinalityCounter = new FieldCounter<>();
     EdmStructureBuilder edmStructureBuilder = new EdmStructureBuilder(schema, proxies);
@@ -76,17 +77,19 @@ public class ProxyBasedCompletenessCalculator implements Calculator, Serializabl
     iterateOverProxyAndLinks(cache, edmStructure, ProxyType.EUROPEANA);
   }
 
-  private void iterateOverProxyAndLinks(JsonPathCache cache,
+  private void iterateOverProxyAndLinks(PathCache cache,
                                         EdmStructure edmStructure,
                                         ProxyType proxyType) {
     iterateOverProxy(cache, proxyType);
     iterateOverLinkedContextualEntities(cache, edmStructure, proxyType);
   }
 
-  private void iterateOverProxy(JsonPathCache cache, ProxyType proxyType) {
+  private void iterateOverProxy(PathCache cache, ProxyType proxyType) {
     JsonBranch proxy = proxies.getByType(proxyType);
     Object rawJsonFragment = cache.getFragment(proxy.getJsonPath());
-    List<Object> entityFragments = Converter.jsonObjectToList(rawJsonFragment);
+    List<Object> entityFragments = schema.getFormat().equals(Format.JSON)
+      ? Converter.jsonObjectToList(rawJsonFragment)
+      : (List<Object>) rawJsonFragment;
     if (!entityFragments.isEmpty()) {
       Object entityFragment = entityFragments.get(0);
       for (JsonBranch entityElement : proxy.getChildren()) {
@@ -95,7 +98,7 @@ public class ProxyBasedCompletenessCalculator implements Calculator, Serializabl
     }
   }
 
-  private void iterateOverLinkedContextualEntities(JsonPathCache cache,
+  private void iterateOverLinkedContextualEntities(PathCache cache,
                                                    EdmStructure edmStructure,
                                                    ProxyType proxyType) {
     List<ProxyLink> proxyLinks = edmStructure.getProxyLinks(proxyType);
@@ -112,7 +115,9 @@ public class ProxyBasedCompletenessCalculator implements Calculator, Serializabl
         for (ProxyLink proxyLink : entityLinks) {
           String link = proxyLink.getLink();
           Object rawJsonFragment = cache.getFragment(getPath(entityType, link));
-          List<Object> entityFragments = Converter.jsonObjectToList(rawJsonFragment);
+          List<Object> entityFragments = schema.getFormat().equals(Format.JSON)
+            ? Converter.jsonObjectToList(rawJsonFragment)
+            : (List<Object>) rawJsonFragment;
           if (entityFragments.isEmpty()) {
             continue;
           }
@@ -127,7 +132,7 @@ public class ProxyBasedCompletenessCalculator implements Calculator, Serializabl
     }
   }
 
-  private void computeCardinality(JsonPathCache cache,
+  private void computeCardinality(PathCache cache,
                                   ProxyType proxyType,
                                   int i,
                                   Object entityFragment,

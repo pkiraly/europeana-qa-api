@@ -3,7 +3,7 @@ package de.gwdg.europeanaqa.api.calculator;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
-import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
+import de.gwdg.metadataqa.api.schema.EdmOaiPmhJsonSchema;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 import de.gwdg.metadataqa.api.util.FileUtils;
@@ -13,7 +13,6 @@ import org.junit.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -41,7 +40,7 @@ public class MultiFieldExtractorTest {
 
   @Before
   public void setUp() throws URISyntaxException, IOException {
-    schema = new EdmOaiPmhXmlSchema();
+    schema = new EdmOaiPmhJsonSchema();
     calculator = new MultiFieldExtractor(schema);
     // calculator.setDataProviderManager(new EdmDataProviderManager());
     // calculator.setDatasetManager(new EdmDatasetManager());

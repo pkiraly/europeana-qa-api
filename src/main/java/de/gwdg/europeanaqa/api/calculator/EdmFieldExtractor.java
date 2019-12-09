@@ -7,7 +7,7 @@ import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDataProviderManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
 import de.gwdg.metadataqa.api.calculator.FieldExtractor;
-import de.gwdg.metadataqa.api.model.JsonPathCache;
+import de.gwdg.metadataqa.api.model.PathCache;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 
@@ -68,8 +68,11 @@ public class EdmFieldExtractor extends FieldExtractor {
   }
 
   @Override
-  public void measure(JsonPathCache cache) throws InvalidJsonException {
+  public void measure(PathCache cache) throws InvalidJsonException {
     super.measure(cache);
+    resultMap.put(super.FIELD_NAME,
+      resultMap.get(super.FIELD_NAME).replace("http://data.europeana.eu/item", "")
+    );
 
     String dataset  = extractValueByKey(cache, DATASET, null);
     String provider = extractValueByKey(cache, DATA_PROVIDER, null);
@@ -121,12 +124,12 @@ public class EdmFieldExtractor extends FieldExtractor {
   private String getJsonPath(String path) {
     if (!pathCache.containsKey(path)) {
       JsonBranch branch = schema.getPathByLabel(path);
-      pathCache.put(path, branch.getAbsoluteJsonPath().replace("[*]", ""));
+      pathCache.put(path, branch.getAbsoluteJsonPath(schema.getFormat()).replace("[*]", ""));
     }
     return pathCache.get(path);
   }
 
-  private String extractValueByKey(JsonPathCache cache, String key, String defaultValue) {
+  private String extractValueByKey(PathCache cache, String key, String defaultValue) {
     if (!schema.getExtractableFields().containsKey(key)) {
       return defaultValue;
     }
@@ -135,15 +138,15 @@ public class EdmFieldExtractor extends FieldExtractor {
     return extractValueByPath(cache, jsonPath, defaultValue);
   }
 
-  private String extractValueByKey(JsonPathCache cache, String key) {
+  private String extractValueByKey(PathCache cache, String key) {
     return extractValueByKey(cache, key, "na");
   }
 
-  private String extractValueByPath(JsonPathCache cache, String jsonPath) {
+  private String extractValueByPath(PathCache cache, String jsonPath) {
     return extractValueByPath(cache, jsonPath, "na");
   }
 
-  private String extractValueByPath(JsonPathCache cache, String jsonPath, String defaultValue) {
+  private String extractValueByPath(PathCache cache, String jsonPath, String defaultValue) {
     List<EdmFieldInstance> instances = cache.get(jsonPath);
     String value = (instances != null && !instances.isEmpty())
       ? instances.get(0).getValue().trim()

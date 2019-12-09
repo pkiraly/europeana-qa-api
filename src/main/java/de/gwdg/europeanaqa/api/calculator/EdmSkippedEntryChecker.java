@@ -3,7 +3,7 @@ package de.gwdg.europeanaqa.api.calculator;
 import de.gwdg.metadataqa.api.calculator.SkippedEntryChecker;
 import de.gwdg.metadataqa.api.calculator.edm.EnhancementIdExtractor;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
-import de.gwdg.metadataqa.api.model.JsonPathCache;
+import de.gwdg.metadataqa.api.model.PathCache;
 import de.gwdg.metadataqa.api.model.XmlFieldInstance;
 import java.io.Serializable;
 import java.util.List;
@@ -16,9 +16,8 @@ public class EdmSkippedEntryChecker
   implements SkippedEntryChecker, Serializable {
 
   @Override
-  public List<String> getSkippableCollectionIds(
-      JsonPathCache jsonPathCache) {
-    return EnhancementIdExtractor.extractIds(jsonPathCache);
+  public List<String> getSkippableCollectionIds(PathCache pathCache) {
+    return EnhancementIdExtractor.extractIds(pathCache);
   }
 
   @Override

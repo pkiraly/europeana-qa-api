@@ -1,9 +1,8 @@
 package de.gwdg.europeanaqa.api.calculator;
 
-import de.gwdg.europeanaqa.api.model.EdmStructure;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.JsonPathCache;
-import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
+import de.gwdg.metadataqa.api.schema.EdmOaiPmhJsonSchema;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 import de.gwdg.metadataqa.api.util.FileUtils;
@@ -41,7 +40,7 @@ public class DisconnectedEntityCalculatorTest {
 
   @Before
   public void setUp() throws URISyntaxException, IOException {
-    schema = new EdmOaiPmhXmlSchema();
+    schema = new EdmOaiPmhJsonSchema();
   }
 
   @After

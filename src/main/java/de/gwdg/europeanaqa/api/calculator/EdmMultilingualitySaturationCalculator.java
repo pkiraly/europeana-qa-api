@@ -13,8 +13,9 @@ import de.gwdg.metadataqa.api.counter.FieldCounter;
 import de.gwdg.metadataqa.api.interfaces.Calculator;
 import de.gwdg.metadataqa.api.json.JsonBranch;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
-import de.gwdg.metadataqa.api.model.JsonPathCache;
 import de.gwdg.metadataqa.api.model.LanguageSaturationType;
+import de.gwdg.metadataqa.api.model.PathCache;
+import de.gwdg.metadataqa.api.schema.Format;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 import de.gwdg.metadataqa.api.util.Converter;
@@ -102,7 +103,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
   }
 
   @Override
-  public void measure(JsonPathCache cache)
+  public void measure(PathCache cache)
       throws InvalidJsonException {
 
     recordId = cache.getRecordId();
@@ -116,13 +117,13 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
     // saturationMap = calculateScore(rawLanguageSaturationMap);
   }
 
-  private void measureHierarchicalSchema(JsonPathCache cache) {
+  private void measureHierarchicalSchema(PathCache cache) {
     List<String> skippableIds = getSkippableIds(cache);
     measureProxy(cache, proxies.getProviderProxy(), skippableIds, ProxyType.PROVIDER);
     measureProxy(cache, proxies.getEuropeanaProxy(), skippableIds, ProxyType.EUROPEANA);
   }
 
-  private void measureProxy(JsonPathCache cache,
+  private void measureProxy(PathCache cache,
                             JsonBranch proxyPath,
                             List<String> skippableIds,
                             ProxyType proxyType) {
@@ -140,7 +141,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
     }
   }
 
-  private List<String> getSkippableIds(JsonPathCache cache) {
+  private List<String> getSkippableIds(PathCache cache) {
     return skippedEntryChecker != null
           ? skippedEntryChecker.getSkippableCollectionIds(cache)
           : new ArrayList<>();
@@ -158,10 +159,12 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 
   private void measureExistingCollection(Object rawJsonFragment,
       JsonBranch collection,
-      JsonPathCache cache,
+      PathCache cache,
       List<String> skippableIds,
       ProxyType proxyType) {
-    List<Object> jsonFragments = Converter.jsonObjectToList(rawJsonFragment);
+    List<Object> jsonFragments = schema.getFormat().equals(Format.JSON)
+        ? Converter.jsonObjectToList(rawJsonFragment)
+        : (List<Object>) rawJsonFragment;
     if (jsonFragments.isEmpty()) {
       measureMissingCollection(collection);
     } else {
@@ -202,7 +205,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
       Object jsonFragment,
       JsonBranch field,
       String address,
-      JsonPathCache cache,
+      PathCache cache,
       Map<String, List<SortedMap<LanguageSaturationType, Double>>> rawLanguageMap,
       ProxyType proxyType
   ) {
@@ -265,7 +268,7 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
   }
 
   private void followEntityLink(
-      JsonPathCache cache,
+      PathCache cache,
       JsonBranch field,
       EdmFieldInstance fieldInstance,
       Set<String> individualLanguages,
