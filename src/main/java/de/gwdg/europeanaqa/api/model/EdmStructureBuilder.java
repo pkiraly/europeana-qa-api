@@ -87,11 +87,10 @@ public class EdmStructureBuilder {
   }
 
   /**
-   * Get the contextual IDs from the cache.
+   * Get the contextual IDs from the cache and add them to the EDM structure.
    *
    * @param cache The cache object.
-   * @return The map of contextual IDs, where the key are the IDs (URIs),
-   *   values are entity types.
+   * @param edmStructure The EDM structure
    */
   public void extractsContextualIds(PathCache cache,
                                     EdmStructure edmStructure) {
