@@ -35,7 +35,7 @@ public class EdmDataProviderManagerTest {
   @Test
   public void testSize() {
     EdmDataProviderManager manager = new EdmDataProviderManager();
-    assertEquals(5635, manager.getData().keySet().size());
+    assertTrue(5635 < manager.getData().keySet().size());
   }
 
   @Test
@@ -54,6 +54,9 @@ public class EdmDataProviderManagerTest {
     String name = manager.searchById(3716);
     String expected = "Mediterranean Archaeological Research Institute-Vrije Universiteit Brussel /\n          The Cyprus Institute - STARC";
     assertEquals(expected, name);
+
+    assertEquals(5867, (int) manager.getData().get("Ethnologisches Museum, Staatliche Museen zu Berlin"));
+    assertEquals(5867, (int) manager.getData().get("Ethnologisches Museum, Staatliche Museen zu\n  Berlin"));
   }
 
   @Test
