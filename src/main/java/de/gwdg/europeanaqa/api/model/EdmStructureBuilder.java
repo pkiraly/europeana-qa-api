@@ -160,7 +160,10 @@ public class EdmStructureBuilder {
         String address = addressPrefix + "/" + idPath.getJsonPath();
         List<EdmFieldInstance> entityIds = cache.get(address, idPath.getJsonPath(), jsonFragment);
         if (entityIds == null || entityIds.isEmpty()) {
-          LOGGER.warning("No entity id for " + idPath.getJsonPath());
+          LOGGER.warning(String.format(
+            "No entity id for %s (%s) - %s",
+            idPath.getJsonPath(), address, jsonFragment
+          ));
         } else {
           EdmFieldInstance entityId = (EdmFieldInstance) entityIds.get(0);
           for (String entityField : entityType.getLinkableFields()) {
