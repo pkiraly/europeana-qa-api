@@ -3,7 +3,6 @@ package de.gwdg.europeanaqa.api.model;
 import de.gwdg.metadataqa.api.json.JsonBranch;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.PathCache;
-import de.gwdg.metadataqa.api.schema.Format;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.Converter;
 
@@ -159,22 +158,27 @@ public class EdmStructureBuilder {
       for (Object jsonFragment : jsonFragments) {
         String addressPrefix = entityPath.getJsonPath() + "/" + i++;
         String address = addressPrefix + "/" + idPath.getJsonPath();
-        EdmFieldInstance entityId = (EdmFieldInstance) cache.get(address, idPath.getJsonPath(), jsonFragment).get(0);
-        for (String entityField : entityType.getLinkableFields()) {
-          JsonBranch fieldPath = schema.getPathByLabel(entityField);
-          address = addressPrefix + "/" + fieldPath.getJsonPath();
-          List<EdmFieldInstance> fieldInstances = cache.get(address, fieldPath.getJsonPath(), jsonFragment);
-          if (fieldInstances != null && !fieldInstances.isEmpty()) {
-            for (EdmFieldInstance fieldInstance : fieldInstances) {
-              if (fieldInstance.isUrl()) {
-                if (fieldInstance.getUrl().equals(contextualId.getUri())) {
-                  if (fieldInstance.getUrl().equals(entityId.getUrl())) {
-                    contextualId.setSource(LinkType.SELF);
-                    contextualId.setSourceField(entityField);
-                  } else {
-                    contextualId.setSource(LinkType.CONTEXTUAL_ENTITY);
+        List<EdmFieldInstance> entityIds = cache.get(address, idPath.getJsonPath(), jsonFragment);
+        if (entityIds == null || entityIds.isEmpty()) {
+          LOGGER.warning("No entity id for " + idPath.getJsonPath());
+        } else {
+          EdmFieldInstance entityId = (EdmFieldInstance) entityIds.get(0);
+          for (String entityField : entityType.getLinkableFields()) {
+            JsonBranch fieldPath = schema.getPathByLabel(entityField);
+            address = addressPrefix + "/" + fieldPath.getJsonPath();
+            List<EdmFieldInstance> fieldInstances = cache.get(address, fieldPath.getJsonPath(), jsonFragment);
+            if (fieldInstances != null && !fieldInstances.isEmpty()) {
+              for (EdmFieldInstance fieldInstance : fieldInstances) {
+                if (fieldInstance.isUrl()) {
+                  if (fieldInstance.getUrl().equals(contextualId.getUri())) {
+                    if (fieldInstance.getUrl().equals(entityId.getUrl())) {
+                      contextualId.setSource(LinkType.SELF);
+                      contextualId.setSourceField(entityField);
+                    } else {
+                      contextualId.setSource(LinkType.CONTEXTUAL_ENTITY);
+                    }
+                    break;
                   }
-                  break;
                 }
               }
             }
