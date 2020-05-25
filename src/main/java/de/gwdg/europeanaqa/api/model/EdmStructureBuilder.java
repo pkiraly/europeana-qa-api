@@ -161,8 +161,9 @@ public class EdmStructureBuilder {
         List<EdmFieldInstance> entityIds = cache.get(address, idPath.getJsonPath(), jsonFragment);
         if (entityIds == null || entityIds.isEmpty()) {
           LOGGER.warning(String.format(
-            "No %s entity id for %s (%s) - %s",
-            entityType.getName(), idPath.getJsonPath(), address, jsonFragment
+            "%s) No %s entity id for uri: %s, path: %s (address: %s) - fragment: %s / %s",
+            cache.getRecordId(), entityType.getName(), contextualId.getUri(),
+            idPath.getJsonPath(), address, jsonFragment, rawJsonFragment
           ));
         } else {
           EdmFieldInstance entityId = (EdmFieldInstance) entityIds.get(0);
