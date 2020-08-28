@@ -103,7 +103,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
       enableProblemCatalogMeasurement
     );
     this.abbreviate = abbreviate;
-    changed();
+    conditionalConfiguration();
   }
 
   @Override
