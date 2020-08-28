@@ -272,12 +272,22 @@ public class EdmCalculatorFacade extends CalculatorFacade {
     return disconnectedEntityMeasurementEnabled;
   }
 
+  public EdmCalculatorFacade enableDisconnectedEntityMeasurement() {
+    return enableDisconnectedEntityMeasurement(true);
+  }
+
+  public EdmCalculatorFacade disableDisconnectedEntityMeasurement() {
+    return enableDisconnectedEntityMeasurement(false);
+  }
+
   /**
    * Flag to enable disconnected entity feature.
    * @param disconnectedEntityMeasurementEnabled disconnected entity flag
+   * @return
    */
-  public void enableDisconnectedEntityMeasurement(boolean disconnectedEntityMeasurementEnabled) {
+  public EdmCalculatorFacade enableDisconnectedEntityMeasurement(boolean disconnectedEntityMeasurementEnabled) {
     this.disconnectedEntityMeasurementEnabled = disconnectedEntityMeasurementEnabled;
+    return this;
   }
 
 
@@ -289,12 +299,22 @@ public class EdmCalculatorFacade extends CalculatorFacade {
     return proxyBasedCompletenessEnabled;
   }
 
+  public EdmCalculatorFacade enableProxyBasedCompleteness() {
+    return enableProxyBasedCompleteness(true);
+  }
+
+  public EdmCalculatorFacade disableProxyBasedCompleteness() {
+    return enableProxyBasedCompleteness(false);
+  }
+
   /**
    * Flag to enable disconnected entity feature.
    * @param proxyBasedCompletenessEnabled disconnected entity flag
+   * @return
    */
-  public void enableProxyBasedCompleteness(boolean proxyBasedCompletenessEnabled) {
+  public EdmCalculatorFacade enableProxyBasedCompleteness(boolean proxyBasedCompletenessEnabled) {
     this.proxyBasedCompletenessEnabled = proxyBasedCompletenessEnabled;
+    return this;
   }
 
   /**

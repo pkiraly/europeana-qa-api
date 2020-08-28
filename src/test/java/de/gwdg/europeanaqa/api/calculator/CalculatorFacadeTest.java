@@ -179,7 +179,7 @@ public class CalculatorFacadeTest {
   @Test
   public void testTfIdfMeasurement_withoutTermCollection() {
     EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-    calculatorFacade.enableTfIdfMeasurement(true);
+    calculatorFacade.enableTfIdfMeasurement();
     calculatorFacade.configure();
     assertTrue(calculatorFacade.isTfIdfMeasurementEnabled());
     TfIdfCalculator tfIdfCalculator = getTfIdfCalculator(calculatorFacade);
@@ -190,7 +190,7 @@ public class CalculatorFacadeTest {
   @Test
   public void testTfIdfMeasurement_withTermCollection() {
     EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-    calculatorFacade.enableTfIdfMeasurement(true);
+    calculatorFacade.enableTfIdfMeasurement();
     calculatorFacade.collectTfIdfTerms(true);
 
     calculatorFacade.configure();
@@ -204,7 +204,7 @@ public class CalculatorFacadeTest {
   @Test
   public void testLanguageMeasurement() {
     EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-    calculatorFacade.enableLanguageMeasurement(true);
+    calculatorFacade.enableLanguageMeasurement();
     assertTrue(calculatorFacade.isLanguageMeasurementEnabled());
 
     calculatorFacade.configure();
@@ -218,7 +218,7 @@ public class CalculatorFacadeTest {
   @Test
   public void testMultilingualSaturation() {
     EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-    calculatorFacade.enableMultilingualSaturationMeasurement(true);
+    calculatorFacade.enableMultilingualSaturationMeasurement();
     assertTrue(calculatorFacade.isMultilingualSaturationMeasurementEnabled());
 
     calculatorFacade.configure();
@@ -237,7 +237,7 @@ public class CalculatorFacadeTest {
   @Test
   public void testMultilingualSaturation_withSkippableCollections() {
     EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-    calculatorFacade.enableMultilingualSaturationMeasurement(true);
+    calculatorFacade.enableMultilingualSaturationMeasurement();
     calculatorFacade.setCheckSkippableCollections(true);
     assertTrue(calculatorFacade.isMultilingualSaturationMeasurementEnabled());
     assertTrue(calculatorFacade.isCheckSkippableCollections());
@@ -257,7 +257,7 @@ public class CalculatorFacadeTest {
   @Test
   public void testDisconnectedEntity() {
     EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-    calculatorFacade.enableDisconnectedEntityMeasurement(true);
+    calculatorFacade.enableDisconnectedEntityMeasurement();
     assertTrue(calculatorFacade.isDisconnectedEntityEnabled());
 
     calculatorFacade.configure();
@@ -276,7 +276,7 @@ public class CalculatorFacadeTest {
   @Test(expected = IllegalArgumentException.class)
   public void testUniquenessCalculatorWithoutSolrConfiguration() {
     EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-    calculatorFacade.enableUniquenessMeasurement(true);
+    calculatorFacade.enableUniquenessMeasurement();
     assertTrue(calculatorFacade.isUniquenessMeasurementEnabled());
 
     calculatorFacade.configure();
@@ -285,15 +285,17 @@ public class CalculatorFacadeTest {
   @Test
   public void testUniquenessCalculatorWitSolrConfiguration() throws IOException, URISyntaxException {
     EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-    calculatorFacade.enableFieldExistenceMeasurement(false);
-    calculatorFacade.enableCompletenessMeasurement(false);
-    calculatorFacade.enableFieldCardinalityMeasurement(false);
-    calculatorFacade.enableUniquenessMeasurement(true);
-    calculatorFacade.abbreviate(true);
+    calculatorFacade.disableFieldExistenceMeasurement();
+    calculatorFacade.disableCompletenessMeasurement();
+    calculatorFacade.disableFieldCardinalityMeasurement();
+    calculatorFacade.enableUniquenessMeasurement();
     calculatorFacade.configureSolr("localhost", "8983", "solr");
+    calculatorFacade.abbreviate(true);
 
     calculatorFacade.configure();
+    assertEquals(false, calculatorFacade.isCompletenessMeasurementEnabled());
 
+    System.err.println(calculatorFacade.getCalculators());
     assertEquals(2, calculatorFacade.getCalculators().size());
 
     UniquenessCalculator calculator = getCalculator(
@@ -311,10 +313,10 @@ public class CalculatorFacadeTest {
   @Test
   public void testUniquenessCalculator() throws IOException, URISyntaxException {
     EdmCalculatorFacade calculatorFacade = new EdmCalculatorFacade();
-    calculatorFacade.enableFieldExistenceMeasurement(false);
-    calculatorFacade.enableCompletenessMeasurement(false);
-    calculatorFacade.enableFieldCardinalityMeasurement(false);
-    calculatorFacade.enableUniquenessMeasurement(true);
+    calculatorFacade.disableFieldExistenceMeasurement();
+    calculatorFacade.disableCompletenessMeasurement();
+    calculatorFacade.disableFieldCardinalityMeasurement();
+    calculatorFacade.enableUniquenessMeasurement();
     calculatorFacade.abbreviate(true);
 
     calculatorFacade.setSolrClient(
@@ -399,13 +401,13 @@ public class CalculatorFacadeTest {
 
     EdmCalculatorFacade calculator = new EdmCalculatorFacade();
     calculator.abbreviate(true);
-    calculator.enableCompletenessMeasurement(false);
-    calculator.enableFieldCardinalityMeasurement(false);
-    calculator.enableFieldExistenceMeasurement(false);
-    calculator.enableProblemCatalogMeasurement(false);
-    calculator.enableTfIdfMeasurement(false);
-    calculator.enableLanguageMeasurement(false);
-    calculator.enableMultilingualSaturationMeasurement(true);
+    calculator.disableCompletenessMeasurement();
+    calculator.disableFieldCardinalityMeasurement();
+    calculator.disableFieldExistenceMeasurement();
+    calculator.disableProblemCatalogMeasurement();
+    calculator.disableTfIdfMeasurement();
+    calculator.disableLanguageMeasurement();
+    calculator.enableMultilingualSaturationMeasurement();
     calculator.setCompressionLevel(CompressionLevel.WITHOUT_TRAILING_ZEROS);
     calculator.setSaturationExtendedResult(true);
     calculator.setCheckSkippableCollections(true);
@@ -434,14 +436,14 @@ public class CalculatorFacadeTest {
 
     EdmCalculatorFacade calculator = new EdmCalculatorFacade();
     calculator.abbreviate(true);
-    calculator.enableCompletenessMeasurement(false);
-    calculator.enableFieldCardinalityMeasurement(false);
-    calculator.enableFieldExistenceMeasurement(false);
-    calculator.enableProblemCatalogMeasurement(false);
-    calculator.enableTfIdfMeasurement(false);
-    calculator.enableLanguageMeasurement(false);
-    calculator.enableMultilingualSaturationMeasurement(true);
-    calculator.setCompressionLevel(CompressionLevel.WITHOUT_TRAILING_ZEROS);
+    calculator.disableCompletenessMeasurement()
+      .disableFieldCardinalityMeasurement()
+      .disableFieldExistenceMeasurement()
+      .disableProblemCatalogMeasurement()
+      .disableTfIdfMeasurement()
+      .disableLanguageMeasurement()
+      .enableMultilingualSaturationMeasurement()
+      .setCompressionLevel(CompressionLevel.WITHOUT_TRAILING_ZEROS);
     calculator.setSaturationExtendedResult(true);
     calculator.setCheckSkippableCollections(true);
     calculator.setFormat(Format.OAI_PMH_XML);

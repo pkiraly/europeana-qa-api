@@ -6,6 +6,7 @@ import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
 import de.gwdg.europeanaqa.api.abbreviation.EdmLanguageManager;
 import de.gwdg.metadataqa.api.json.FieldGroup;
 import de.gwdg.metadataqa.api.json.JsonBranch;
+import de.gwdg.metadataqa.api.model.Category;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.pathcache.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
@@ -297,6 +298,11 @@ public class EdmFieldExtractorTest {
         extractableFields = new LinkedHashMap<>();
       }
       extractableFields.put(label, jsonPath);
+    }
+
+    @Override
+    public List<Category> getCategories() {
+      return null;
     }
   }
 }
