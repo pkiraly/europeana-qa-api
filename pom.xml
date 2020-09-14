@@ -4,7 +4,7 @@
 	<groupId>de.gwdg.metadataqa</groupId>
 	<artifactId>europeana-qa-api</artifactId>
 	<packaging>jar</packaging>
-	<version>0.6-SNAPSHOT</version>
+	<version>0.7-SNAPSHOT</version>
 	<name>Europeana Metadata Quality Assurance API</name>
 	<description>
 		Europeana-centric implementation of the Metadata Quality Assurance Framework.
