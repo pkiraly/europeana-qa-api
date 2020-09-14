@@ -3,7 +3,7 @@ package de.gwdg.europeanaqa.api.calculator;
 import de.gwdg.metadataqa.api.calculator.SkippedEntryChecker;
 import de.gwdg.metadataqa.api.calculator.edm.EnhancementIdExtractor;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
-import de.gwdg.metadataqa.api.model.PathCache;
+import de.gwdg.metadataqa.api.model.pathcache.PathCache;
 import de.gwdg.metadataqa.api.model.XmlFieldInstance;
 import de.gwdg.metadataqa.api.schema.Schema;
 

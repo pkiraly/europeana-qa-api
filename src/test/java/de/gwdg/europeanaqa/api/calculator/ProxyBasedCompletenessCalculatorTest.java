@@ -2,10 +2,10 @@ package de.gwdg.europeanaqa.api.calculator;
 
 import de.gwdg.metadataqa.api.json.JsonBranch;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
-import de.gwdg.metadataqa.api.model.JsonPathCache;
-import de.gwdg.metadataqa.api.model.PathCache;
+import de.gwdg.metadataqa.api.model.pathcache.JsonPathCache;
+import de.gwdg.metadataqa.api.model.pathcache.PathCache;
 import de.gwdg.metadataqa.api.model.PathCacheFactory;
-import de.gwdg.metadataqa.api.model.XmlPathCache;
+import de.gwdg.metadataqa.api.model.pathcache.XmlPathCache;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhJsonSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;

@@ -1,7 +1,7 @@
 package de.gwdg.europeanaqa.api.calculator;
 
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
-import de.gwdg.metadataqa.api.model.JsonPathCache;
+import de.gwdg.metadataqa.api.model.pathcache.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhJsonSchema;
 import de.gwdg.metadataqa.api.schema.Schema;

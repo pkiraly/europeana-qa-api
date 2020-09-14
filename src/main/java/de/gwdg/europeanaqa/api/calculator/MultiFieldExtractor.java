@@ -6,7 +6,7 @@ import de.gwdg.europeanaqa.api.abbreviation.EdmDatasetManager;
 import de.gwdg.metadataqa.api.counter.FieldCounter;
 import de.gwdg.metadataqa.api.interfaces.Calculator;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
-import de.gwdg.metadataqa.api.model.PathCache;
+import de.gwdg.metadataqa.api.model.pathcache.PathCache;
 import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 
