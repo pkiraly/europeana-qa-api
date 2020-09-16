@@ -185,6 +185,12 @@ public class DisconnectedEntityCalculator implements Calculator, Serializable {
   @Override
   public String getCsv(final boolean withLabels,
                        final CompressionLevel compressionLevel) {
+    return resultMap.getCsv(withLabels, compressionLevel);
+  }
+
+  @Override
+  public List<String> getList(final boolean withLabels,
+                       final CompressionLevel compressionLevel) {
     return resultMap.getList(withLabels, compressionLevel);
   }
 

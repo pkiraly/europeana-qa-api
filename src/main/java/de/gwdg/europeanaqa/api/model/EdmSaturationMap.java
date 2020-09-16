@@ -200,7 +200,7 @@ public class EdmSaturationMap {
    * Gets the CSV value container.
    * @return The CSV value container
    */
-  public FieldCounter<Double> getCsv() {
+  public FieldCounter<Double> getFieldCounter() {
     calculate();
     FieldCounter<Double> saturationResult = new FieldCounter<>();
     saturationResult.putAll(getPropertiesCsv());
