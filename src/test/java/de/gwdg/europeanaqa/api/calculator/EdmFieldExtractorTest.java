@@ -9,6 +9,7 @@ import de.gwdg.metadataqa.api.json.JsonBranch;
 import de.gwdg.metadataqa.api.model.Category;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 import de.gwdg.metadataqa.api.model.pathcache.JsonPathCache;
+import de.gwdg.metadataqa.api.rule.RuleChecker;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhJsonSchema;
 import de.gwdg.metadataqa.api.schema.Format;
@@ -302,6 +303,11 @@ public class EdmFieldExtractorTest {
 
     @Override
     public List<Category> getCategories() {
+      return null;
+    }
+
+    @Override
+    public List<RuleChecker> getRuleCheckers() {
       return null;
     }
   }

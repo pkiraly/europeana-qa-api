@@ -33,6 +33,8 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -245,7 +247,15 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
   @Override
   public String measure(String jsonRecord) throws InvalidJsonException {
-    return this.<EdmFieldInstance>measureWithGenerics(jsonRecord);
+    return (String) this.<EdmFieldInstance>measureWithGenerics(jsonRecord);
+  }
+
+  public List<String> measureAsList(String jsonRecord) throws InvalidJsonException {
+    return (List<String>) this.<EdmFieldInstance>measureWithGenerics(jsonRecord, List.class);
+  }
+
+  public Map<String, Object> measureAsMap(String jsonRecord) throws InvalidJsonException {
+    return (Map<String, Object>) this.<EdmFieldInstance>measureWithGenerics(jsonRecord, Map.class);
   }
 
   /**

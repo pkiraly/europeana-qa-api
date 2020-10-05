@@ -357,13 +357,13 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
   }
 
   public Map<String, Double> getSaturationMap() {
-    return edmSaturationMap.getCsv().getMap();
+    return edmSaturationMap.getFieldCounter().getMap();
   }
 
   @Override
   public Map<String, Map<String, ? extends Object>> getLabelledResultMap() {
     Map<String, Map<String, ? extends Object>> labelledResultMap = new LinkedHashMap<>();
-    labelledResultMap.put(getCalculatorName(), edmSaturationMap.getCsv().getMap());
+    labelledResultMap.put(getCalculatorName(), edmSaturationMap.getFieldCounter().getMap());
     return labelledResultMap;
   }
 
@@ -381,13 +381,19 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
 
   @Override
   public Map<String, ? extends Object> getResultMap() {
-    return edmSaturationMap.getCsv().getMap();
+    return edmSaturationMap.getFieldCounter().getMap();
   }
 
   @Override
   public String getCsv(boolean withLabel, CompressionLevel compressionLevel) {
-    return edmSaturationMap.getCsv().getList(withLabel, compressionLevel);
+    return edmSaturationMap.getFieldCounter().getCsv(withLabel, compressionLevel);
   }
+
+  @Override
+  public List<String> getList(boolean withLabel, CompressionLevel compressionLevel) {
+    return edmSaturationMap.getFieldCounter().getList(withLabel, compressionLevel);
+  }
+
 
   private SortedMap<LanguageSaturationType, Double> keepOnlyTheBest(SortedMap<LanguageSaturationType, Double> result) {
     if (result.size() > 1) {
