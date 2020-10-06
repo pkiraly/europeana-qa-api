@@ -59,7 +59,7 @@ public class CalculatorFacadeTest {
     calculator.abbreviate(false);
     calculator.configure();
     String expected = "92062/BibliographicResource_1000126015451,92062_Ag_EU_TEL_a0480_Austria,Österreichische Nationalbibliothek - Austrian National Library,0.184,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,12,0,0,0.0,0.0,0.0";
-    String csv = calculator.measure(FileUtils.readFirstLine("general/test.json"));
+    String csv = calculator.measure(FileUtils.readFirstLineFromResource("general/test.json"));
     assertEquals(expected, csv);
   }
 
@@ -69,7 +69,7 @@ public class CalculatorFacadeTest {
     calculator.abbreviate(true);
     calculator.configure();
     String expected = "92062/BibliographicResource_1000126015451,1725,2,0.184,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,12,0,0,0.0,0.0,0.0";
-    String csv = calculator.measure(FileUtils.readFirstLine("general/test.json"));
+    String csv = calculator.measure(FileUtils.readFirstLineFromResource("general/test.json"));
     assertEquals(expected, csv);
   }
 
@@ -79,7 +79,7 @@ public class CalculatorFacadeTest {
     calculator.abbreviate(true);
     calculator.configure();
     String expected = "92062/BibliographicResource_1000126015451,1725,2,0.184,1.0,0.181818,0.388889,0.272727,0.5,0.357143,0.75,0.363636,0.4,1,1,1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,5,0,0,0,0,0,0,0,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,12,0,0,0.0,0.0,0.0";
-    String csv = calculator.measure(FileUtils.readFirstLine("general/test.json"));
+    String csv = calculator.measure(FileUtils.readFirstLineFromResource("general/test.json"));
     assertEquals(expected, csv);
   }
 
@@ -339,7 +339,7 @@ public class CalculatorFacadeTest {
     assertEquals(1000, calculator.getSolrFields().get(1).getTotal());
     assertEquals(2000, calculator.getSolrFields().get(2).getTotal());
 
-    JsonPathCache cache = new JsonPathCache(FileUtils.readFirstLine("general/test.json"));
+    JsonPathCache cache = new JsonPathCache(FileUtils.readFirstLineFromResource("general/test.json"));
     calculator.measure(cache);
     assertEquals(
       "\"dc_title_ss/count\":3.000000,\"dc_title_ss/score\":0.711154,"
@@ -355,14 +355,14 @@ public class CalculatorFacadeTest {
     assertEquals(Format.FULLBEAN, calculatorJson.getFormat());
     assertEquals(EdmFullBeanSchema.class, calculatorJson.getSchema().getClass());
     calculatorJson.configure();
-    String csvFromJson = calculatorJson.measure(FileUtils.readFirstLine("general/2048081-_O_532.json"));
+    String csvFromJson = calculatorJson.measure(FileUtils.readFirstLineFromResource("general/2048081-_O_532.json"));
 
     EdmCalculatorFacade calculatorXml = new EdmCalculatorFacade(true, true, true, false, true);
     calculatorXml.setFormat(Format.OAI_PMH_XML);
     assertEquals(Format.OAI_PMH_XML, calculatorXml.getFormat());
     assertEquals(EdmOaiPmhXmlSchema.class, calculatorXml.getSchema().getClass());
     calculatorXml.configure();
-    String csvFromXml = calculatorXml.measure(FileUtils.readContent("general/2048081-_O_532.xml"));
+    String csvFromXml = calculatorXml.measure(FileUtils.readContentFromResource("general/2048081-_O_532.xml"));
 
     List<String> header = calculatorJson.getHeader();
     String[] json = csvFromJson.split(",");
@@ -423,7 +423,7 @@ public class CalculatorFacadeTest {
     );
     //System.err.println(calculator.getResults());
 
-    csvFromXml = calculator.measure(FileUtils.readContent("general/2048081-_O_532.xml"));
+    csvFromXml = calculator.measure(FileUtils.readContentFromResource("general/2048081-_O_532.xml"));
     assertEquals(
         "/2048081/_O_532,989,206,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,0,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
         csvFromXml
@@ -456,7 +456,7 @@ public class CalculatorFacadeTest {
     assertEquals(expectation, csvFromXml);
     //System.err.println(calculator.getResults());
 
-    csvFromXml = calculator.measure(FileUtils.readContent("general/92064-bildarchivaustria_Preview_305640.xml"));
+    csvFromXml = calculator.measure(FileUtils.readContentFromResource("general/92064-bildarchivaustria_Preview_305640.xml"));
     assertEquals(expectation, csvFromXml);
   }
 

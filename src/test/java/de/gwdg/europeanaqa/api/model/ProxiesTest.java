@@ -19,7 +19,7 @@ public class ProxiesTest {
 
   @Before
   public void setUp() throws IOException, URISyntaxException {
-    jsonString = FileUtils.readFirstLine("general/test.json");
+    jsonString = FileUtils.readFirstLineFromResource("general/test.json");
   }
 
   @Test

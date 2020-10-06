@@ -37,7 +37,7 @@ public class CalculatorFacadeSkippableTest {
 
   @Before
   public void setUp() throws URISyntaxException, IOException {
-    record = FileUtils.readFirstLine("general/test.json");
+    record = FileUtils.readFirstLineFromResource("general/test.json");
 
     facadeSkippable = new EdmCalculatorFacade(true, true, true, false, true);
     facadeSkippable.abbreviate(false);
