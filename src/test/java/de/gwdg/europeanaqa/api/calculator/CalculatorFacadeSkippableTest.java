@@ -62,10 +62,10 @@ public class CalculatorFacadeSkippableTest {
     facadeNormal.measure(record);
     Map<String,? extends Object> normalMap = getResultMap(facadeNormal);
 
-    assertEquals(skippableMap.get("existence:Concept/rdf:about"), false);
-    assertEquals(normalMap.get("existence:Concept/rdf:about"), true);
-    assertEquals(skippableMap.get("existence:Concept/skos:prefLabel"), false);
-    assertEquals(normalMap.get("existence:Concept/skos:prefLabel"), true);
+    assertEquals(0, skippableMap.get("existence:Concept/rdf:about"));
+    assertEquals(1, normalMap.get("existence:Concept/rdf:about"));
+    assertEquals(0, skippableMap.get("existence:Concept/skos:prefLabel"));
+    assertEquals(1, normalMap.get("existence:Concept/skos:prefLabel"));
 
     assertEquals(skippableMap.get("cardinality:Concept/rdf:about"), 0);
     assertEquals(normalMap.get("cardinality:Concept/rdf:about"), 1);
@@ -131,9 +131,8 @@ public class CalculatorFacadeSkippableTest {
 
   private Map<String,? extends Object> getResultMap(EdmCalculatorFacade facade) {
     Map<String, Object> resultMap = new LinkedHashMap<>();
-    for (Calculator calculator : facade.getCalculators()) {
+    for (Calculator calculator : facade.getCalculators())
       resultMap.putAll(calculator.getResultMap());
-    }
     return resultMap;
   }
 

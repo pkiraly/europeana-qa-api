@@ -88,6 +88,11 @@ public class MultiFieldExtractor implements Calculator, Serializable {
   }
 
   @Override
+  public List<Object> getCsv() {
+    return resultMap.getCsv();
+  }
+
+  @Override
   public List<String> getList(boolean withLabel, CompressionLevel compressionLevel) {
     return resultMap.getList(withLabel, CompressionLevel.ZERO); // the extracted fields should never be compressed!
   }

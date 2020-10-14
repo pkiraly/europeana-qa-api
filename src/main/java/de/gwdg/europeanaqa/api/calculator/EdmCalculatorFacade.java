@@ -15,6 +15,7 @@ import de.gwdg.metadataqa.api.calculator.LanguageCalculator;
 import de.gwdg.metadataqa.api.calculator.TfIdfCalculator;
 import de.gwdg.metadataqa.api.calculator.UniquenessCalculator;
 
+import de.gwdg.metadataqa.api.calculator.output.OutputCollector;
 import de.gwdg.metadataqa.api.model.EdmFieldInstance;
 
 import de.gwdg.metadataqa.api.problemcatalog.EmptyStrings;
@@ -251,11 +252,13 @@ public class EdmCalculatorFacade extends CalculatorFacade {
   }
 
   public List<String> measureAsList(String jsonRecord) throws InvalidJsonException {
-    return (List<String>) this.<EdmFieldInstance>measureWithGenerics(jsonRecord, List.class);
+    return (List<String>) this.<EdmFieldInstance>measureWithGenerics(
+      jsonRecord, OutputCollector.TYPE.STRING_LIST);
   }
 
   public Map<String, Object> measureAsMap(String jsonRecord) throws InvalidJsonException {
-    return (Map<String, Object>) this.<EdmFieldInstance>measureWithGenerics(jsonRecord, Map.class);
+    return (Map<String, Object>) this.<EdmFieldInstance>measureWithGenerics(
+      jsonRecord, OutputCollector.TYPE.MAP);
   }
 
   /**
