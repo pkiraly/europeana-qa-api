@@ -190,6 +190,11 @@ public class ProxyBasedCompletenessCalculator implements Calculator, Serializabl
   }
 
   @Override
+  public List<Object> getCsv() {
+    return cardinalityCounter.getCsv();
+  }
+
+  @Override
   public List<String> getList(boolean withLabels, CompressionLevel compressionLevel) {
     return cardinalityCounter.getList(withLabels, compressionLevel);
   }

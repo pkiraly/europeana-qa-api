@@ -390,10 +390,14 @@ public class EdmMultilingualitySaturationCalculator implements Calculator, Seria
   }
 
   @Override
+  public List<Object> getCsv() {
+    return edmSaturationMap.getFieldCounter().getCsv();
+  }
+
+  @Override
   public List<String> getList(boolean withLabel, CompressionLevel compressionLevel) {
     return edmSaturationMap.getFieldCounter().getList(withLabel, compressionLevel);
   }
-
 
   private SortedMap<LanguageSaturationType, Double> keepOnlyTheBest(SortedMap<LanguageSaturationType, Double> result) {
     if (result.size() > 1) {

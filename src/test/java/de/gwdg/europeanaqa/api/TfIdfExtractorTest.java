@@ -44,7 +44,7 @@ public class TfIdfExtractorTest {
   public void test() throws URISyntaxException, IOException {
     JsonProvider jsonProvider = Configuration.defaultConfiguration().jsonProvider();
     String recordId = "2022320/3F61C612ED9C42CCB85E533B4736795E8BDC7E77";
-    String jsonString = FileUtils.readContent("general/td-idf-response.json");
+    String jsonString = FileUtils.readContentFromResource("general/td-idf-response.json");
     assertEquals("{", jsonString.substring(0,1));
 
     TfIdfExtractor extractor = new TfIdfExtractor(new EdmOaiPmhJsonSchema());

@@ -34,7 +34,7 @@ public class ProxyBasedCompletenessCalculatorTest {
 
   @Before
   public void setUp() throws IOException, URISyntaxException {
-    jsonString = FileUtils.readFirstLine("general/test.json");
+    jsonString = FileUtils.readFirstLineFromResource("general/test.json");
   }
 
   @Test
@@ -265,13 +265,13 @@ public class ProxyBasedCompletenessCalculatorTest {
   public void testJsonAndXml() throws IOException, URISyntaxException {
     ProxyBasedCompletenessCalculator calculatorJson = new ProxyBasedCompletenessCalculator(new EdmFullBeanSchema());
     PathCache<EdmFieldInstance> cacheJson = (PathCache<EdmFieldInstance>) PathCacheFactory.getInstance(Format.JSON,
-        FileUtils.readFirstLine("general/2048081-_O_532.json"));
+        FileUtils.readFirstLineFromResource("general/2048081-_O_532.json"));
     calculatorJson.measure(cacheJson);
     String csvFromJson = calculatorJson.getCsv(false, CompressionLevel.NORMAL);
 
     ProxyBasedCompletenessCalculator calculatorXml = new ProxyBasedCompletenessCalculator(new EdmOaiPmhXmlSchema());
     PathCache<EdmFieldInstance> cacheXml = (PathCache<EdmFieldInstance>) PathCacheFactory.getInstance(Format.XML,
-        FileUtils.readContent("general/2048081-_O_532.xml"));
+        FileUtils.readContentFromResource("general/2048081-_O_532.xml"));
     assertEquals(XmlPathCache.class, cacheXml.getClass());
     calculatorXml.measure(cacheXml);
     String csvFromXml = calculatorXml.getCsv(false, CompressionLevel.NORMAL);

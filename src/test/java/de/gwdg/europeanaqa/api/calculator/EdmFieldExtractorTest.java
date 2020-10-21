@@ -56,7 +56,7 @@ public class EdmFieldExtractorTest {
     calculator = new EdmFieldExtractor(schema);
     calculator.setDataProviderManager(new EdmDataProviderManager());
     calculator.setDatasetManager(new EdmDatasetManager());
-    cache = new JsonPathCache<>(FileUtils.readFirstLine("general/test.json"));
+    cache = new JsonPathCache<>(FileUtils.readFirstLineFromResource("general/test.json"));
   }
 
   @After
@@ -99,7 +99,7 @@ public class EdmFieldExtractorTest {
 
   @Test
   public void testIdTruncationIssue() throws URISyntaxException, IOException {
-    cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/issue41-truncatedID.json"));
+    cache = new JsonPathCache<>(FileUtils.readFirstLineFromResource("issue-examples/issue41-truncatedID.json"));
     calculator.measure(cache);
     assertEquals(3, calculator.getResultMap().size());
 
@@ -123,7 +123,7 @@ public class EdmFieldExtractorTest {
     calculator = new EdmFieldExtractor(schema);
     calculator.setDataProviderManager(new EdmDataProviderManager());
     calculator.setDatasetManager(new EdmDatasetManager());
-    cache = new JsonPathCache<>(FileUtils.readFirstLine("issue-examples/missing-provider.json"));
+    cache = new JsonPathCache<>(FileUtils.readFirstLineFromResource("issue-examples/missing-provider.json"));
     calculator.measure(cache);
     assertEquals(3, calculator.getResultMap().size());
 
