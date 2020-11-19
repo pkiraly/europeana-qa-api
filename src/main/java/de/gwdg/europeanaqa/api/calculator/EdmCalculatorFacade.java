@@ -23,6 +23,7 @@ import de.gwdg.metadataqa.api.problemcatalog.LongSubject;
 import de.gwdg.metadataqa.api.problemcatalog.ProblemCatalog;
 import de.gwdg.metadataqa.api.problemcatalog.TitleAndDescriptionAreSame;
 
+import de.gwdg.metadataqa.api.rule.RuleCatalog;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhJsonSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
@@ -56,7 +57,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
   private boolean proxyBasedCompletenessEnabled = false;
   private boolean extendedFieldExtraction = false;
   private Format format = Format.OAI_PMH_JSON;
-  private EdmSchema schema = null;
+  // private EdmSchema schema = null;
 
   /**
    * Creates an EdmCalculatorFacade object.
@@ -73,7 +74,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
    * @param enableProblemCatalogMeasurement Flag to enable problem catalog measurement
    */
   public EdmCalculatorFacade(boolean enableFieldExistenceMeasurement,
-                             boolean enableFieldCardinalityMeasurement,
+                             boolean enableFieldCardinalityMeasurement,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
                              boolean enableCompletenessMeasurement,
                              boolean enableTfIdfMeasurement,
                              boolean enableProblemCatalogMeasurement) {
@@ -111,13 +112,13 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
   @Override
   public void configure() {
-    if (schema == null) {
-      this.schema = createSchema();
+    if (super.schema == null) {
+      super.schema = createSchema();
     }
     setSchema(schema);
 
     calculators = new ArrayList<>();
-    buildEdmFieldExtractor(schema);
+    buildEdmFieldExtractor((EdmSchema) super.schema);
     calculators.add(fieldExtractor);
 
     if (proxyBasedCompletenessEnabled) {
@@ -125,17 +126,17 @@ public class EdmCalculatorFacade extends CalculatorFacade {
     } else if (completenessMeasurementEnabled
         || fieldExistenceMeasurementEnabled
         || fieldCardinalityMeasurementEnabled) {
-      buildCompletenessCalculator(schema);
+      buildCompletenessCalculator((EdmSchema) super.schema);
       calculators.add(completenessCalculator);
     }
 
     if (tfIdfMeasurementEnabled) {
-      buildTfIdfCalculator(schema);
+      buildTfIdfCalculator((EdmSchema) super.schema);
       calculators.add(tfidfCalculator);
     }
 
     if (problemCatalogMeasurementEnabled) {
-      calculators.add(buildProblemCatalog(schema));
+      calculators.add(buildProblemCatalog((EdmSchema) super.schema));
     }
 
     if (languageMeasurementEnabled) {
@@ -143,7 +144,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
     }
 
     if (multilingualSaturationMeasurementEnabled) {
-      buildMultilingualSaturationCalculator(schema);
+      buildMultilingualSaturationCalculator((EdmSchema) super.schema);
       calculators.add(multilingualSaturationCalculator);
     }
 
@@ -161,6 +162,10 @@ public class EdmCalculatorFacade extends CalculatorFacade {
         solrClient = new DefaultSolrClient(solrConfiguration);
       }
       calculators.add(new UniquenessCalculator(solrClient, schema));
+    }
+
+    if (ruleCatalogMeasurementEnabled) {
+      calculators.add(new RuleCatalog(schema));
     }
   }
 
@@ -377,6 +382,7 @@ public class EdmCalculatorFacade extends CalculatorFacade {
    * @return The format dependant EDM schema.
    */
   public EdmSchema createSchema() {
+    LOGGER.info("createSchema()");
     EdmSchema schema;
     if (format == null) {
       schema = new EdmOaiPmhJsonSchema();
@@ -396,9 +402,13 @@ public class EdmCalculatorFacade extends CalculatorFacade {
 
   @Override
   public Schema getSchema() {
-    if (schema == null) {
-      schema = createSchema();
+    // LOGGER.info("getSchema()");
+    // LOGGER.info("schema: " + schema);
+    // LOGGER.info("this.schema: " + this.schema);
+    // LOGGER.info("super.schema: " + super.schema);
+    if (super.schema == null) {
+      super.schema = createSchema();
     }
-    return schema;
+    return super.schema;
   }
 }

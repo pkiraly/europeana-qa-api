@@ -6,18 +6,22 @@ import de.gwdg.europeanaqa.api.model.SolrClientMock;
 import de.gwdg.metadataqa.api.calculator.LanguageCalculator;
 import de.gwdg.metadataqa.api.calculator.TfIdfCalculator;
 import de.gwdg.metadataqa.api.calculator.UniquenessCalculator;
+import de.gwdg.metadataqa.api.configuration.Rule;
 import de.gwdg.metadataqa.api.interfaces.Calculator;
 import de.gwdg.metadataqa.api.model.pathcache.JsonPathCache;
 import de.gwdg.metadataqa.api.schema.EdmFullBeanSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhJsonSchema;
 import de.gwdg.metadataqa.api.schema.EdmOaiPmhXmlSchema;
+import de.gwdg.metadataqa.api.schema.Schema;
 import de.gwdg.metadataqa.api.uniqueness.SolrConfiguration;
 import de.gwdg.metadataqa.api.util.CompressionLevel;
 import de.gwdg.metadataqa.api.util.FileUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -33,6 +37,8 @@ import org.junit.Test;
  * @author Péter Király <peter.kiraly at gwdg.de>
  */
 public class CalculatorFacadeTest {
+
+  private static final Logger LOGGER = Logger.getLogger(CalculatorFacadeTest.class.getCanonicalName());
 
   public CalculatorFacadeTest() {
   }
@@ -458,6 +464,37 @@ public class CalculatorFacadeTest {
 
     csvFromXml = calculator.measure(FileUtils.readContentFromResource("general/92064-bildarchivaustria_Preview_305640.xml"));
     assertEquals(expectation, csvFromXml);
+  }
+
+  @Test
+  public void testWithRuleCatalog() throws URISyntaxException, IOException {
+    List<Rule> rules = Arrays.asList(
+      new Rule().withDisjoint("Proxy/dc:description"),
+      new Rule().withDisjoint("Proxy/dcterms:alternative")
+    );
+    assertEquals(2, rules.size());
+
+    EdmOaiPmhJsonSchema schema = new EdmOaiPmhJsonSchema();
+    schema.getPathByLabel("Proxy/dc:title")
+      .addRule(new Rule().withDisjoint("Proxy/dc:description"))
+      .addRule(new Rule().withDisjoint("Proxy/dcterms:alternative"));
+    assertEquals(2, schema.getRuleCheckers().size());
+
+    EdmCalculatorFacade calculator = new EdmCalculatorFacade();
+    calculator.disableFieldExistenceMeasurement();
+    calculator.disableFieldCardinalityMeasurement();
+    calculator.disableCompletenessMeasurement();
+    calculator.disableTfIdfMeasurement();
+    calculator.disableProblemCatalogMeasurement();
+    calculator.setSchema(schema);
+    calculator.abbreviate(true);
+    calculator.enableRuleCatalogMeasurement();
+    calculator.configure();
+
+    String expected = "92062/BibliographicResource_1000126015451,1725,2,NA";
+    String csv = calculator.measure(
+      FileUtils.readFirstLineFromResource("general/test-with-similar-title.json"));
+    assertEquals(expected, csv);
   }
 
   @Nullable

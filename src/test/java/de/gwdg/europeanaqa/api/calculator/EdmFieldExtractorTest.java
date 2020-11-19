@@ -302,7 +302,7 @@ public class EdmFieldExtractorTest {
     }
 
     @Override
-    public List<Category> getCategories() {
+    public List<String> getCategories() {
       return null;
     }
 
